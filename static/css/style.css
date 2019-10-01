@@ -1,0 +1,29 @@
+html,  body {
+    height: 100%;
+}
+body {
+    display: flex;
+    flex-direction: column;
+}
+.footer {
+    flex-grow: 0;
+}
+
+.item {
+    position: relative;
+}
+.item:hover {
+    background: lightskyblue;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+form {
+    border: 1px #DFDFDF solid;
+    border-radius: .25rem;
+}
+
+.status {
+    position: absolute;
+    top: 1rem;
+    right: 2rem;
+}

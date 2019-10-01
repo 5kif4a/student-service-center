@@ -1,0 +1,97 @@
+{% extends "scc/service_wrapper.html" %}
+{% load crispy_forms_tags %}
+{% block content %}
+<div class="container">
+{% block description %}
+<h3 class="text-center p-3">Прием документов и зачисление в высшие учебные заведения для обучения по образовательным программам высшего образования</h3>
+<div class="alert alert-info text-center"><h5>Статус услуги: {% if status %}Автоматизирована <i class="fas fa-cogs fa-lg"></i>{% else %}в процессе разработки <i class="fab fa-dev fa-lg"></i></i>{% endif %}</h5></div>
+<div class="row justify-content-center">
+    <div class="col text-center">
+        <a class="btn btn-info" href="http://adilet.zan.kz/rus/docs/V1500011286#z26" target="_blank">Стандарт государственной услуги</a>
+    </div>
+    <div class="col text-center">
+        <a class="btn btn-info" href="https://egov.kz/cms/ru/services/professional_education/192pass_mon" target="_blank">Получение услуги на Egov</a>
+    </div>
+</div>
+<div class="m-2">
+    <ul class="list-group list-group-flush">
+        <li class="list-group-item"><b>Государственный орган:</b> <a href="http://edu.gov.kz/ru" target="_blank">Министерство образования и науки РК</a></li>
+        <li class="list-group-item"><b>Получатели услуги:</b> Физические лица</li>
+        <li class="list-group-item"><b>Место предоставления услуги:</b>
+            <ul class="list-unstyled">
+                <li><a href="http://egov.kz/cms/ru/articles/2Fvusi_rk" target="_blank">Высшие учебные заведения РК</a></li>
+                <li><a href="https://egov.kz/cms/ru/government-services/for_citizen" target="_blank">Портал «электронного правительства»</a></li>
+            </ul>
+        </li>
+        <li class="list-group-item"><b>Стоимость услуги:</b> Бесплатно</li>
+        <li class="list-group-item"><b>Сроки оказания услуги:</b> 1 рабочий день</li>
+        <li class="list-group-item"><b>Полное наименование услуги:</b> Прием документов и зачисление в высшие учебные заведения для обучения по образовательным программам высшего образования</li>
+        <li class="list-group-item"><b>Необходимые документы:</b>
+            <ol>
+                <li>Заявление на имя руководителя организации о приеме в произвольной форме.</li>
+                <li>Документ, удостоверяющий личность.</li>
+                <li>Документ об образовании (документ о среднем общем (общем среднем), начальном профессиональном (техническом и профессиональном), среднем профессиональном (послесреднем) или высшем образовании (подлинник)).</li>
+                <li>6 фотографий размером 3х4 см.</li>
+                <li>Медицинская справка формы 086-у.</li>
+                <li>Сертификат ЕНТ или Комплексного тестирования, а также свидетельство о присуждении образовательного гранта (при наличии).</li>
+            </ol>
+        </li>
+    </ul>
+</div>
+{% endblock description %}
+{% block form %}
+{#<div class="row justify-content-center">#}
+{#    <div class="col text-center">#}
+{#        <button class="btn btn-primary" type="button" data-toggle="collapse" data-target="#collapseExample" aria-expanded="false" aria-controls="collapseExample">Перейти к форме заявления</button>#}
+{#    </div>#}
+{#</div>#}
+{#<form class="collapse p-2 m-2" id="collapseExample" method="post">#}
+{#    {% csrf_token %}#}
+{#    <div class="form-group">#}
+{#        <div class="form-row">#}
+{#            <div class="form-group col-sm">#}
+{#                {{ form.last_name|as_crispy_field }}#}
+{#            </div>#}
+{#            <div class="form-group col-sm">#}
+{#                {{ form.first_name|as_crispy_field }}#}
+{#            </div>#}
+{#            <div class="form-group col-sm">#}
+{#                {{ form.patronymic|as_crispy_field }}#}
+{#            </div>#}
+{#        </div>#}
+{#        <div class="form-row">#}
+{#            <div class="form-group col">#}
+{#                {{ form.course|as_crispy_field }}#}
+{#            </div>#}
+{#            <div class="form-group col">#}
+{#                {{ form.group|as_crispy_field }}#}
+{#            </div>#}
+{#            <div class="form-group col">#}
+{#                {{ form.specialty|as_crispy_field }}#}
+{#            </div>#}
+{#            <div class="form-group col">#}
+{#                {{ form.education_form|as_crispy_field }}#}
+{#            </div>#}
+{#        </div>#}
+{#        <div class="form-row">#}
+{#            <div class="form-group col">#}
+{#                {{ form.receipt_year|as_crispy_field }}#}
+{#            </div>#}
+{#            <div class="form-group col">#}
+{#                {{ form.exclude_year|as_crispy_field }}#}
+{#            </div>#}
+{#            <div class="form-group col">#}
+{#                {{ form.email|as_crispy_field }}#}
+{#            </div>#}
+{#            <div class="form-group col">#}
+{#                {{ form.phone_number|as_crispy_field }}#}
+{#            </div>#}
+{#        </div>#}
+{#        {{ form.reason|as_crispy_field }}#}
+{#        {{ form.captcha }}#}
+{#        <button type="submit" class="btn btn-success mt-1">Отправить заявку</button>#}
+{#    </div>#}
+{#</form>#}
+{% endblock form %}
+</div>
+{% endblock content%}

@@ -1,0 +1,94 @@
+{% extends "scc/../base.html" %}
+{% load static %}
+{% block content %}
+<div class="container">
+    <h3 class="text-center p-3">Государственные услуги</h3>
+    <div class="row">
+    <div class="card item col-sm m-1">
+        <i class="status fab fa-dev fa-2x"></i>
+        <img src="{% static 'img/bachelor.png' %}" width="100" height="100" class="mx-auto" alt="...">
+        <div class="card-body">
+            <a href="/bachelor" class="card-link mt-auto stretched-link">
+                <p class="text-justify">Прием документов и зачисление в высшие учебные заведения для обучения по образовательным программам высшего образования</p>
+            </a>
+        </div>
+    </div>
+      <div class="card item col-sm m-1">
+          <i class="status fab fa-dev fa-2x"></i>
+          <img src="{% static 'img/postgraduate.png' %}" width="100" height="100" class="mx-auto" alt="...">
+        <div class="card-body">
+            <a href="/postgraduate" class="card-link mt-auto stretched-link">
+                <p class="text-justify">Прием документов и зачисление в высшие учебные заведения для обучения по образовательным программам послевузовского образования</p>
+            </a>
+        </div>
+      </div>
+      <div class="card item col-sm m-1">
+          <i class="status fab fa-dev fa-2x"></i>
+          <img src="{% static 'img/abroad.png' %}" width="100" height="100" class="mx-auto" alt="...">
+        <div class="card-body">
+            <a href="/abroad" class="card-link mt-auto stretched-link">
+                <p class="text-justify">Прием документов для участия в конкурсе на обучение за рубежом, в том числе академической мобильности</p>
+            </a>
+        </div>
+    </div>
+  </div>
+    <div class="row">
+    <div class="card item col-sm m-1">
+        <i class="status fab fa-dev fa-2x"></i>
+        <img src="{% static 'img/certificate.png' %}" width="100" height="100" class="mx-auto" alt="...">
+        <div class="card-body">
+            <a href="/certificate" class="card-link mt-auto stretched-link">
+                <p class="text-justify">Выдача сертификата о сдаче комплексного тестирования</p>
+            </a>
+        </div>
+    </div>
+      <div class="card item col-sm m-1">
+          <i class="status fas fa-cogs fa-2x"></i>
+          <img src="{% static 'img/hostel.png' %}" width="100" height="100" class="mx-auto" alt="...">
+        <div class="card-body">
+            <a href="/hostel" class="card-link mt-auto stretched-link">
+                <p class="text-justify">Предоставление общежития в высших учебных заведениях</p>
+            </a>
+        </div>
+      </div>
+      <div class="card item col-sm m-1">
+          <i class="status fab fa-dev fa-2x"></i>
+          <img src="{% static 'img/duplicate.png' %}" width="100" height="100" class="mx-auto" alt="...">
+        <div class="card-body">
+            <a href="duplicate" class="card-link mt-auto stretched-link">
+                <p class="text-justify">Выдача дубликатов документов о высшем и послевузовском образовании</p>
+            </a>
+        </div>
+    </div>
+  </div>
+    <div class="row">
+    <div class="card item col-sm m-1">
+        <i class="status fas fa-cogs fa-2x"></i>
+        <img src="{% static 'img/reference.png' %}" width="100" height="100" class="mx-auto" alt="...">
+        <div class="card-body">
+            <a href="/reference" class="card-link mt-auto stretched-link">
+                <p class="text-justify">Выдача справки лицам, не завершившим высшее и послевузовское образование</p>
+            </a>
+        </div>
+    </div>
+      <div class="card item col-sm m-1">
+          <i class="status fab fa-dev fa-2x"></i>
+          <img src="{% static 'img/leave.png' %}" width="100" height="100" class="mx-auto" alt="...">
+        <div class="card-body">
+            <a href="/academic-leave" class="card-link mt-auto stretched-link">
+                <p class="text-justify">Предоставление академических отпусков обучающимся в организациях образования</p>
+            </a>
+        </div>
+      </div>
+      <div class="card item col-sm m-1">
+          <i class="status fab fa-dev fa-2x"></i>
+          <img src="{% static 'img/restoring.png' %}" width="100" height="100" class="mx-auto" alt="...">
+        <div class="card-body">
+            <a href="/transfer-and-recovery" class="card-link mt-auto stretched-link">
+                <p class="text-justify">Перевод и восстановление обучающихся в высших учебных заведениях</p>
+            </a>
+        </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

@@ -1,0 +1,109 @@
+{% extends "scc/service_wrapper.html" %}
+{% load crispy_forms_tags %}
+{% block content %}
+<div class="container">
+{% block description %}
+<h3 class="text-center p-3">Предоставление академических отпусков обучающимся в организациях образования</h3>
+<div class="alert alert-info text-center"><h5>Статус услуги: {% if status %}Автоматизирована <i class="fas fa-cogs fa-lg"></i>{% else %}в процессе разработки <i class="fab fa-dev fa-lg"></i>{% endif %}</h5></div>
+<div class="row justify-content-center">
+    <div class="col text-center">
+        <a class="btn btn-info" href="http://adilet.zan.kz/rus/docs/V1700015647#z16" target="_blank">Стандарт государственной услуги</a>
+    </div>
+    <div class="col text-center">
+        <a class="btn btn-info" href="https://egov.kz/cms/ru/services/professional_education/pass203_2_mon" target="_blank">Получение услуги на Egov</a>
+    </div>
+</div>
+<div class="m-2">
+    <ul class="list-group list-group-flush">
+        <li class="list-group-item"><b>Государственный орган:</b> <a href="http://edu.gov.kz/ru" target="_blank">Министерство образования и науки РК</a></li>
+        <li class="list-group-item"><b>Получатели услуги:</b> Физические лица</li>
+        <li class="list-group-item"><b>Место предоставления услуги:</b>
+            <ul class="list-unstyled">
+                <li>Организациями технического и профессионального, послесреднего, высшего и послевузовского образования</li>
+                <li><a href="https://gov4c.kz/ru/kontakty/adresa/" target="_blank">НАО «Государственная корпорация «Правительство для граждан»</a></li>
+            </ul>
+        </li>
+        <li class="list-group-item"><b>Стоимость услуги:</b> Бесплатно</li>
+        <li class="list-group-item"><b>Сроки оказания услуги:</b> 3 рабочих дня</li>
+        <li class="list-group-item"><b>Полное наименование услуги:</b> Предоставление академических отпусков обучающимся в организациях образования</li>
+        <li class="list-group-item"><b>Необходимые документы:</b>
+            <h6>Для предоставления академического отпуска по болезни продолжительностью сроком от 6 до 12 месяцев:</h6>
+            <ol>
+                <li>Заявление.</li>
+                <li>Заключения врачебно-консультативной комиссии при амбулаторно-поликлинической организации.</li>
+            </ol>
+            <h6>Для предоставления академического отпуска в случае болезни туберкулезом продолжительностью сроком не более 36 месяцев:</h6>
+            <ol>
+                <li>Заявление.</li>
+                <li>Для предоставления академического отпуска до достижения ребенком возраста трех лет:</li>
+            </ol>
+            <h6>Для предоставления академического отпуска до достижения ребенком возраста трех лет:</h6>
+            <ol>
+                <li>Заявление.</li>
+                <li>Документы (свидетельство) о рождении, усыновлении или удочерении ребенка.</li>
+            </ol>
+            <h6>Для предоставления академического отпуска студентам-призывникам:</h6>
+            <ol>
+                <li>Заявление.</li>
+                <li>Повестка о призыве на воинскую службу.</li>
+            </ol>
+        </li>
+    </ul>
+</div>
+{% endblock description %}
+{% block form %}
+{#<div class="row justify-content-center">#}
+{#    <div class="col text-center">#}
+{#        <button class="btn btn-primary" type="button" data-toggle="collapse" data-target="#collapseExample" aria-expanded="false" aria-controls="collapseExample">Перейти к форме заявления</button>#}
+{#    </div>#}
+{#</div>#}
+{#<form class="collapse p-2 m-2" id="collapseExample" method="post">#}
+{#    {% csrf_token %}#}
+{#    <div class="form-group">#}
+{#        <div class="form-row">#}
+{#            <div class="form-group col-sm">#}
+{#                {{ form.last_name|as_crispy_field }}#}
+{#            </div>#}
+{#            <div class="form-group col-sm">#}
+{#                {{ form.first_name|as_crispy_field }}#}
+{#            </div>#}
+{#            <div class="form-group col-sm">#}
+{#                {{ form.patronymic|as_crispy_field }}#}
+{#            </div>#}
+{#        </div>#}
+{#        <div class="form-row">#}
+{#            <div class="form-group col">#}
+{#                {{ form.course|as_crispy_field }}#}
+{#            </div>#}
+{#            <div class="form-group col">#}
+{#                {{ form.group|as_crispy_field }}#}
+{#            </div>#}
+{#            <div class="form-group col">#}
+{#                {{ form.specialty|as_crispy_field }}#}
+{#            </div>#}
+{#            <div class="form-group col">#}
+{#                {{ form.education_form|as_crispy_field }}#}
+{#            </div>#}
+{#        </div>#}
+{#        <div class="form-row">#}
+{#            <div class="form-group col">#}
+{#                {{ form.receipt_year|as_crispy_field }}#}
+{#            </div>#}
+{#            <div class="form-group col">#}
+{#                {{ form.exclude_year|as_crispy_field }}#}
+{#            </div>#}
+{#            <div class="form-group col">#}
+{#                {{ form.email|as_crispy_field }}#}
+{#            </div>#}
+{#            <div class="form-group col">#}
+{#                {{ form.phone_number|as_crispy_field }}#}
+{#            </div>#}
+{#        </div>#}
+{#        {{ form.reason|as_crispy_field }}#}
+{#        {{ form.captcha }}#}
+{#        <button type="submit" class="btn btn-success mt-1">Отправить заявку</button>#}
+{#    </div>#}
+{#</form>#}
+{% endblock form %}
+</div>
+{% endblock content%}
