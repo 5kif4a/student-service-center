@@ -1,16 +1,16 @@
-{% extends "scc/service_wrapper.html" %}
+{% extends "ssc/service_wrapper.html" %}
 {% load crispy_forms_tags %}
 {% block content %}
 <div class="container">
 {% block description %}
-<h3 class="text-center p-3">Выдача сертификата о сдаче комплексного тестирования</h3>
+<h3 class="text-center p-3">Получение дубликатов документов о высшем и послевузовском образовании</h3>
 <div class="alert alert-info text-center"><h5>Статус услуги: {% if status %}Автоматизирована <i class="fas fa-cogs fa-lg"></i>{% else %}в процессе разработки <i class="fab fa-dev fa-lg"></i>{% endif %}</h5></div>
 <div class="row justify-content-center">
     <div class="col text-center">
-        <a class="btn btn-info" href="http://adilet.zan.kz/rus/docs/V1500012839#z25" target="_blank">Стандарт государственной услуги</a>
+        <a class="btn btn-info" href="http://adilet.zan.kz/rus/docs/V1500011212#z6" target="_blank">Стандарт государственной услуги</a>
     </div>
     <div class="col text-center">
-        <a class="btn btn-info" href="https://egov.kz/cms/ru/services/professional_education/pass206-1_mon" target="_blank">Получение услуги на Egov</a>
+        <a class="btn btn-info" href="https://egov.kz/cms/ru/services/professional_education/pass214_mon" target="_blank">Получение услуги на Egov</a>
     </div>
 </div>
 <div class="m-2">
@@ -20,16 +20,17 @@
         <li class="list-group-item"><b>Место предоставления услуги:</b>
             <ul class="list-unstyled">
                 <li><a href="http://egov.kz/cms/ru/articles/2Fvusi_rk" target="_blank">Высшие учебные заведения РК</a></li>
+                <li><a href="https://gov4c.kz/ru/kontakty/adresa/" target="_blank">НАО «Государственная корпорация «Правительство для граждан»</a></li>
+                <li><a href="https://egov.kz/cms/ru/government-services/for_citizen" target="_blank">Портал «электронного правительства»</a></li>
             </ul>
         </li>
-        <li class="list-group-item"><b>Стоимость услуги:</b> Платно</li>
-        <li class="list-group-item"><b>Сроки оказания услуги:</b> 4 календарных дня</li>
-        <li class="list-group-item"><b>Полное наименование услуги:</b> Выдача сертификата о сдаче комплексного тестирования</li>
+        <li class="list-group-item"><b>Стоимость услуги:</b> Бесплатно</li>
+        <li class="list-group-item"><b>Сроки оказания услуги:</b> 30 календарных дней</li>
+        <li class="list-group-item"><b>Полное наименование услуги:</b> Выдача дубликатов документов о высшем и послевузовском образовании</li>
         <li class="list-group-item"><b>Необходимые документы:</b>
             <ol>
-                <li>Заявление в произвольной форме.</li>
-                <li>Копия удостоверения личности.</li>
-                <li>Документ, подтверждающий оплату за оказание государственной услуги.</li>
+                <li>Заявление.</li>
+                <li>Удостоверение личности услугополучателя (оригинал и копия).</li>
             </ol>
         </li>
     </ul>

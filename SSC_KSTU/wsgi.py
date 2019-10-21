@@ -1,5 +1,5 @@
 """
-WSGI config for SCC_KSTU project.
+WSGI config for SSC_KSTU project.
 
 It exposes the WSGI callable as a module-level variable named ``application``.
 
@@ -11,6 +11,6 @@ import os
 
 from django.core.wsgi import get_wsgi_application
 
-os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'SCC_KSTU.settings')
+os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'SSC_KSTU.settings')
 
 application = get_wsgi_application()

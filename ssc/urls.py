@@ -1,5 +1,4 @@
 from django.urls import path
-
 from . import views
 
 urlpatterns = [
@@ -11,7 +10,7 @@ urlpatterns = [
     path('hostel', views.hostel),
     path('duplicate', views.duplicate),
     path('academic-leave', views.academic_leave),
-    path('reference', views.reference),
+    path('reference', views.ReferenceView.as_view()),
     path('transfer-and-recovery', views.transfer_and_recovery),
-    path('reference/report/<int:obj_id>/', views.report)
+    path('reference/report/<obj_id>/', views.ReferenceView.render)
 ]

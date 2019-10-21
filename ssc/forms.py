@@ -1,10 +1,16 @@
 from django.forms import ModelForm, DateInput, Textarea, NumberInput
-from scc.models import Reference
-from captcha.fields import ReCaptchaField
+from ssc.models import Reference
+from captcha.fields import ReCaptchaField, ReCaptchaV3
 
 
 class ReferenceForm(ModelForm):
-    captcha = ReCaptchaField()
+    captcha = ReCaptchaField(
+        widget=ReCaptchaV3(
+            attrs={
+                'required_score': 0.85
+            }
+        )
+    )
 
     class Meta:
         model = Reference
@@ -12,8 +18,7 @@ class ReferenceForm(ModelForm):
         widgets = {
             'course': NumberInput(attrs={'min': 1, 'max': 5}),
             'receipt_year': DateInput(attrs={'type': 'date'}),
-            'exclude_year': DateInput(attrs={'type': 'date'}),
-            'reason': Textarea(attrs={'rows': 5, 'style': 'resize:none;'})
+            'exclude_year': DateInput(attrs={'type': 'date'})
         }
 
     def __init__(self, *args, **kwargs):
@@ -30,3 +35,4 @@ class ReferenceForm(ModelForm):
         self.fields['email'].label = 'Адрес электронной почты'
         self.fields['phone_number'].label = 'Контактный номер телефона'
         self.fields['reason'].label = 'Причина'
+        self.fields['captcha'].required = False
