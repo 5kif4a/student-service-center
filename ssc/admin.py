@@ -19,12 +19,31 @@ class StudentAdmin(admin.ModelAdmin):
     search_fields = get_model_fields(Student)
 
 
+@admin.register(Specialty)
+class SpecialtyAdmin(admin.ModelAdmin):
+    list_per_page = 30
+    list_display = ('name',)
+    search_fields = get_model_fields(Specialty)
+
+
+@admin.register(University)
+class UniversityAdmin(admin.ModelAdmin):
+    list_per_page = 30
+    list_display = ('name',)
+    search_fields = get_model_fields(University)
+
+
+@admin.register(Rector)
+class RectorAdmin(admin.ModelAdmin):
+    list_display = get_model_fields(Rector)
+
+
 @admin.register(Reference)
 class ReferenceAdmin(admin.ModelAdmin):
     list_per_page = 15
-    list_filter = ('receipt_year', 'exclude_year', 'education_form', 'course')
-    list_display = ('last_name', 'first_name', 'patronymic', 'course', 'group', 'specialty',
-                    'receipt_year', 'exclude_year', 'phone_number', 'print', 'verify')
+    list_filter = ('receipt_year', 'exclude_year', 'education_form', 'course', 'status')
+    list_display = ('last_name', 'first_name', 'patronymic', 'course', 'specialty', 'status',
+                    'print', 'verify', 'send_for_correction')
     search_fields = get_model_fields(Reference)
 
     def print(self, obj):
@@ -34,6 +53,7 @@ class ReferenceAdmin(admin.ModelAdmin):
         """)
 
     def verify(self, obj):
-        return format_html(f"""
-        <input type="button" class="button" value="Verify">
-        """)
+        return format_html("""<input type="button" class="button" value="Verify">""")
+
+    def send_for_correction(self, obj):
+        return format_html("""<input type="button" class="button" value="Send for correction">""")

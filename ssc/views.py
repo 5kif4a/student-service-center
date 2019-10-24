@@ -137,6 +137,3 @@ def transfer_and_recovery(request):
         }
         return render(request, 'ssc/transfer-and-recovery.html')
 
-
-def report(request, obj_id):
-    return HttpResponse(f'obj id: {obj_id}')
