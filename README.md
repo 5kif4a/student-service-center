@@ -4,6 +4,7 @@ Web-приложение реализованное на фреймворке **
 **Требования**\
 Python 3.6+\
 MySQL(опционально)\
+Конвертер HTML в PDF [wkhtmltopdf](https://wkhtmltopdf.org/downloads.html). Обязателен для работы приложения\
 **Установка**
 - Скачать проект
 ```
@@ -44,6 +45,10 @@ user = USER
 password = PASSWORD
 default-character-set = utf8
 ```
+- В модуле ssc/utility.py прописать путь к wkhtmltopdf.exe
+```
+PATH_WKHTMLTOPDF = r"path_to_wkhtmltopdf\...\bin\wkhtmltopdf.exe"
+```
 - Миграция базы данных
 ```
 py manage.py migrate
@@ -62,14 +67,12 @@ email
 py manage.py runserver 8000
 ```
 **TODO LIST**
-- [x] Интеграция с sentry
 - [x] Поиск в базе данных
 - [x] Фильтрация
 - [ ] Конфигурацию переменными окружения
 - [ ] Логирование
-- [ ] Генерация PDF
-- [ ] Hash id, hash names for media files 
-- [ ] Привилегии(роли) пользователей системы
+- [x] Генерация PDF
+- [x] Hash id, hash names for media files 
 - [ ] Email notifications for students
 - [ ] Push notifications for moderators
 
