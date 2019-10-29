@@ -1,10 +1,14 @@
 from django.shortcuts import render, redirect, HttpResponse
 from django.views import View
 from ssc.forms import ReferenceForm
-from ssc.models import Reference
+from ssc.models import *
 from ssc.utility import statuses, render_pdf
 from django.contrib.auth.decorators import login_required
+from django.core.files.storage import FileSystemStorage
 # Create your views here.
+
+# Текущий ректор
+rector_name = 'Ибатов Марат Кенесович'
 
 
 # главная страница
@@ -110,9 +114,12 @@ class ReferenceView(View):
         return render(request, self.template_name, self.context)
 
     def post(self, request):
-        form = self.form_class(request.POST)
+        form = self.form_class(request.POST, request.FILES)
         self.context['form'] = form
+        file = request.FILES['iin_attachment']
+        fs = FileSystemStorage()
         if form.is_valid():
+            fs.save(file.name, file)
             form.save()
             return render(request, 'ssc/complete.html')
         return render(request, self.template_name, self.context)
@@ -121,9 +128,10 @@ class ReferenceView(View):
     def render(self, obj_id):
         ref = Reference.objects.get(id=obj_id)
         context = {
-            'ref': ref
+            'ref': ref,
+            'rector_name': rector_name
         }
-        return render_pdf('report/reference.html', context)
+        return render_pdf('applications/reference.html', context)
 
 
 def transfer_and_recovery(request):

@@ -17,11 +17,6 @@ body {
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
 }
 
-form {
-    border: 1px #DFDFDF solid;
-    border-radius: .25rem;
-}
-
 .status {
     position: absolute;
     top: 1rem;

@@ -64,7 +64,7 @@ class Rector(models.Model):
     Ректор
     """
     name = models.CharField(max_length=100)
-    status = models.BooleanField()
+    status = models.BooleanField(unique=True)
 
 
 class Student(Person):
@@ -90,9 +90,11 @@ class Reference(Person, Application):
     Выдача справки лицам, не завершившим высшее и послевузовское образование
     """
     id = HashidAutoField(primary_key=True, min_length=16)
+    individual_identification_number = models.CharField(max_length=200)
     education_form = models.CharField(max_length=10, choices=education_types, default='Очное')
     receipt_year = models.DateField()
     exclude_year = models.DateField()
+    iin_attachment = models.ImageField(upload_to='references/')
     reason = models.CharField(max_length=30, choices=reasons, default='Отчисление')
     status = models.BooleanField()
 

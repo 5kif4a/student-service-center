@@ -44,6 +44,7 @@ class ReferenceAdmin(admin.ModelAdmin):
     list_filter = ('receipt_year', 'exclude_year', 'education_form', 'course', 'status')
     list_display = ('last_name', 'first_name', 'patronymic', 'course', 'specialty', 'status',
                     'print', 'verify', 'send_for_correction')
+    readonly_fields = ('id_card',)
     search_fields = get_model_fields(Reference)
 
     def print(self, obj):
@@ -57,3 +58,6 @@ class ReferenceAdmin(admin.ModelAdmin):
 
     def send_for_correction(self, obj):
         return format_html("""<input type="button" class="button" value="Send for correction">""")
+
+    def id_card(self, obj):
+        return format_html(f"""<img src="{obj.iin_attachment.url}">""")

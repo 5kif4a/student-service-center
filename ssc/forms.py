@@ -1,4 +1,4 @@
-from django.forms import ModelForm, DateInput, Textarea, NumberInput
+from django.forms import ModelForm, DateInput, NumberInput, FileInput
 from ssc.models import Reference
 from captcha.fields import ReCaptchaField, ReCaptchaV3
 
@@ -18,7 +18,7 @@ class ReferenceForm(ModelForm):
         widgets = {
             'course': NumberInput(attrs={'min': 1, 'max': 5}),
             'receipt_year': DateInput(attrs={'type': 'date'}),
-            'exclude_year': DateInput(attrs={'type': 'date'})
+            'exclude_year': DateInput(attrs={'type': 'date'}),
         }
 
     def __init__(self, *args, **kwargs):
@@ -26,13 +26,15 @@ class ReferenceForm(ModelForm):
         self.fields['last_name'].label = 'Фамилия'
         self.fields['first_name'].label = 'Имя'
         self.fields['patronymic'].label = 'Отчество'
+        self.fields['individual_identification_number'].label = 'ИИН'
         self.fields['course'].label = 'Курс'
         self.fields['group'].label = 'Группа'
         self.fields['specialty'].label = 'Специальность'
         self.fields['education_form'].label = 'Форма обучения'
         self.fields['receipt_year'].label = 'Год поступления'
         self.fields['exclude_year'].label = 'Год отчисления'
-        self.fields['email'].label = 'Адрес электронной почты'
-        self.fields['phone_number'].label = 'Контактный номер телефона'
+        self.fields['email'].label = 'Электронная почта'
+        self.fields['phone_number'].label = 'Номер телефона'
+        self.fields['iin_attachment'].label = 'Копия удостоверения'
         self.fields['reason'].label = 'Причина'
         self.fields['captcha'].required = False
