@@ -3,7 +3,8 @@
 Web-приложение реализованное на фреймворке **Django**\
 **Требования**\
 Python 3.6+\
-MySQL(опционально)\
+MySQL/sqlite(опционально)\
+[RECAPTCHA V3](https://developers.google.com/recaptcha/docs/v3)\
 Конвертер HTML в PDF [wkhtmltopdf](https://wkhtmltopdf.org/downloads.html). Обязателен для работы приложения\
 **Установка**
 - Скачать проект
@@ -33,21 +34,27 @@ venv\Scripts\activate.bat
 # cmd.exe
 pip install -r requirements.txt
 ```
-- MySQL в качестве базы данных\
-создать файл db.config в папке проекта\
-файл конфигурации для коннектора базы
+- Создайте файл .env в корне проекта и пропишите нужные параметры по примеру
 ```
-[client]
-host = HOST
-port = 3306
-database = DATABASE_NAME
-user = USER
-password = PASSWORD
-default-character-set = utf8
-```
-- В модуле ssc/utility.py прописать путь к wkhtmltopdf.exe
-```
-PATH_WKHTMLTOPDF = r"path_to_wkhtmltopdf\...\bin\wkhtmltopdf.exe"
+DEBUG=True
+SECRET_KEY=ваш_секретный_ключ
+
+DATABASE_URL=mysql://user:password@localhost:port/database
+SQLITE_URL=sqlite:///db.sqlite3
+
+RECAPTCHA_PUBLIC_KEY=публичный ключ recaptcha
+RECAPTCHA_PRIVATE_KEY=приватный ключа recaptcha
+
+DEFAULT_FROM_EMAIL=дефолтный адрес отправителя
+SERVER_EMAIL=эмейл почтового сервера
+EMAIL_HOST=smtp.gmail.com - для примера хост GMail, другие почтовые сервисы ищите в интернете
+EMAIL_PORT=587
+EMAIL_HOST_USER=электронная почта
+EMAIL_HOST_PASSWORD=пароль от почты
+EMAIL_USE_TLS=True
+EMAIL_USE_SSL=False
+
+PATH_WKHTMLTOPDF=path_to\...\wkhtmltopdf\bin\wkhtmltopdf.exe
 ```
 - Миграция базы данных
 ```
@@ -69,10 +76,10 @@ py manage.py runserver 8000
 **TODO LIST**
 - [x] Поиск в базе данных
 - [x] Фильтрация
-- [ ] Конфигурацию переменными окружения
+- [x] Конфигурацию переменными окружения
 - [ ] Логирование
 - [x] Генерация PDF
 - [x] Hash id, hash names for media files 
-- [ ] Email notifications for students
+- [x] Email notifications for students
 - [ ] Push notifications for moderators
 

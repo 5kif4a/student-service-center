@@ -11,19 +11,24 @@ https://docs.djangoproject.com/en/2.2/ref/settings/
 """
 
 import os
+import environ
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
+# Environment variables
+root = environ.Path(__file__) - 2  # get root of the project
+env = environ.Env()
+environ.Env.read_env('.env')  # reading .env file
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/2.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'nq@%uk0jh)o7-x-tiz9t)j6&n8ovjtt$i1e#r14&@6s(3+w*w2'
+SECRET_KEY = env.str('SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = env.bool('DEBUG')
 
 ALLOWED_HOSTS = []
 
@@ -43,12 +48,13 @@ INSTALLED_APPS = [
 ]
 
 # recaptcha settings
-RECAPTCHA_PUBLIC_KEY = '6LdlArsUAAAAAP9ggJM3szIIsQlsbZbyw9cvHBMx'
-RECAPTCHA_PRIVATE_KEY = '6LdlArsUAAAAAJ9X2LewNGGuHzbWcSsGL-YTMPhH'
+RECAPTCHA_PUBLIC_KEY = env.str('RECAPTCHA_PUBLIC_KEY')
+RECAPTCHA_PRIVATE_KEY = env.str('RECAPTCHA_PRIVATE_KEY')
 SILENCED_SYSTEM_CHECKS = ['captcha.recaptcha_test_key_error']
 
 # crispy forms settings
 CRISPY_TEMPLATE_PACK = 'bootstrap4'
+
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -94,15 +100,7 @@ WSGI_APPLICATION = 'SSC_KSTU.wsgi.application'
 # }
 
 # MySQL DB connection Settings
-DATABASES = {
-     'default': {
-        'ENGINE': 'django.db.backends.mysql',
-        'OPTIONS': {
-            'read_default_file': 'db.config',
-            'init_command': 'SET default_storage_engine=INNODB',
-        },
-     }
-}
+DATABASES = {'default': env.db('DATABASE_URL')}
 
 
 # Password validation
@@ -127,9 +125,9 @@ AUTH_PASSWORD_VALIDATORS = [
 # Internationalization
 # https://docs.djangoproject.com/en/2.2/topics/i18n/
 
-LANGUAGE_CODE = 'en-us'
+LANGUAGE_CODE = 'ru-ru'
 
-TIME_ZONE = 'UTC'
+TIME_ZONE = 'Asia/Almaty'
 
 USE_I18N = True
 
@@ -137,6 +135,16 @@ USE_L10N = True
 
 USE_TZ = True
 
+# Email settings - SMTP server
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+DEFAULT_FROM_EMAIL = env.str('DEFAULT_FROM_EMAIL')
+SERVER_EMAIL = env.str('SERVER_EMAIL')
+EMAIL_HOST = env.str('EMAIL_HOST')
+EMAIL_PORT = env.int('EMAIL_PORT')
+EMAIL_HOST_USER = env.str('EMAIL_HOST_USER')
+EMAIL_HOST_PASSWORD = env.str('EMAIL_HOST_PASSWORD')
+EMAIL_USE_TLS = env.bool('EMAIL_USE_TLS')
+EMAIL_USE_SSL = env.bool('EMAIL_USE_SSL')
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/2.2/howto/static-files/

@@ -1,15 +1,22 @@
 from django.utils.html import format_html
 from django.contrib import admin
-from .models import *
+from django.shortcuts import HttpResponseRedirect
+from ssc.models import *
+from ssc.utility import *
 # Register your models here.
 
-admin.site.site_header = 'Student service center'
+# Заголовки админ.сайта
+admin.site.index_title = 'Центр обслуживания студентов'
+admin.site.site_header = 'Центр обслуживания студентов'
+admin.site.site_title = 'Административная панель'
 
 
+# Метод получения всех
 def get_model_fields(model):
     return [field.name for field in model._meta.get_fields()][1:]
 
 
+# Админ.панель для списка студентов
 @admin.register(Student)
 class StudentAdmin(admin.ModelAdmin):
     list_per_page = 30
@@ -19,6 +26,7 @@ class StudentAdmin(admin.ModelAdmin):
     search_fields = get_model_fields(Student)
 
 
+# Админ.панель для списка специальностей
 @admin.register(Specialty)
 class SpecialtyAdmin(admin.ModelAdmin):
     list_per_page = 30
@@ -26,6 +34,7 @@ class SpecialtyAdmin(admin.ModelAdmin):
     search_fields = get_model_fields(Specialty)
 
 
+# Админ.панель для списка университетов
 @admin.register(University)
 class UniversityAdmin(admin.ModelAdmin):
     list_per_page = 30
@@ -33,31 +42,66 @@ class UniversityAdmin(admin.ModelAdmin):
     search_fields = get_model_fields(University)
 
 
+# Админ.панель для списка ректоров
 @admin.register(Rector)
 class RectorAdmin(admin.ModelAdmin):
     list_display = get_model_fields(Rector)
 
 
-@admin.register(Reference)
-class ReferenceAdmin(admin.ModelAdmin):
-    list_per_page = 15
-    list_filter = ('receipt_year', 'exclude_year', 'education_form', 'course', 'status')
-    list_display = ('last_name', 'first_name', 'patronymic', 'course', 'specialty', 'status',
-                    'print', 'verify', 'send_for_correction')
-    readonly_fields = ('id_card',)
-    search_fields = get_model_fields(Reference)
+# Класс шаблон кастомной админ.панели для каждой услуги
+class CustomAdmin(admin.ModelAdmin):
+    change_form_template = "custom_admin/change_form.html"
 
     def print(self, obj):
         url = f'/reference/report/{obj.id}'
-        return format_html(f"""
-        <input type="button" class="button" value="Print" onclick="window.open('{url}', '_blank')">
-        """)
+        if obj.status:
+            button = f"""
+                     <input type="button" class="button" value="Печать" onclick="window.open('{url}', '_blank')">
+                     """
+        else:
+            button = f"""
+                    <input type="button" class="button" value="Печать" onclick="window.open('{url}', '_blank') disabled">
+                     """
+        return format_html(button)
 
-    def verify(self, obj):
-        return format_html("""<input type="button" class="button" value="Verify">""")
+    def response_change(self, request, obj):
+        # Потверждение заявления
+        if "_verify" in request.POST:
+            # Если потвержден - выдаем сообщение, что заявление уже потверждено
+            if obj.status is True:
+                self.message_user(request, f"{obj} уже потвержден")
+            # Если не потверждено - потверждаем и отправляем письмо на почту
+            else:
+                obj.status = True
+                obj.save()
 
-    def send_for_correction(self, obj):
-        return format_html("""<input type="button" class="button" value="Send for correction">""")
+                message = f"{obj.last_name} {obj.first_name} {obj.patronymic}, Ваша справка готова.\n"\
+                          "Для получения вам необходимо подойти в КарГТУ 1 корпус, кабинет № 109.\n"\
+                          "При себе иметь удостоверение личности."
+
+                send_email(message, (obj.email,))
+
+                self.message_user(request, f"""Заявление "{obj}" потверждено""")
+            # return HttpResponseRedirect(".")
+        # Если заявление заполнено неправильно, отправляем письмо с уведомлением
+        if "_send_for_correction" in request.POST:
+            note = request.POST.get('note')
+            message = f"{obj.last_name} {obj.first_name} {obj.patronymic}, Ваше заявление заполнено неправильно.\n"\
+                      f"Примечание: {note}.\nЗаполните и отправьте заявление снова."
+
+            send_email(message, (obj.email,))
+            self.message_user(request, f"Письмо с уведомлением отправлено {obj}")
+        return super().response_change(request, obj)
+
+
+@admin.register(Reference)
+class ReferenceAdmin(CustomAdmin):
+    list_per_page = 15
+    list_filter = ('receipt_year', 'exclude_year', 'date_of_application', 'education_form', 'course', 'status')
+    list_display = ('last_name', 'first_name', 'patronymic', 'specialty', 'date_of_application', 'status',
+                    'print')
+    readonly_fields = ('id_card',)
+    search_fields = get_model_fields(Reference)
 
     def id_card(self, obj):
         return format_html(f"""<img src="{obj.iin_attachment.url}">""")

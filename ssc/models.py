@@ -1,4 +1,5 @@
 from django.db import models
+from django.utils.translation import gettext_lazy as _
 from hashid_field import HashidAutoField
 
 education_types = [('Очное', 'Очное'), ('Заочное', 'Заочное')]
@@ -13,11 +14,11 @@ class Person(models.Model):
     """
     Абстрактный класс-модель - Личность
     """
-    last_name = models.CharField(max_length=50)
-    first_name = models.CharField(max_length=50)
-    patronymic = models.CharField(max_length=50)
-    email = models.EmailField()
-    phone_number = models.CharField(max_length=10)
+    last_name = models.CharField(max_length=50, verbose_name=_('Фамилия'))
+    first_name = models.CharField(max_length=50, verbose_name=_('Имя'))
+    patronymic = models.CharField(max_length=50, verbose_name=_('Отчество'))
+    email = models.EmailField(verbose_name=_('Электронная почта'))
+    phone_number = models.CharField(max_length=12, verbose_name=_('Номер телефона'))
 
     class Meta:
         abstract = True
@@ -28,7 +29,11 @@ class Specialty(models.Model):
     Специальность
     """
     id = HashidAutoField(primary_key=True, min_length=16)
-    name = models.CharField(max_length=200)
+    name = models.CharField(max_length=200, verbose_name=_('Шифр и название специальности'))
+
+    class Meta:
+        verbose_name = _('специальность')
+        verbose_name_plural = _('специальности')
 
     def __str__(self):
         return self.name
@@ -39,7 +44,11 @@ class University(models.Model):
     Университет
     """
     id = HashidAutoField(primary_key=True, min_length=16)
-    name = models.CharField(max_length=200)
+    name = models.CharField(max_length=200, verbose_name=_('Название университета'))
+
+    class Meta:
+        verbose_name = _('университет')
+        verbose_name_plural = _('университеты')
 
     def __str__(self):
         return self.name
@@ -49,10 +58,10 @@ class Application(models.Model):
     """
     Абстрактный класс-модель - Заявление(форма)
     """
-    course = models.IntegerField()
-    specialty = models.ForeignKey(Specialty, on_delete=models.CASCADE)
-    date_of_application = models.DateField(auto_now_add=True)
-    group = models.CharField(max_length=50)
+    course = models.IntegerField(verbose_name=_('Курс'))
+    specialty = models.ForeignKey(Specialty, on_delete=models.CASCADE, verbose_name=_('Шифр и название специальности'))
+    date_of_application = models.DateTimeField(auto_now_add=True, verbose_name=_('Дата подачи заявления'))
+    group = models.CharField(max_length=50, verbose_name=_('Группа'))
 
     class Meta:
         abstract = True
@@ -63,22 +72,33 @@ class Rector(models.Model):
     """
     Ректор
     """
-    name = models.CharField(max_length=100)
-    status = models.BooleanField(unique=True)
+    name = models.CharField(max_length=100, verbose_name=_('ФИО ректора'))
+    status = models.BooleanField(unique=True, verbose_name=_('Статус ректора'))
+
+    class Meta:
+        verbose_name = _('Ректор')
+        verbose_name_plural = _('Ректоры')
 
 
-class Student(Person):
+class Student(models.Model):
     """
     Студент
     """
-    individual_identification_number = models.CharField(max_length=200)
-    education_form = models.CharField(max_length=50)
-    language_department = models.CharField(max_length=50)
-    degree = models.CharField(max_length=50)
-    course = models.IntegerField()
-    faculty = models.CharField(max_length=50)
-    specialty = models.CharField(max_length=100)
-    student_status = models.CharField(max_length=50)
+    last_name = models.CharField(max_length=50, verbose_name=_('Фамилия'))
+    first_name = models.CharField(max_length=50, verbose_name=_('Имя'))
+    patronymic = models.CharField(max_length=50, verbose_name=_('Отчество'))
+    individual_identification_number = models.CharField(max_length=13, verbose_name=_('ИИН'))
+    education_form = models.CharField(max_length=50, verbose_name=_('Форма обучения'))
+    language_department = models.CharField(max_length=50, verbose_name=_('Языковое отделение'))
+    degree = models.CharField(max_length=50, verbose_name=_('Степень обучения'))
+    course = models.IntegerField(verbose_name=_('Курс'))
+    faculty = models.CharField(max_length=50, verbose_name=_('Факультет'))
+    specialty = models.CharField(max_length=100, verbose_name=_('Специальность'))
+    student_status = models.CharField(max_length=50, verbose_name=_('Статус студента'))
+
+    class Meta:
+        verbose_name = _('студент')
+        verbose_name_plural = _('студенты')
 
     def __str__(self):
         return f'{self.last_name} {self.first_name} {self.patronymic}'
@@ -88,18 +108,24 @@ class Student(Person):
 class Reference(Person, Application):
     """
     Выдача справки лицам, не завершившим высшее и послевузовское образование
+    Государственная услуга
     """
     id = HashidAutoField(primary_key=True, min_length=16)
-    individual_identification_number = models.CharField(max_length=200)
-    education_form = models.CharField(max_length=10, choices=education_types, default='Очное')
-    receipt_year = models.DateField()
-    exclude_year = models.DateField()
-    iin_attachment = models.ImageField(upload_to='references/')
-    reason = models.CharField(max_length=30, choices=reasons, default='Отчисление')
-    status = models.BooleanField()
+    individual_identification_number = models.CharField(max_length=12, verbose_name=_('ИИН'))
+    education_form = models.CharField(max_length=10, choices=education_types, default='Очное',
+                                      verbose_name=_('Форма обучения'))
+    receipt_year = models.DateField(verbose_name=_('Год поступления'))
+    exclude_year = models.DateField(verbose_name=_('Год отчисления'))
+    iin_attachment = models.ImageField(upload_to='references/', verbose_name=_('Прикрепление копии ИИН'))
+    reason = models.CharField(max_length=30, choices=reasons, default='Отчисление', verbose_name=_('Причина'))
+    status = models.BooleanField(verbose_name=_('Статус'))
+
+    class Meta:
+        verbose_name = _('заявление на выдачу справки, не завершившим высшее и послевуз. обр-е')
+        verbose_name_plural = _('заявления на выдачу справки, не завершившим высшее и послевуз. обр-е')
 
     def __str__(self):
-        return f'{self.last_name} {self.first_name} {self.patronymic}. Группа: {self.group}'
+        return f'{self.last_name} {self.first_name} {self.patronymic}. ИИН: {self.individual_identification_number}'
 
 
 # class Bachelor(Person, Application):
@@ -135,8 +161,14 @@ class Reference(Person, Application):
 # class Hostel(Person, Application):
 #     """
 #     Предоставление общежития в высших учебных заведениях
+#     Государственная услуга
 #     """
-#     pass
+#     place_of_arrival = models.CharField(max_length=200, verbose_name=_('Место прибытия'))
+#
+#     class Meta:
+#         verbose_name = _('заявление на предоставление общежития в ВУЗах')
+#         verbose_name_plural = _('заявления на предоставление общежития в ВУЗах')
+
 #
 #
 # class Duplicate(Person, Application):

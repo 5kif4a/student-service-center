@@ -1,8 +1,8 @@
 <html>
 
 <head>
+<title>Заявление на выдачу справки, не завершившим высшее и послевузовское образование</title>
 <meta http-equiv=Content-Type content="text/html; charset=UTF-8">
-<meta name=Generator content="Microsoft Word 15 (filtered)">
 <style>
 <!--
  /* Font Definitions */
@@ -222,7 +222,7 @@ div.WordSection1
   color:black;letter-spacing:.1pt;background:white'>образования</span></p>
   <p class=MsoNormal style='margin-bottom:0cm;margin-bottom:.0001pt;line-height:
   normal'><span style='font-size:14.0pt;font-family:"Times New Roman",serif;
-  color:black;letter-spacing:.1pt;background:white'>_____________________________<u>{{ ref.reason }}</u>_______________________________.</span></p>
+  color:black;letter-spacing:.1pt;background:white'><center><u>{{ ref.reason }}</u></center></span></p>
   <p class=MsoNormal align=center style='margin-bottom:0cm;margin-bottom:.0001pt;
   text-align:center;line-height:normal'><span style='font-size:10.0pt;
   font-family:"Times New Roman",serif;color:black;letter-spacing:.1pt;
@@ -245,13 +245,8 @@ div.WordSection1
   <p class=MsoNormal style='margin-bottom:0cm;margin-bottom:.0001pt;line-height:
   normal'><span style='font-size:14.0pt;font-family:"Times New Roman",serif;
   color:black;letter-spacing:.1pt;background:white'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-  &quot;______&quot;
-  _______________20___года&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-  _____________________</span></p>
-  <p class=MsoNormal style='margin-top:0cm;margin-right:0cm;margin-bottom:0cm;
-  margin-left:377.35pt;margin-bottom:.0001pt;line-height:normal'><span
-  style='font-size:14.0pt;font-family:"Times New Roman",serif;color:black;
-  letter-spacing:.1pt;background:white'>подпись</span></p>
+ <u>{{ ref.date_of_application.date }}</u></span></p>
+<img src="data:image/png;base64,{{ qr_code }}">
   </td>
  </tr>
 </table>
