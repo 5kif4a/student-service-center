@@ -16,7 +16,7 @@ statuses = {
     'abroad': False,
     'certificate': False,
     'hostel': True,
-    'duplicate': False,
+    'duplicate': True,
     'reference': True,
     'academic-leave': False,
     'transfer-and-recovery': False

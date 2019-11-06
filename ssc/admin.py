@@ -2,7 +2,7 @@ from django.utils.html import format_html
 from django.contrib import admin
 from django.shortcuts import HttpResponseRedirect
 from ssc.models import *
-from ssc.utility import *
+from ssc.utilities import *
 # Register your models here.
 
 # Заголовки админ.сайта
@@ -11,14 +11,16 @@ admin.site.site_header = 'Центр обслуживания студентов
 admin.site.site_title = 'Административная панель'
 
 
-# Метод получения всех
+# Метод получения всех полей модели(столбцов таблицы)
 def get_model_fields(model):
     return [field.name for field in model._meta.get_fields()][1:]
 
 
-# Админ.панель для списка студентов
 @admin.register(Student)
 class StudentAdmin(admin.ModelAdmin):
+    """
+    Админ.панель для списка студентов
+    """
     list_per_page = 30
     list_filter = ('education_form', 'language_department', 'degree', 'course', 'faculty', 'specialty',
                    'student_status')
@@ -26,35 +28,44 @@ class StudentAdmin(admin.ModelAdmin):
     search_fields = get_model_fields(Student)
 
 
-# Админ.панель для списка специальностей
 @admin.register(Specialty)
 class SpecialtyAdmin(admin.ModelAdmin):
+    """
+    Админ.панель для списка специальностей
+    """
     list_per_page = 30
     list_display = ('name',)
     search_fields = get_model_fields(Specialty)
 
 
-# Админ.панель для списка университетов
 @admin.register(University)
 class UniversityAdmin(admin.ModelAdmin):
+    """
+    Админ.панель для списка университетов
+    """
     list_per_page = 30
     list_display = ('name',)
     search_fields = get_model_fields(University)
 
 
-# Админ.панель для списка ректоров
 @admin.register(Rector)
 class RectorAdmin(admin.ModelAdmin):
+    """
+    Админ.панель для списка ректоров
+    """
     list_display = get_model_fields(Rector)
 
 
-# Класс шаблон кастомной админ.панели для каждой услуги
 class CustomAdmin(admin.ModelAdmin):
+    """
+    Класс шаблон кастомной админ.панели для каждой услуги
+    """
     change_form_template = "custom_admin/change_form.html"
+    entity = None
 
     def print(self, obj):
-        url = f'/reference/report/{obj.id}'
-        if obj.status:
+        url = f'/{self.entity}/report/{obj.id}'
+        if obj.status == 'Подтверждено':
             button = f"""
                      <input type="button" class="button" value="Печать" onclick="window.open('{url}', '_blank')">
                      """
@@ -68,11 +79,11 @@ class CustomAdmin(admin.ModelAdmin):
         # Потверждение заявления
         if "_verify" in request.POST:
             # Если потвержден - выдаем сообщение, что заявление уже потверждено
-            if obj.status is True:
+            if obj.status in 'Потверждено':
                 self.message_user(request, f"{obj} уже потвержден")
             # Если не потверждено - потверждаем и отправляем письмо на почту
             else:
-                obj.status = True
+                obj.status = 'Подтверждено'
                 obj.save()
 
                 message = f"{obj.last_name} {obj.first_name} {obj.patronymic}, Ваша справка готова.\n"\
@@ -85,23 +96,53 @@ class CustomAdmin(admin.ModelAdmin):
             # return HttpResponseRedirect(".")
         # Если заявление заполнено неправильно, отправляем письмо с уведомлением
         if "_send_for_correction" in request.POST:
-            note = request.POST.get('note')
-            message = f"{obj.last_name} {obj.first_name} {obj.patronymic}, Ваше заявление заполнено неправильно.\n"\
-                      f"Примечание: {note}.\nЗаполните и отправьте заявление снова."
+            if obj.status is not 'Отозвано на исправление':
+                note = request.POST.get('note')
+                message = f"{obj.last_name} {obj.first_name} {obj.patronymic}, Ваше заявление заполнено неправильно.\n" \
+                    f"Примечание: {note}.\nЗаполните и отправьте заявление снова."
 
-            send_email(message, (obj.email,))
-            self.message_user(request, f"Письмо с уведомлением отправлено {obj}")
+                obj.status = 'Отозвано на исправление'
+                obj.save()
+
+                send_email(message, (obj.email,))
+                self.message_user(request, f"Письмо с уведомлением отправлено {obj}")
+            else:
+                self.message_user(request, f"Письмо с уведомлением уже отправлено {obj}")
         return super().response_change(request, obj)
 
 
 @admin.register(Reference)
 class ReferenceAdmin(CustomAdmin):
+    """
+
+    """
+    entity = 'reference'
     list_per_page = 15
     list_filter = ('receipt_year', 'exclude_year', 'date_of_application', 'education_form', 'course', 'status')
     list_display = ('last_name', 'first_name', 'patronymic', 'specialty', 'date_of_application', 'status',
                     'print')
     readonly_fields = ('id_card',)
     search_fields = get_model_fields(Reference)
+
+    def id_card(self, obj):
+        return format_html(f"""<img src="{obj.iin_attachment.url}">""")
+
+    def __init__(self, *args, **kwargs):
+        super(CustomAdmin, self).__init__(*args, **kwargs)
+        self.__entity = 'reference'
+
+
+@admin.register(Duplicate)
+class DuplicateAdmin(CustomAdmin):
+    """
+
+    """
+    entity = 'duplicate'
+    list_per_page = 15
+    list_filter = ('graduation_year', 'date_of_application', 'status')
+    list_display = ('last_name', 'first_name', 'patronymic', 'date_of_application', 'status', 'print')
+    readonly_fields = ('id_card',)
+    search_fields = get_model_fields(Duplicate)
 
     def id_card(self, obj):
         return format_html(f"""<img src="{obj.iin_attachment.url}">""")

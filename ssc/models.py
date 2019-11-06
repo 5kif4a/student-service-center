@@ -1,11 +1,7 @@
 from django.db import models
 from django.utils.translation import gettext_lazy as _
 from hashid_field import HashidAutoField
-
-education_types = [('Очное', 'Очное'), ('Заочное', 'Заочное')]
-verify_statuses = [('Не проверено', 'Не проверено'), ('Отозвано на исправление', 'Отозвано на исправление'),
-                   ('Одобрено', 'Одобрено')]
-reasons = [('Отчисление', 'Отчисление'), ('Перевод в другой университет', 'Перевод в другой университет')]
+from ssc.choices import *
 
 
 # Create your models here.
@@ -107,7 +103,7 @@ class Student(models.Model):
 # Application models
 class Reference(Person, Application):
     """
-    Выдача справки лицам, не завершившим высшее и послевузовское образование
+    Модель(таблица) для заявления по услуге - "Выдача справки лицам, не завершившим высшее и послевузовское образование"
     Государственная услуга
     """
     id = HashidAutoField(primary_key=True, min_length=16)
@@ -117,8 +113,10 @@ class Reference(Person, Application):
     receipt_year = models.DateField(verbose_name=_('Год поступления'))
     exclude_year = models.DateField(verbose_name=_('Год отчисления'))
     iin_attachment = models.ImageField(upload_to='references/', verbose_name=_('Прикрепление копии ИИН'))
-    reason = models.CharField(max_length=30, choices=reasons, default='Отчисление', verbose_name=_('Причина'))
-    status = models.BooleanField(verbose_name=_('Статус'))
+    reason = models.CharField(max_length=30, choices=reference_reasons, default='В связи с отчислением',
+                              verbose_name=_('Причина'))
+    status = models.CharField(max_length=50, choices=application_statuses, default='Не проверено',
+                              verbose_name=_('Статус'))
 
     class Meta:
         verbose_name = _('заявление на выдачу справки, не завершившим высшее и послевуз. обр-е')
@@ -171,11 +169,27 @@ class Reference(Person, Application):
 
 #
 #
-# class Duplicate(Person, Application):
-#     """
-#     Выдача дубликатов документов о высшем и послевузовском образовании
-#     """
-#     pass
+class Duplicate(Person):
+    """
+    Модель(таблица) для заявления по услуге - "Выдача дубликатов документов о высшем и послевузовском образовании"
+    Государственная услуга
+    """
+    id = HashidAutoField(primary_key=True, min_length=16)
+    individual_identification_number = models.CharField(max_length=12, verbose_name=_('ИИН'))
+    graduation_year = models.DateField(verbose_name=_('Год окончания ВУЗа'))
+    specialty = models.ForeignKey(Specialty, on_delete=models.CASCADE, verbose_name=_('Шифр и название специальности'))
+    date_of_application = models.DateTimeField(auto_now_add=True, verbose_name=_('Дата подачи заявления'))
+    iin_attachment = models.ImageField(upload_to='references/', verbose_name=_('Прикрепление копии ИИН'))
+    reason = models.CharField(max_length=30, choices=duplicate_reasons, default='Утеря', verbose_name=_('Причина'))
+    status = models.CharField(max_length=50, choices=application_statuses, default='Не проверено',
+                              verbose_name=_('Статус'))
+
+    class Meta:
+        verbose_name = _('заявление на выдачу дубликатов документов о высшем и послевузовском образовании')
+        verbose_name_plural = _('заявления на выдачу дубликатов документов о высшем и послевузовском образовании')
+
+    def __str__(self):
+        return f'{self.last_name} {self.first_name} {self.patronymic}. ИИН: {self.individual_identification_number}'
 #
 #
 # class AcademicLeave(Person, Application):
