@@ -1,7 +1,7 @@
 from django.db import models
 from django.utils.translation import gettext_lazy as _
 from hashid_field import HashidAutoField
-from ssc.choices import *
+from ssc.utilities import *
 
 
 # Create your models here.
@@ -13,6 +13,7 @@ class Person(models.Model):
     last_name = models.CharField(max_length=50, verbose_name=_('Фамилия'))
     first_name = models.CharField(max_length=50, verbose_name=_('Имя'))
     patronymic = models.CharField(max_length=50, verbose_name=_('Отчество'))
+    individual_identification_number = models.CharField(max_length=12, verbose_name=_('ИИН'))
     email = models.EmailField(verbose_name=_('Электронная почта'))
     phone_number = models.CharField(max_length=12, verbose_name=_('Номер телефона'))
 
@@ -175,12 +176,13 @@ class Duplicate(Person):
     Государственная услуга
     """
     id = HashidAutoField(primary_key=True, min_length=16)
-    individual_identification_number = models.CharField(max_length=12, verbose_name=_('ИИН'))
     graduation_year = models.DateField(verbose_name=_('Год окончания ВУЗа'))
     specialty = models.ForeignKey(Specialty, on_delete=models.CASCADE, verbose_name=_('Шифр и название специальности'))
     date_of_application = models.DateTimeField(auto_now_add=True, verbose_name=_('Дата подачи заявления'))
-    iin_attachment = models.ImageField(upload_to='references/', verbose_name=_('Прикрепление копии ИИН'))
+    iin_attachment = models.ImageField(upload_to='duplicates/', verbose_name=_('Прикрепление копии ИИН'))
     reason = models.CharField(max_length=30, choices=duplicate_reasons, default='Утеря', verbose_name=_('Причина'))
+    duplicate_type = models.CharField(max_length=100, choices=duplicate_types, default='Дубликат диплома',
+                                      verbose_name=_('Тип дубликата'))
     status = models.CharField(max_length=50, choices=application_statuses, default='Не проверено',
                               verbose_name=_('Статус'))
 
@@ -190,13 +192,27 @@ class Duplicate(Person):
 
     def __str__(self):
         return f'{self.last_name} {self.first_name} {self.patronymic}. ИИН: {self.individual_identification_number}'
-#
-#
-# class AcademicLeave(Person, Application):
-#     """
-#     Предоставление академических отпусков обучающимся в организациях образования
-#     """
-#     pass
+
+
+class AcademicLeave(Person):
+    """
+    Предоставление академических отпусков обучающимся в организациях образования
+    Государственная услуга
+    """
+    id = HashidAutoField(primary_key=True, min_length=16)
+    specialty = models.ForeignKey(Specialty, on_delete=models.CASCADE, verbose_name=_('Шифр и название специальности'))
+    date_of_application = models.DateTimeField(auto_now_add=True, verbose_name=_('Дата подачи заявления'))
+    reason = models.CharField(max_length=30, choices=academic_leave_reasons, default='', verbose_name=_('Причина'))
+    status = models.CharField(max_length=50, choices=application_statuses, default='Не проверено',
+                              verbose_name=_('Статус'))
+    attachment = models.FileField(blank=True, null=True, verbose_name=_('Прикрепление'))
+
+    class Meta:
+        verbose_name = _('заявление на предоставление академ.отпусков обучающимся в организациях образования')
+        verbose_name_plural = _('заявления на предоставление академ.отпусков обучающимся в организациях образования')
+
+    def __str__(self):
+        return f'{self.last_name} {self.first_name} {self.patronymic}. ИИН: {self.individual_identification_number}'
 #
 #
 # class TransferAndRecovery(Person, Application):

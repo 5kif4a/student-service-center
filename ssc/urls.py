@@ -19,7 +19,8 @@ duplicate_urls = [path('duplicate', views.DuplicateView.as_view()),
 reference_urls = [path('reference', views.ReferenceView.as_view()),
                   path('reference/report/<obj_id>/', views.ReferenceView.render)]
 
-academic_leave_urls = [path('academic-leave', views.academic_leave)]
+academic_leave_urls = [path('academic-leave', views.AcademicLeaveView.as_view()),
+                       path('academic-leave/report/<obj_id>/', views.AcademicLeaveView.render)]
 
 transfer_and_recovery_urls = [path('transfer-and-recovery', views.transfer_and_recovery)]
 

@@ -30,6 +30,29 @@ class ReferenceForm(ModelForm):
         self.fields['status'].required = False
 
 
+class AcademicLeaveForm(ModelForm):
+    """
+    Форма для заявление услуги - "Предоставление академических отпусков обучающимся в организациях образования"
+    """
+    captcha = ReCaptchaField(
+        widget=ReCaptchaV3(
+            attrs={
+                'required_score': 0.85
+            }
+        )
+    )
+
+    class Meta:
+        model = AcademicLeave
+        fields = "__all__"
+
+    def __init__(self, *args, **kwargs):
+        super(AcademicLeaveForm, self).__init__(*args, **kwargs)
+        self.fields['specialty'].label = 'Специальность'
+        self.fields['attachment'].label = 'Прикрепление файла копии заключения/решения/свидетельства/повестки'
+        self.fields['status'].required = False
+
+
 class DuplicateForm(ModelForm):
     """
     Форма для заявление услуги - "Выдача справки лицам, не завершившим высшее и послевузовское образование"

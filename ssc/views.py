@@ -104,8 +104,16 @@ class DuplicateView(View):
             fs.save(file.name, file)
             form.save()
 
-            send_email('Ваше заявление принято. Справка будет готова в течение нескольких дней',
-                       (request.POST.get('email', ''),))
+            message = f'{request.POST.get("first_name")}, Ваше заявление принято. Дубликат будет готов в течение 30 дней. ' \
+                'Как только дубликат будет готов, на Вашу почту придет повторное уведомление.\n' \
+                'Пожалуйста, не отвечайте на это письмо. ' \
+                'Если у Вас возникнут вопросы, ' \
+                'просим обращаться по номеру 8(7212)56-59-32 (внутренний 2023) или в КарГТУ, 1 корпус, кабинет № 109. ' \
+                'Если Вы получили это письмо по ошибке, пожалуйста, сообщите нам об этом.\n' \
+                '__\n' \
+                'С уважением, Центр Обслуживания Студентов КарГТУ.'
+
+            send_email(message, (request.POST.get('email', ''),))
 
             return render(request, 'ssc/complete.html')
         return render(request, self.template_name, self.context)
@@ -124,16 +132,61 @@ class DuplicateView(View):
             return HttpResponse('<center><h1>Заявление не потверждено</h1></center>')
 
 
-def academic_leave(request):
-    if request.method == 'POST':
-        return redirect('')
-    else:
-        # form = ReferenceForm()
-        context = {
-            # 'form': form
-            'status': statuses.get('academic-leave')
-        }
-        return render(request, 'ssc/academic-leave.html', context)
+class AcademicLeaveView(View):
+    """
+    Представления для подачи заявления по услуге
+    "Предоставление академических отпусков обучающимся в организациях образования"
+    Государственная услуга
+    """
+    form_class = AcademicLeaveForm
+    template_name = 'ssc/academic-leave.html'
+    context = {'status': statuses.get('academic-leave')}
+
+    def get(self, request):
+        form = self.form_class()
+        self.context['form'] = form
+        return render(request, self.template_name, self.context)
+
+    def post(self, request):
+        form = self.form_class(request.POST, request.FILES)
+        self.context['form'] = form
+
+        file = request.FILES['attachment']
+        fs = FileSystemStorage()
+
+        if form.is_valid():
+            fs.save(file.name, file)
+            form.save()
+
+            message = f'{request.POST.get("first_name")}, Ваше заявление принято. ' \
+                'Просим Вас обязательно в течение 2 дней сдать в КарГТУ, 1 корпус, кабинет № 109 следующие документы:\n' \
+                '1. оригинал СПРАВКИ ВКК – при уходе в академический отпуск по болезни;\n' \
+                '2. оригинал ПОВЕСТКИ, либо СПРАВКА О ПРИЗЫВЕ С ВОЕНКОМАТА – в связи с призывом на воинскую службу.\n' \
+                'В случае не сдачи оригинала документа академический отпуск оформлен не будет.\n' \
+                'Приказ о предоставлении академического отпуска будет готов в течение 3 дней.\n' \
+                'Пожалуйста, не отвечайте на это письмо. Если у Вас возникнут вопросы, ' \
+                'просим обращаться по номеру 8(7212)56-59-32 (внутренний 2023) или в КарГТУ, 1 корпус, кабинет № 109.' \
+                'Если Вы получили это письмо по ошибке, пожалуйста, сообщите нам об этом.\n' \
+                '__\n' \
+                'С уважением, Центр Обслуживания Студентов КарГТУ.'
+
+            send_email(message, (request.POST.get('email', ''),))
+
+            return render(request, 'ssc/complete.html')
+        return render(request, self.template_name, self.context)
+
+    @login_required
+    def render(self, obj_id):
+        app = AcademicLeave.objects.get(id=obj_id)
+        if app.status not in ('Не проверено', 'Отозвано на исправление'):
+            context = {
+                'rector_name': rector_name,
+                'app': app,
+                'qr_code': generate_qr_code('http://www.kstu.kz/')
+            }
+            return render_pdf('applications/academic-leave.html', context)
+        else:
+            return HttpResponse('<center><h1>Заявление не потверждено</h1></center>')
 
 
 class ReferenceView(View):
@@ -162,8 +215,17 @@ class ReferenceView(View):
             fs.save(file.name, file)
             form.save()
 
-            send_email('Ваше заявление принято. Справка будет готова в течение нескольких дней',
-                       (request.POST.get('email', ''),))
+            message = f'{request.POST.get("first_name")}, Ваше заявление принято. Справка будет готова в течение 10 дней. ' \
+                'Как только справка будет готова, на Вашу почту придет повторное уведомление.\n\n' \
+                'Пожалуйста, не отвечайте на это письмо.' \
+                'Если у Вас возникнут вопросы, ' \
+                'просим обращаться по номеру 8(7212)56-59-32 (внутренний 2023) или в КарГТУ, 1 корпус, кабинет № 109. ' \
+                'Если Вы получили это письмо по ошибке, пожалуйста, сообщите нам об этом.\n' \
+                '__\n' \
+                'С уважением,' \
+                'Центр Обслуживания Студентов КарГТУ.'
+
+            send_email(message, (request.POST.get('email', ''),))
 
             return render(request, 'ssc/complete.html')
         return render(request, self.template_name, self.context)

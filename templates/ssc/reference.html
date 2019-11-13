@@ -30,17 +30,24 @@
             </ul>
         </li>
         <li class="list-group-item"><b>Полное наименование услуги:</b> Выдача справки лицам, не завершившим высшее и послевузовское образование</li>
-        <li class="list-group-item"><b>Необходимые документы:</b>
-            <ol>
-                <li>Заявление.</li>
-                <li>Копия документа, удостоверяющий личность. Прикрепляется в форме.</li>
-            </ol>
-        </li>
     </ul>
 </div>
 {% block form %}
 <div class="col">
-<form class="p-2 m-2 border border-primary" method="post" enctype="multipart/form-data">
+<table class="table table-bordered table-hover table-sm">
+        <h4>Необходимые документы</h4>
+        <thead class="thead-light">
+            <th>Услуга</th>
+            <th>Документы</th>
+        </thead>
+        <tbody>
+        <tr>
+            <td>Для получения дубликатов документов о высшем и послевузовском образовании</td>
+            <td>Удостоверение личности услугополучателя</td>
+        </tr>
+        </tbody>
+    </table>
+<form class="p-2 border border-primary" method="post" enctype="multipart/form-data">
     <h4 class="text-center">Форма заявления</h4>
     {% csrf_token %}
     <div class="form-group">
