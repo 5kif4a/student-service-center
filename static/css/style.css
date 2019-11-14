@@ -22,3 +22,61 @@ body {
     top: 1rem;
     right: 2rem;
 }
+
+
+footer{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: row ;
+    background-color: #15305B
+}
+
+
+.foot{
+    height: 300px;
+    display: flex;
+    align-items: center;
+    box-sizing: border-box;
+    flex: 1;
+    flex-direction: row;
+
+}
+
+.foot .box{
+    display: flex;
+    width: 40%;
+    height: 55%;
+    border-right: 1px solid #fff;
+    padding: 0 20px 0 40px;
+    flex-direction: column;
+    color: #A0A6A5 ;
+}
+
+.foot .box:first-child{
+    padding-left: 0;
+}
+
+.foot .box:last-child{
+    border-right: none;
+    padding-right: 0;
+}
+
+.box .boxTitle{
+    margin-bottom: 18px;
+}
+
+.box .boxIcon i{
+    margin: 2px;
+}
+
+.box .boxBody div{
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 5px;
+}
+
+.box .boxBody a{
+    color: #A0A6A5;
+    text-decoration: none;
+}
