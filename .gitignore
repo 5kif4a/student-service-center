@@ -9,3 +9,4 @@ __pycache__/
 *.log
 media/
 .env
+admin/

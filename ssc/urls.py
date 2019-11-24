@@ -24,7 +24,6 @@ academic_leave_urls = [path('academic-leave', views.AcademicLeaveView.as_view())
 
 transfer_and_recovery_urls = [path('transfer-and-recovery', views.transfer_and_recovery)]
 
-
 urlpatterns = [
     path('', views.index),
 ] + bachelor_urls + \

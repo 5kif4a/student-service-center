@@ -1,6 +1,7 @@
-from django.shortcuts import HttpResponse, HttpResponseRedirect
+from django.shortcuts import HttpResponse
 from django.core.mail import EmailMessage
 from django.template.loader import render_to_string
+from django.utils.html import strip_tags
 import pdfkit
 import pyqrcode
 from SSC_KSTU.settings import env
@@ -39,10 +40,9 @@ duplicate_types = [('Дубликат диплома', 'Дубликат дип�
                    ('Дубликат диплома с приложениями', 'Дубликат диплома с приложениями'),
                    ('Дубликат приложения', 'Дубликат приложения')]
 duplicate_reasons = [('Утеря', 'Утеря'), ('Порча', 'Порча')]
-academic_leave_reasons = [('По состоянию здоровья', 'По состоянию здоровья'),
-                          ('В связи с призывом на воинскую службу', 'В связи с призывом на воинскую службу'),
-                          ('С рождением ребенка', 'С рождением ребенка')]
-
+academic_leave_reasons = [('состоянием здоровья', 'состоянием здоровья'),
+                          ('призывом на воинскую службу', 'призывом на воинскую службу'),
+                          ('рождением ребенка', 'рождением ребенка')]
 
 # Логирование
 logger = logging.getLogger('SSC_KSTU')
@@ -63,8 +63,10 @@ def render_pdf(template, context):
 
 
 # отправка письма
-def send_email(message, to):
-    msg = EmailMessage(subject='Центр обслуживания студентов', body=message, to=to)
+def send_email(mail_template, context, to):
+    message = render_to_string(mail_template, context)
+    msg = EmailMessage(subject='Центр обслуживания студентов КарГТУ', body=message, to=to)
+    msg.content_subtype = 'html'
     msg.send()
 
 

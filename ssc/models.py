@@ -15,6 +15,7 @@ class Person(models.Model):
     patronymic = models.CharField(max_length=50, verbose_name=_('Отчество'))
     individual_identification_number = models.CharField(max_length=12, verbose_name=_('ИИН'))
     email = models.EmailField(verbose_name=_('Электронная почта'))
+    address = models.CharField(max_length=500, verbose_name=_('Адрес'))
     phone_number = models.CharField(max_length=12, verbose_name=_('Номер телефона'))
 
     class Meta:
@@ -111,8 +112,8 @@ class Reference(Person, Application):
     individual_identification_number = models.CharField(max_length=12, verbose_name=_('ИИН'))
     education_form = models.CharField(max_length=10, choices=education_types, default='Очное',
                                       verbose_name=_('Форма обучения'))
-    receipt_year = models.DateField(verbose_name=_('Год поступления'))
-    exclude_year = models.DateField(verbose_name=_('Год отчисления'))
+    receipt_year = models.IntegerField(verbose_name=_('Год поступления'))
+    exclude_year = models.IntegerField(verbose_name=_('Год отчисления'))
     iin_attachment = models.ImageField(upload_to='references/', verbose_name=_('Прикрепление копии ИИН'))
     reason = models.CharField(max_length=30, choices=reference_reasons, default='В связи с отчислением',
                               verbose_name=_('Причина'))
@@ -176,7 +177,7 @@ class Duplicate(Person):
     Государственная услуга
     """
     id = HashidAutoField(primary_key=True, min_length=16)
-    graduation_year = models.DateField(verbose_name=_('Год окончания ВУЗа'))
+    graduation_year = models.IntegerField(verbose_name=_('Год окончания ВУЗа'))
     specialty = models.ForeignKey(Specialty, on_delete=models.CASCADE, verbose_name=_('Шифр и название специальности'))
     date_of_application = models.DateTimeField(auto_now_add=True, verbose_name=_('Дата подачи заявления'))
     iin_attachment = models.ImageField(upload_to='duplicates/', verbose_name=_('Прикрепление копии ИИН'))
@@ -202,7 +203,7 @@ class AcademicLeave(Person):
     id = HashidAutoField(primary_key=True, min_length=16)
     specialty = models.ForeignKey(Specialty, on_delete=models.CASCADE, verbose_name=_('Шифр и название специальности'))
     date_of_application = models.DateTimeField(auto_now_add=True, verbose_name=_('Дата подачи заявления'))
-    reason = models.CharField(max_length=30, choices=academic_leave_reasons, default='', verbose_name=_('Причина'))
+    reason = models.CharField(max_length=100, choices=academic_leave_reasons, default='', verbose_name=_('Причина'))
     status = models.CharField(max_length=50, choices=application_statuses, default='Не проверено',
                               verbose_name=_('Статус'))
     attachment = models.FileField(blank=True, null=True, verbose_name=_('Прикрепление'))

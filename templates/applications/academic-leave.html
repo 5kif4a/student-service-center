@@ -106,6 +106,11 @@ letter-spacing:.1pt;background:white'>/Ф. И. О. (при его наличии
 <p class=MsoNormal style='margin-top:0cm;margin-right:0cm;margin-bottom:0cm;
   margin-left:228.5pt;margin-bottom:.0001pt;line-height:normal'><span
   style='font-size:14.0pt;font-family:"Times New Roman",serif;color:black;
+  letter-spacing:.1pt;background:white'><u>{{ app.address }}</u></span></p>
+
+<p class=MsoNormal style='margin-top:0cm;margin-right:0cm;margin-bottom:0cm;
+  margin-left:228.5pt;margin-bottom:.0001pt;line-height:normal'><span
+  style='font-size:14.0pt;font-family:"Times New Roman",serif;color:black;
   letter-spacing:.1pt;background:white'><u>{{ app.phone_number }}</u></span></p>
 
 <p class=MsoNormal style='margin-top:0cm;margin-right:0cm;margin-bottom:0cm;
@@ -117,11 +122,6 @@ letter-spacing:.1pt;background:white'>/Ф. И. О. (при его наличии
 margin-left:233.9pt;margin-bottom:.0001pt;line-height:normal'><span
 style='font-size:12.0pt;font-family:"Times New Roman",serif;color:black;
 letter-spacing:.1pt;background:white'>/контактные данные услугополучателя/</span></p>
-
-<p class=MsoNormal style='margin-top:0cm;margin-right:0cm;margin-bottom:0cm;
-margin-left:233.9pt;margin-bottom:.0001pt;line-height:normal'><span
-style='font-size:12.0pt;font-family:"Times New Roman",serif;color:black;
-letter-spacing:.1pt;background:white'>______________________________________</span></p>
 
 <p class=MsoNormal style='margin-top:0cm;margin-right:0cm;margin-bottom:0cm;
 margin-left:233.9pt;margin-bottom:.0001pt;line-height:normal'><span
@@ -148,8 +148,9 @@ color:black;letter-spacing:.1pt;background:white'>&nbsp;</span></p>
 <p class=MsoNormal style='margin-bottom:0cm;margin-bottom:.0001pt;line-height:
 normal'><span style='font-size:12.0pt;font-family:"Times New Roman",serif;
 color:black;letter-spacing:.1pt;background:white'>      Прошу Вас предоставить
-мне академический отпуск в связи с {{ app.reason }}</span></p>
-
+    мне академический отпуск в связи с <u>{{ app.reason }}</u></span></p>
+<br>
+<br>
 <p class=MsoNormal style='margin-bottom:0cm;margin-bottom:.0001pt;line-height:
 normal'><span style='font-size:12.0pt;font-family:"Times New Roman",serif;
 color:black;letter-spacing:.1pt;background:white'>      Согласен(на) на использования

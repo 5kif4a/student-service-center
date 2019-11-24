@@ -1,4 +1,4 @@
-from django.forms import ModelForm, DateInput, NumberInput, FileInput
+from django.forms import ModelForm, NumberInput, FileInput
 from ssc.models import *
 from captcha.fields import ReCaptchaField, ReCaptchaV3
 
@@ -20,8 +20,6 @@ class ReferenceForm(ModelForm):
         fields = "__all__"
         widgets = {
             'course': NumberInput(attrs={'min': 1, 'max': 5}),
-            'receipt_year': DateInput(attrs={'type': 'date'}),
-            'exclude_year': DateInput(attrs={'type': 'date'}),
         }
 
     def __init__(self, *args, **kwargs):
@@ -68,10 +66,6 @@ class DuplicateForm(ModelForm):
     class Meta:
         model = Duplicate
         fields = "__all__"
-
-        widgets = {
-            'graduation_year': DateInput(attrs={'type': 'date'}),
-        }
 
     def __init__(self, *args, **kwargs):
         super(DuplicateForm, self).__init__(*args, **kwargs)
