@@ -116,7 +116,7 @@ class ReferenceAdmin(CustomAdmin):
     Админ.панель академ.справок
     """
     entity = 'reference'
-    app = 'Ваша справка готова'
+    app = 'Ваша справка готова. Вы можете получить ее в КарГТУ, 1 корпус, кабинет № 109.'
     list_per_page = 15
     list_filter = ('receipt_year', 'exclude_year', 'date_of_application', 'education_form', 'course', 'status')
     list_display = ('last_name', 'first_name', 'patronymic', 'specialty', 'date_of_application', 'status',
@@ -134,7 +134,7 @@ class AcademicLeaveAdmin(CustomAdmin):
     Админ.панель академ.отпусков
     """
     entity = 'academic-leave'
-    app = 'Ваш приказ готов'
+    app = 'Ваш приказ готов. Вы можете получить его в КарГТУ, 1 корпус, кабинет № 109.'
     list_per_page = 15
     list_filter = ('date_of_application', 'status')
     list_display = ('last_name', 'first_name', 'patronymic', 'specialty', 'date_of_application', 'status',
@@ -149,7 +149,7 @@ class DuplicateAdmin(CustomAdmin):
     Админ.панель дубликатов
     """
     entity = 'duplicate'
-    app = 'Ваш дубликат готов'
+    app = 'Ваш дубликат готов. Вы можете получить его в КарГТУ, 1 корпус, кабинет № 109.'
     list_per_page = 15
     list_filter = ('graduation_year', 'date_of_application', 'status')
     list_display = ('last_name', 'first_name', 'patronymic', 'date_of_application', 'status', 'print')
