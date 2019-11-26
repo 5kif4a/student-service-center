@@ -22,7 +22,14 @@ reference_urls = [path('reference', views.ReferenceView.as_view()),
 academic_leave_urls = [path('academic-leave', views.AcademicLeaveView.as_view()),
                        path('academic-leave/report/<obj_id>/', views.AcademicLeaveView.render)]
 
-transfer_and_recovery_urls = [path('transfer-and-recovery', views.transfer_and_recovery)]
+transfer_and_recovery_urls = [path('transfer-and-recovery', views.transfer_and_recovery),
+                              path('transfer', views.TransferView.as_view()),
+                              path('transfer-kstu', views.TransferKSTUView.as_view()),
+                              path('recovery', views.RecoveryView.as_view()),
+                              path('transfer/report/<obj_id>/', views.TransferView.render),
+                              path('transfer-kstu/report/<obj_id>/', views.TransferKSTUView.render),
+                              path('recovery/report/<obj_id>/', views.RecoveryView.render)]
+
 
 urlpatterns = [
     path('', views.index),

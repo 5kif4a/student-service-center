@@ -5,16 +5,15 @@
 {% block description %}
 <h3 class="text-center p-3">Перевод и восстановление обучающихся в высших учебных заведениях</h3>
 <div class="alert alert-info text-center"><h5>Статус услуги: {% if status %}Автоматизирована <i class="fas fa-cogs fa-lg"></i>{% else %}в процессе разработки <i class="fab fa-dev fa-lg"></i>{% endif %}</h5></div>
-<div class="row justify-content-center">
-    <div class="col text-center">
-        <a class="btn btn-info" href="http://adilet.zan.kz/rus/docs/V1500012839#z7" target="_blank">Стандарт государственной услуги</a>
+<div class="row">
+    <div class="col-3 m-2 border border-info">
+        <div class="row justify-content-center m-2">
+    <a class="btn btn-info" href="http://adilet.zan.kz/rus/docs/V1500012839#z7" target="_blank">Стандарт государственной услуги</a>
     </div>
-    <div class="col text-center">
+    <div class="row justify-content-center m-2">
         <a class="btn btn-info" href="https://egov.kz/cms/ru/services/professional_education/pass203-1_mon" target="_blank">Получение услуги на Egov</a>
     </div>
-</div>
-<div class="m-2">
-    <ul class="list-group list-group-flush">
+        <ul class="list-group list-group-flush">
         <li class="list-group-item"><b>Государственный орган:</b> <a href="http://edu.gov.kz/ru" target="_blank">Министерство образования и науки РК</a></li>
         <li class="list-group-item"><b>Получатели услуги:</b> Физические лица</li>
         <li class="list-group-item"><b>Место предоставления услуги:</b>
@@ -25,81 +24,14 @@
         <li class="list-group-item"><b>Стоимость услуги:</b> Бесплатно</li>
         <li class="list-group-item"><b>Сроки оказания услуги:</b> 1 рабочий день</li>
         <li class="list-group-item"><b>Полное наименование услуги:</b> Перевод и восстановление обучающихся в высших учебных заведениях</li>
-        <li class="list-group-item"><b>Необходимые документы:</b>
-            <h6>При переводе из одного вуза в другой:</h6>
-            <ol>
-                <li>Заявление о переводе в произвольной форме на имя руководителя вуза.</li>
-                <li>Копия транскрипта по форме утвержденной приказом Министра образования и науки Республики Казахстан от 20 апреля 2011 года № 152 "Об утверждении Правил организации учебного процесса по кредитной технологии обучения" (зарегистрирован в Реестре государственной регистрации нормативных правовых актов под № 6976)..</li>
-                <li>Копия свидетельства обладателя образовательного гранта по форме, утвержденной приказом исполняющий обязанности Министра образования и науки Республики Казахстан от 23 октября 2007 года № 502 "Об утверждении формы документов строгой отчетности, используемых организациями образования в образовательной деятельности" (зарегистрирован в Реестре государственной регистрации нормативных правовых актов под № 4991) (при наличии).</li>
-            </ol>
-            <h6>При восстановлении в число обучающихся:</h6>
-            <ol>
-                <li>Заявление в произвольной форме о восстановлении на имя руководителя вуза.</li>
-                <li>Транскрипт или справка, выдаваемая лицам, не завершившим образование по форме, утвержденной приказом Министра образования и науки Республики Казахстан от 12 июня 2009 года № 289 "Об утверждении формы справки, выдаваемой лицам, не завершившим образование" (зарегистрирован в Реестре государственной регистрации нормативных правовых актов под № 5717).</li>
-            </ol>
-            <h6>При переводе или восстановлении из зарубежной организации высшего образования:</h6>
-            <ol>
-                <li>Документ об освоенных образовательных программах (академическая справка или транскрипт).</li>
-                <li>Документ о завершении предыдущего уровня образования, который проходит процедуру нострификации в Республике Казахстан в порядке, установленном Правилами признания и нострификации документов об образовании, утвержденными приказом Министра образования и науки Республики Казахстан от 10 января 2008 года № 8 (зарегистрирован в Реестре государственной регистрации нормативных правовых актов под № 5135).</li>
-                <li>Результаты вступительных испытаний при поступлении в зарубежные организации образования.</li>
-            </ol>
-        </li>
     </ul>
+    </div>
+    <div class="col m-2">
+        <a href="/transfer" class="btn btn-outline-primary btn-lg btn-block" role="button">Форма заявления на перевод в другой ВУЗ</a>
+        <a href="/transfer-kstu" class="btn btn-outline-primary btn-lg btn-block" role="button">Форма заявления на перевод в КарГТУ</a>
+        <a href="/recovery" class="btn btn-outline-primary btn-lg btn-block" role="button">Форма заявления на восстановление в число обучающихся</a>
+    </div>
 </div>
 {% endblock description %}
-{% block form %}
-{#<div class="row justify-content-center">#}
-{#    <div class="col text-center">#}
-{#        <button class="btn btn-primary" type="button" data-toggle="collapse" data-target="#collapseExample" aria-expanded="false" aria-controls="collapseExample">Перейти к форме заявления</button>#}
-{#    </div>#}
-{#</div>#}
-{#<form class="collapse p-2 m-2" id="collapseExample" method="post">#}
-{#    {% csrf_token %}#}
-{#    <div class="form-group">#}
-{#        <div class="form-row">#}
-{#            <div class="form-group col-sm">#}
-{#                {{ form.last_name|as_crispy_field }}#}
-{#            </div>#}
-{#            <div class="form-group col-sm">#}
-{#                {{ form.first_name|as_crispy_field }}#}
-{#            </div>#}
-{#            <div class="form-group col-sm">#}
-{#                {{ form.patronymic|as_crispy_field }}#}
-{#            </div>#}
-{#        </div>#}
-{#        <div class="form-row">#}
-{#            <div class="form-group col">#}
-{#                {{ form.course|as_crispy_field }}#}
-{#            </div>#}
-{#            <div class="form-group col">#}
-{#                {{ form.group|as_crispy_field }}#}
-{#            </div>#}
-{#            <div class="form-group col">#}
-{#                {{ form.specialty|as_crispy_field }}#}
-{#            </div>#}
-{#            <div class="form-group col">#}
-{#                {{ form.education_form|as_crispy_field }}#}
-{#            </div>#}
-{#        </div>#}
-{#        <div class="form-row">#}
-{#            <div class="form-group col">#}
-{#                {{ form.receipt_year|as_crispy_field }}#}
-{#            </div>#}
-{#            <div class="form-group col">#}
-{#                {{ form.exclude_year|as_crispy_field }}#}
-{#            </div>#}
-{#            <div class="form-group col">#}
-{#                {{ form.email|as_crispy_field }}#}
-{#            </div>#}
-{#            <div class="form-group col">#}
-{#                {{ form.phone_number|as_crispy_field }}#}
-{#            </div>#}
-{#        </div>#}
-{#        {{ form.reason|as_crispy_field }}#}
-{#        {{ form.captcha }}#}
-{#        <button type="submit" class="btn btn-success mt-1">Отправить заявку</button>#}
-{#    </div>#}
-{#</form>#}
-{% endblock form %}
 </div>
 {% endblock content%}

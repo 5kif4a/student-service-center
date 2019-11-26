@@ -109,7 +109,6 @@ class Reference(Person, Application):
     Государственная услуга
     """
     id = HashidAutoField(primary_key=True, min_length=16)
-    individual_identification_number = models.CharField(max_length=12, verbose_name=_('ИИН'))
     education_form = models.CharField(max_length=10, choices=education_types, default='Очное',
                                       verbose_name=_('Форма обучения'))
     receipt_year = models.IntegerField(verbose_name=_('Год поступления'))
@@ -128,34 +127,12 @@ class Reference(Person, Application):
         return f'{self.last_name} {self.first_name} {self.patronymic}. ИИН: {self.individual_identification_number}'
 
 
-# class Bachelor(Person, Application):
-#     """
-#     Прием документов и зачисление в высшие учебные заведения
-#     для обучения по образовательным программам высшего образования
-#     """
-#     pass
-#
-#
-# class PostGraduate(Person, Application):
-#     """
-#     Прием документов и зачисление в высшие учебные заведения
-#     для обучения по образовательным программам послевузовского образования
-#     """
-#     pass
-#
-#
 # class Abroad(Person, Application):
 #     """
 #     Прием документов для участия в конкурсе на обучение за рубежом, в том числе академической мобильности
 #     """
 #     pass
 #
-#
-# class Certificate(Person, Application):
-#     """
-#     Выдача сертификата о сдаче комплексного тестирования
-#     """
-#     pass
 #
 #
 # class Hostel(Person, Application):
@@ -169,8 +146,6 @@ class Reference(Person, Application):
 #         verbose_name = _('заявление на предоставление общежития в ВУЗах')
 #         verbose_name_plural = _('заявления на предоставление общежития в ВУЗах')
 
-#
-#
 class Duplicate(Person):
     """
     Модель(таблица) для заявления по услуге - "Выдача дубликатов документов о высшем и послевузовском образовании"
@@ -214,14 +189,90 @@ class AcademicLeave(Person):
 
     def __str__(self):
         return f'{self.last_name} {self.first_name} {self.patronymic}. ИИН: {self.individual_identification_number}'
-#
-#
-# class TransferAndRecovery(Person, Application):
-#     """
-#     Перевод и восстановление обучающихся в высших учебных заведениях
-#     """
-#     pass
-#
+
+
+class TransferKSTU(Person):
+    """
+    Перевод в КарГТУ
+    """
+    id = HashidAutoField(primary_key=True, min_length=16)
+    university = models.CharField(max_length=500, verbose_name=_('Наименование предыдущего ВУЗа)'))
+    faculty = models.CharField(max_length=200, choices=faculties, verbose_name=_('Факультет'))
+    specialty = models.ForeignKey(Specialty, on_delete=models.CASCADE, verbose_name=_('Шифр и название специальности'))
+    date_of_application = models.DateTimeField(auto_now_add=True, verbose_name=_('Дата подачи заявления'))
+    course = models.IntegerField(verbose_name=_('Курс'))
+    foundation = models.CharField(max_length=200, choices=foundation_types, default='на платной основе',
+                                  verbose_name=_('Основа обучения'))
+    iin_attachment = models.ImageField(upload_to='recovery/', verbose_name=_('Прикрепление копии ИИН'))
+    reference = models.FileField(verbose_name=_('Академическая справка'))
+    transcript = models.FileField(verbose_name=_('Копия транскрипта'))
+    grant = models.FileField(blank=True, null=True, verbose_name=_('Свидительство о образовательном гранте'))
+    status = models.CharField(max_length=50, choices=application_statuses, default='Не проверено',
+                              verbose_name=_('Статус'))
+
+    class Meta:
+        verbose_name = _('заявление на перевод в КарГТУ')
+        verbose_name_plural = _('заявления на перевод в КарГТУ')
+
+    def __str__(self):
+        return f'{self.last_name} {self.first_name} {self.patronymic}. ИИН: {self.individual_identification_number}'
+
+
+class Transfer(Person):
+    """
+    Перевод в другой ВУЗ
+    """
+    id = HashidAutoField(primary_key=True, min_length=16)
+    group = models.CharField(max_length=50, verbose_name=_('Группа'))
+    current_specialty = models.ForeignKey(Specialty, on_delete=models.CASCADE, verbose_name=_('Текущая специальность'),
+                                          related_name='current_specialty')
+    university = models.CharField(max_length=500, verbose_name=_('Наименование ВУЗа перевода'))
+    faculty = models.CharField(max_length=200, choices=faculties, verbose_name=_('Факультет'))
+    specialty = models.ForeignKey(Specialty, on_delete=models.CASCADE, verbose_name=_('Специальность перевода'),
+                                  related_name='transfer_specialty')
+    date_of_application = models.DateTimeField(auto_now_add=True, verbose_name=_('Дата подачи заявления'))
+    foundation = models.CharField(max_length=200, choices=foundation_types, default='на платной основе',
+                                  verbose_name=_('Основа обучения'))
+    iin_attachment = models.ImageField(upload_to='recovery/', verbose_name=_('Прикрепление копии ИИН'))
+    reference = models.FileField(verbose_name=_('Академическая справка'))
+    transcript = models.FileField(verbose_name=_('Копия транскрипта'))
+    grant = models.FileField(blank=True, null=True, verbose_name=_('Свидительство о образовательном гранте'))
+    status = models.CharField(max_length=50, choices=application_statuses, default='Не проверено',
+                              verbose_name=_('Статус'))
+
+    class Meta:
+        verbose_name = _('заявление на перевод в другой ВУЗ')
+        verbose_name_plural = _('заявления на перевод в другой ВУЗ')
+
+    def __str__(self):
+        return f'{self.last_name} {self.first_name} {self.patronymic}. ИИН: {self.individual_identification_number}'
+
+
+class Recovery(Person):
+    """
+    Восстановление в число обучающихся
+    """
+    id = HashidAutoField(primary_key=True, min_length=16)
+    university = models.CharField(max_length=500, verbose_name=_('Наименование предыдущего ВУЗа)'))
+    specialty = models.ForeignKey(Specialty, on_delete=models.CASCADE,
+                                  verbose_name=_('Шифр и наименование специальности'))
+    date_of_application = models.DateTimeField(auto_now_add=True, verbose_name=_('Дата подачи заявления'))
+    course = models.IntegerField(verbose_name=_('Курс'))
+    faculty = models.CharField(max_length=200, choices=faculties, verbose_name=_('Факультет'))
+    iin_attachment = models.ImageField(upload_to='recovery/', verbose_name=_('Прикрепление копии ИИН'))
+    reference = models.FileField(verbose_name=_('Академическая справка'))
+    transcript = models.FileField(verbose_name=_('Копия транскрипта'))
+    status = models.CharField(max_length=50, choices=application_statuses, default='Не проверено',
+                              verbose_name=_('Статус'))
+
+    class Meta:
+        verbose_name = _('заявление на восстановление в число обучающихся')
+        verbose_name_plural = _('заявления на восстановление в число обучающихся')
+
+    def __str__(self):
+        return f'{self.last_name} {self.first_name} {self.patronymic}. ИИН: {self.individual_identification_number}'
+
+
 #
 # class PlaceOfStudy(Person):
 #     """

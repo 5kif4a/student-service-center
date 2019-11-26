@@ -23,3 +23,4 @@ urlpatterns = [
 ]
 
 handler404 = 'ssc.views.page_not_found'
+handler500 = 'ssc.views.internal_server_error'

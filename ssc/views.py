@@ -37,6 +37,7 @@ class TemplateView(View):
         files = request.FILES
         fs = FileSystemStorage()
 
+        print(form.errors)
         if form.is_valid():
             for _, file in files.items():
                 fs.save(file.name, file)
@@ -51,15 +52,11 @@ class TemplateView(View):
         return render(request, self.template_name, self.context)
 
 
-# Прием документов и зачисление в высшие учебные заведения для обучения
-# по образовательным программам высшего образования
 def bachelor(request):
     if request.method == 'POST':
         return redirect('')
     else:
-        # form = ReferenceForm()
         context = {
-            # 'form': form
             'status': statuses.get('bachelor')
         }
         return render(request, 'ssc/bachelor.html', context)
@@ -69,9 +66,7 @@ def postgraduate(request):
     if request.method == 'POST':
         return redirect('')
     else:
-        # form = ReferenceForm()
         context = {
-            # 'form': form
             'status': statuses.get('postgraduate')
         }
         return render(request, 'ssc/postgraduate.html', context)
@@ -81,9 +76,7 @@ def abroad(request):
     if request.method == 'POST':
         return redirect('')
     else:
-        # form = ReferenceForm()
         context = {
-            # 'form': form
             'status': statuses.get('abroad')
         }
         return render(request, 'ssc/abroad.html', context)
@@ -93,9 +86,7 @@ def certificate(request):
     if request.method == 'POST':
         return redirect('')
     else:
-        # form = ReferenceForm()
         context = {
-            # 'form': form
             'status': statuses.get('certificate')
         }
         return render(request, 'ssc/certificate.html', context)
@@ -192,14 +183,91 @@ def transfer_and_recovery(request):
     if request.method == 'POST':
         return redirect('')
     else:
-        # form = ReferenceForm()
         context = {
-            # 'form': form
             'status': statuses.get('transfer-and-recovery')
         }
-        return render(request, 'ssc/transfer-and-recovery.html')
+        return render(request, 'ssc/transfer-and-recovery.html', context)
+
+
+class TransferView(TemplateView):
+    """
+    Представления для подачи заявления по услуге
+    "Перевод в другой ВУЗ"
+    Внутривузовская услуга
+    """
+    form_class = TransferForm
+    template_name = 'ssc/transfer.html'
+    mail_template = 'mails/transfer.html'
+    context = {}
+
+    @login_required
+    def render(self, obj_id):
+        app = Transfer.objects.get(id=obj_id)
+        if app.status not in ('Не проверено', 'Отозвано на исправление'):
+            context = {
+                'rector_name': rector_name,
+                'app': app,
+                'qr_code': generate_qr_code('http://www.kstu.kz/')
+            }
+            return render_pdf('applications/transfer.html', context)
+        else:
+            return HttpResponse('<center><h1>Заявление не потверждено</h1></center>')
+
+
+class TransferKSTUView(TemplateView):
+    """
+    Представления для подачи заявления по услуге
+    "Перевод в КарГТУ"
+    Внутривузовская услуга
+    """
+    form_class = TransferKSTUForm
+    template_name = 'ssc/transfer-kstu.html'
+    mail_template = 'mails/transfer-kstu.html'
+    context = {}
+
+    @login_required
+    def render(self, obj_id):
+        app = TransferKSTU.objects.get(id=obj_id)
+        if app.status not in ('Не проверено', 'Отозвано на исправление'):
+            context = {
+                'rector_name': rector_name,
+                'app': app,
+                'qr_code': generate_qr_code('http://www.kstu.kz/')
+            }
+            return render_pdf('applications/transfer-kstu.html', context)
+        else:
+            return HttpResponse('<center><h1>Заявление не потверждено</h1></center>')
+
+
+class RecoveryView(TemplateView):
+    """
+    Представления для подачи заявления по услуге
+    "Восстановление в число обучающихся"
+    Внутривузовская услуга
+    """
+    form_class = RecoveryForm
+    template_name = 'ssc/recovery.html'
+    mail_template = 'mails/recovery.html'
+    context = {}
+
+    @login_required
+    def render(self, obj_id):
+        app = Recovery.objects.get(id=obj_id)
+        if app.status not in ('Не проверено', 'Отозвано на исправление'):
+            context = {
+                'rector_name': rector_name,
+                'app': app,
+                'qr_code': generate_qr_code('http://www.kstu.kz/')
+            }
+            return render_pdf('applications/recovery.html', context)
+        else:
+            return HttpResponse('<center><h1>Заявление не потверждено</h1></center>')
 
 
 def page_not_found(request, exception):
     return render(request, template_name='error_handlers/404.html', status=404)
+
+
+def internal_server_error(request):
+    return render(request, template_name='error_handlers/500.html', status=500)
 

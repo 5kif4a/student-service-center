@@ -12,7 +12,7 @@ admin.site.site_title = 'Административная панель'
 
 # Метод получения всех полей модели(столбцов таблицы)
 def get_model_fields(model):
-    return [field.name for field in model._meta.get_fields()][2:]
+    return [field.name for field in model._meta.get_fields()][1:]
 
 
 @admin.register(Student)
@@ -122,7 +122,8 @@ class ReferenceAdmin(CustomAdmin):
     list_display = ('last_name', 'first_name', 'patronymic', 'specialty', 'date_of_application', 'status',
                     'print')
     readonly_fields = ('id_card',)
-    search_fields = ('last_name', 'first_name', 'patronymic', 'address', 'specialty', 'individual_identification_number')
+    search_fields = ('last_name', 'first_name', 'patronymic', 'address', 'specialty__name',
+                     'individual_identification_number')
 
     def id_card(self, obj):
         return format_html(f"""<img src="{obj.iin_attachment.url}">""")
@@ -140,7 +141,8 @@ class AcademicLeaveAdmin(CustomAdmin):
     list_display = ('last_name', 'first_name', 'patronymic', 'specialty', 'date_of_application', 'status',
                     'print')
     readonly_fields = ('attachment',)
-    search_fields = ('last_name', 'first_name', 'patronymic', 'address', 'specialty', 'individual_identification_number')
+    search_fields = ('last_name', 'first_name', 'patronymic', 'address', 'specialty__name',
+                     'individual_identification_number')
 
 
 @admin.register(Duplicate)
@@ -158,3 +160,58 @@ class DuplicateAdmin(CustomAdmin):
 
     def id_card(self, obj):
         return format_html(f"""<img src="{obj.iin_attachment.url}">""")
+
+
+@admin.register(Transfer)
+class TransferAdmin(CustomAdmin):
+    """
+    Админ.панель переводов в другой ВУЗ
+    """
+    entity = 'transfer'
+    app = 'Ваше заявление подписано. Вы можете получить его в КарГТУ, 1 корпус, кабинет № 109.'
+    list_per_page = 15
+    list_filter = ('faculty', 'date_of_application', 'foundation', 'status')
+    list_display = ('last_name', 'first_name', 'patronymic', 'date_of_application', 'status', 'print')
+    readonly_fields = ('id_card',)
+    search_fields = get_model_fields(Transfer)
+
+    def id_card(self, obj):
+        return format_html(f"""<img src="{obj.iin_attachment.url}">""")
+
+
+@admin.register(TransferKSTU)
+class TransferKSTUAdmin(CustomAdmin):
+    """
+    Админ.панель переводов в КарГТУ
+    """
+    entity = 'transfer-kstu'
+    app = 'Ваше заявление принято. Вам необходимо в течение 1 дня подойти в КарГТУ, ' \
+          'главный корпус, кабинет № 309 б., ' \
+          'для заключения договора. При себе иметь удостоверение личности. ' \
+          'После подписания договора подойти в каб. № 109, 1 корпус.'
+    list_per_page = 15
+    list_filter = ('faculty', 'date_of_application', 'foundation', 'status')
+    list_display = ('last_name', 'first_name', 'patronymic', 'date_of_application', 'status', 'print')
+    readonly_fields = ('id_card',)
+    search_fields = get_model_fields(Transfer)
+
+    def id_card(self, obj):
+        return format_html(f"""<img src="{obj.iin_attachment.url}">""")
+
+
+@admin.register(Recovery)
+class RecoveryAdmin(CustomAdmin):
+    """
+    Админ.панель - восстановление в число обучающихся
+    """
+    entity = 'recovery'
+    app = 'Ваше заявление принято.'
+    list_per_page = 15
+    list_filter = ('faculty', 'date_of_application', 'status')
+    list_display = ('last_name', 'first_name', 'patronymic', 'date_of_application', 'status', 'print')
+    readonly_fields = ('id_card',)
+    search_fields = get_model_fields(Transfer)
+
+    def id_card(self, obj):
+        return format_html(f"""<img src="{obj.iin_attachment.url}">""")
+
