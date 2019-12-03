@@ -9,6 +9,7 @@ import datetime as dt
 year_ = dt.datetime.now().year
 iin_regex = '^((0[48]|[2468][048]|[13579][26])0229[1-6]|000229[34]|\d\d((0[13578]|1[02])(0[1-9]|[12]\d|3[01])|(0[469]|11)(0[1-9]|[12]\d|30)|02(0[1-9]|1\d|2[0-8]))[1-6])\d{5}$'
 phone_number_regex = '^\+?77([0124567][0-8]\d{7})$'
+alphabet_regex = '/^[A-Za-z]+$/'
 
 
 # Create your models here.
@@ -17,9 +18,15 @@ class Person(models.Model):
     """
     Абстрактный класс-модель - Личность
     """
-    last_name = models.CharField(max_length=50, verbose_name=_('Фамилия'))
-    first_name = models.CharField(max_length=50, verbose_name=_('Имя'))
-    patronymic = models.CharField(max_length=50, verbose_name=_('Отчество'))
+    last_name = models.CharField(max_length=50, verbose_name=_('Фамилия'),
+                                 validators=[RegexValidator(regex=alphabet_regex,
+                                                            message='В этом поле только символы')])
+    first_name = models.CharField(max_length=50, verbose_name=_('Имя'),
+                                  validators=[RegexValidator(regex=alphabet_regex,
+                                                             message='В этом поле только символы')])
+    patronymic = models.CharField(max_length=50, verbose_name=_('Отчество'),
+                                  validators=[RegexValidator(regex=alphabet_regex,
+                                                             message='В этом поле только символы')])
     individual_identification_number = models.CharField(max_length=12, verbose_name=_('ИИН'),
                                                         validators=[RegexValidator(regex=iin_regex,
                                                                                    message='Введен неправильный ИИН')])
@@ -27,7 +34,7 @@ class Person(models.Model):
     address = models.CharField(max_length=500, verbose_name=_('Адрес'))
     phone_number = models.CharField(max_length=16, verbose_name=_('Номер телефона'),
                                     validators=[RegexValidator(regex=phone_number_regex,
-                                                               message='Введенный номер не соответствующий формату')])
+                                                               message='Введенный номер не соответствует формату')])
 
     class Meta:
         abstract = True

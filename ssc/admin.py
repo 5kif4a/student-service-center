@@ -34,7 +34,7 @@ class SpecialtyAdmin(admin.ModelAdmin):
     """
     list_per_page = 30
     list_display = ('name',)
-    search_fields = get_model_fields(Specialty)
+    search_fields = ('name',)
 
 
 @admin.register(University)
@@ -44,7 +44,7 @@ class UniversityAdmin(admin.ModelAdmin):
     """
     list_per_page = 30
     list_display = ('name',)
-    search_fields = get_model_fields(University)
+    search_fields = ('name',)
 
 
 @admin.register(Rector)
@@ -153,7 +153,7 @@ class DuplicateAdmin(CustomAdmin):
     entity = 'duplicate'
     app = 'Ваш дубликат готов. Вы можете получить его в КарГТУ, 1 корпус, кабинет № 109.'
     list_per_page = 15
-    list_filter = ('date_of_application', 'graduation_year', 'reason', 'duplicate_type', 'status')
+    list_filter = ('date_of_application', 'reason', 'duplicate_type', 'status')
     list_display = ('last_name', 'first_name', 'patronymic', 'date_of_application', 'status', 'print')
     readonly_fields = ('id_card',)
     search_fields = ('last_name', 'first_name', 'patronymic', 'address', 'specialty__name',
