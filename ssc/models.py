@@ -1,7 +1,14 @@
 from django.db import models
 from django.utils.translation import gettext_lazy as _
+from django.core.validators import RegexValidator, MinValueValidator, MaxValueValidator
 from hashid_field import HashidAutoField
 from ssc.utilities import *
+import datetime as dt
+
+# Текущий год
+year_ = dt.datetime.now().year
+iin_regex = '^((0[48]|[2468][048]|[13579][26])0229[1-6]|000229[34]|\d\d((0[13578]|1[02])(0[1-9]|[12]\d|3[01])|(0[469]|11)(0[1-9]|[12]\d|30)|02(0[1-9]|1\d|2[0-8]))[1-6])\d{5}$'
+phone_number_regex = '^\+?77([0124567][0-8]\d{7})$'
 
 
 # Create your models here.
@@ -13,10 +20,14 @@ class Person(models.Model):
     last_name = models.CharField(max_length=50, verbose_name=_('Фамилия'))
     first_name = models.CharField(max_length=50, verbose_name=_('Имя'))
     patronymic = models.CharField(max_length=50, verbose_name=_('Отчество'))
-    individual_identification_number = models.CharField(max_length=12, verbose_name=_('ИИН'))
+    individual_identification_number = models.CharField(max_length=12, verbose_name=_('ИИН'),
+                                                        validators=[RegexValidator(regex=iin_regex,
+                                                                                   message='Введен неправильный ИИН')])
     email = models.EmailField(verbose_name=_('Электронная почта'))
     address = models.CharField(max_length=500, verbose_name=_('Адрес'))
-    phone_number = models.CharField(max_length=12, verbose_name=_('Номер телефона'))
+    phone_number = models.CharField(max_length=16, verbose_name=_('Номер телефона'),
+                                    validators=[RegexValidator(regex=phone_number_regex,
+                                                               message='Введенный номер не соответствующий формату')])
 
     class Meta:
         abstract = True
@@ -56,7 +67,7 @@ class Application(models.Model):
     """
     Абстрактный класс-модель - Заявление(форма)
     """
-    course = models.IntegerField(verbose_name=_('Курс'))
+    course = models.IntegerField(verbose_name=_('Курс'), validators=[MinValueValidator(1), MaxValueValidator(5)])
     specialty = models.ForeignKey(Specialty, on_delete=models.CASCADE, verbose_name=_('Шифр и название специальности'))
     date_of_application = models.DateTimeField(auto_now_add=True, verbose_name=_('Дата подачи заявления'))
     group = models.CharField(max_length=50, verbose_name=_('Группа'))
@@ -85,11 +96,13 @@ class Student(models.Model):
     last_name = models.CharField(max_length=50, verbose_name=_('Фамилия'))
     first_name = models.CharField(max_length=50, verbose_name=_('Имя'))
     patronymic = models.CharField(max_length=50, verbose_name=_('Отчество'))
-    individual_identification_number = models.CharField(max_length=13, verbose_name=_('ИИН'))
+    individual_identification_number = models.CharField(max_length=13, verbose_name=_('ИИН'),
+                                                        validators=[RegexValidator(regex=iin_regex,
+                                                                                   message='Введен неправильный ИИН')])
     education_form = models.CharField(max_length=50, verbose_name=_('Форма обучения'))
     language_department = models.CharField(max_length=50, verbose_name=_('Языковое отделение'))
     degree = models.CharField(max_length=50, verbose_name=_('Степень обучения'))
-    course = models.IntegerField(verbose_name=_('Курс'))
+    course = models.IntegerField(verbose_name=_('Курс'), validators=[MinValueValidator(1), MaxValueValidator(5)])
     faculty = models.CharField(max_length=50, verbose_name=_('Факультет'))
     specialty = models.CharField(max_length=100, verbose_name=_('Специальность'))
     student_status = models.CharField(max_length=50, verbose_name=_('Статус студента'))
@@ -111,10 +124,13 @@ class Reference(Person, Application):
     id = HashidAutoField(primary_key=True, min_length=16)
     education_form = models.CharField(max_length=10, choices=education_types, default='Очное',
                                       verbose_name=_('Форма обучения'))
-    receipt_year = models.IntegerField(verbose_name=_('Год поступления'))
-    exclude_year = models.IntegerField(verbose_name=_('Год отчисления'))
-    iin_attachment = models.ImageField(upload_to='references/', verbose_name=_('Прикрепление копии ИИН'))
-    reason = models.CharField(max_length=30, choices=reference_reasons, default='В связи с отчислением',
+    receipt_year = models.IntegerField(verbose_name=_('Год поступления'),
+                                       validators=[MinValueValidator(1953), MaxValueValidator(year_)])
+    exclude_year = models.IntegerField(verbose_name=_('Год отчисления'),
+                                       validators=[MinValueValidator(1953), MaxValueValidator(year_)])
+    iin_attachment = models.ImageField(upload_to='references/',
+                                       verbose_name=_('Прикрепление копии документа, удостоверяющего личность'))
+    reason = models.CharField(max_length=100, choices=reference_reasons, default='В связи с отчислением',
                               verbose_name=_('Причина'))
     status = models.CharField(max_length=50, choices=application_statuses, default='Не проверено',
                               verbose_name=_('Статус'))
@@ -152,10 +168,12 @@ class Duplicate(Person):
     Государственная услуга
     """
     id = HashidAutoField(primary_key=True, min_length=16)
-    graduation_year = models.IntegerField(verbose_name=_('Год окончания ВУЗа'))
+    graduation_year = models.IntegerField(verbose_name=_('Год окончания ВУЗа'),
+                                          validators=[MinValueValidator(1953), MaxValueValidator(year_)])
     specialty = models.ForeignKey(Specialty, on_delete=models.CASCADE, verbose_name=_('Шифр и название специальности'))
     date_of_application = models.DateTimeField(auto_now_add=True, verbose_name=_('Дата подачи заявления'))
-    iin_attachment = models.ImageField(upload_to='duplicates/', verbose_name=_('Прикрепление копии ИИН'))
+    iin_attachment = models.ImageField(upload_to='duplicates/',
+                                       verbose_name=_('Прикрепление копии документа, удостоверяющего личность'))
     reason = models.CharField(max_length=30, choices=duplicate_reasons, default='Утеря', verbose_name=_('Причина'))
     duplicate_type = models.CharField(max_length=100, choices=duplicate_types, default='Дубликат диплома',
                                       verbose_name=_('Тип дубликата'))
@@ -196,17 +214,30 @@ class TransferKSTU(Person):
     Перевод в КарГТУ
     """
     id = HashidAutoField(primary_key=True, min_length=16)
+
     university = models.CharField(max_length=500, verbose_name=_('Наименование предыдущего ВУЗа)'))
+
     faculty = models.CharField(max_length=200, choices=faculties, verbose_name=_('Факультет'))
+
     specialty = models.ForeignKey(Specialty, on_delete=models.CASCADE, verbose_name=_('Шифр и название специальности'))
+
     date_of_application = models.DateTimeField(auto_now_add=True, verbose_name=_('Дата подачи заявления'))
-    course = models.IntegerField(verbose_name=_('Курс'))
+
+    course = models.IntegerField(verbose_name=_('Курс'),
+                                 validators=[MinValueValidator(1), MaxValueValidator(5)])
+
     foundation = models.CharField(max_length=200, choices=foundation_types, default='на платной основе',
                                   verbose_name=_('Основа обучения'))
-    iin_attachment = models.ImageField(upload_to='recovery/', verbose_name=_('Прикрепление копии ИИН'))
+
+    iin_attachment = models.ImageField(upload_to='recovery/',
+                                       verbose_name=_('Прикрепление копии документа, удостоверяющего личность'))
+
     reference = models.FileField(verbose_name=_('Академическая справка'))
+
     transcript = models.FileField(verbose_name=_('Копия транскрипта'))
+
     grant = models.FileField(blank=True, null=True, verbose_name=_('Свидительство о образовательном гранте'))
+
     status = models.CharField(max_length=50, choices=application_statuses, default='Не проверено',
                               verbose_name=_('Статус'))
 
@@ -223,20 +254,32 @@ class Transfer(Person):
     Перевод в другой ВУЗ
     """
     id = HashidAutoField(primary_key=True, min_length=16)
+
     group = models.CharField(max_length=50, verbose_name=_('Группа'))
+
     current_specialty = models.ForeignKey(Specialty, on_delete=models.CASCADE, verbose_name=_('Текущая специальность'),
                                           related_name='current_specialty')
+
     university = models.CharField(max_length=500, verbose_name=_('Наименование ВУЗа перевода'))
+
     faculty = models.CharField(max_length=200, choices=faculties, verbose_name=_('Факультет'))
+
     specialty = models.ForeignKey(Specialty, on_delete=models.CASCADE, verbose_name=_('Специальность перевода'),
                                   related_name='transfer_specialty')
     date_of_application = models.DateTimeField(auto_now_add=True, verbose_name=_('Дата подачи заявления'))
+
     foundation = models.CharField(max_length=200, choices=foundation_types, default='на платной основе',
                                   verbose_name=_('Основа обучения'))
-    iin_attachment = models.ImageField(upload_to='recovery/', verbose_name=_('Прикрепление копии ИИН'))
+
+    iin_attachment = models.ImageField(upload_to='recovery/',
+                                       verbose_name=_('Прикрепление копии документа, удостоверяющего личность'))
+
     reference = models.FileField(verbose_name=_('Академическая справка'))
+
     transcript = models.FileField(verbose_name=_('Копия транскрипта'))
+
     grant = models.FileField(blank=True, null=True, verbose_name=_('Свидительство о образовательном гранте'))
+
     status = models.CharField(max_length=50, choices=application_statuses, default='Не проверено',
                               verbose_name=_('Статус'))
 
@@ -253,15 +296,25 @@ class Recovery(Person):
     Восстановление в число обучающихся
     """
     id = HashidAutoField(primary_key=True, min_length=16)
+
     university = models.CharField(max_length=500, verbose_name=_('Наименование предыдущего ВУЗа)'))
+
     specialty = models.ForeignKey(Specialty, on_delete=models.CASCADE,
                                   verbose_name=_('Шифр и наименование специальности'))
+
     date_of_application = models.DateTimeField(auto_now_add=True, verbose_name=_('Дата подачи заявления'))
-    course = models.IntegerField(verbose_name=_('Курс'))
+
+    course = models.IntegerField(verbose_name=_('Курс'), validators=[MinValueValidator(1), MaxValueValidator(5)])
+
     faculty = models.CharField(max_length=200, choices=faculties, verbose_name=_('Факультет'))
-    iin_attachment = models.ImageField(upload_to='recovery/', verbose_name=_('Прикрепление копии ИИН'))
+
+    iin_attachment = models.ImageField(upload_to='recovery/',
+                                       verbose_name=_('Прикрепление копии документа, удостоверяющего личность'))
+
     reference = models.FileField(verbose_name=_('Академическая справка'))
+
     transcript = models.FileField(verbose_name=_('Копия транскрипта'))
+
     status = models.CharField(max_length=50, choices=application_statuses, default='Не проверено',
                               verbose_name=_('Статус'))
 

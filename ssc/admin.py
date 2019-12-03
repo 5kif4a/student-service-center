@@ -118,7 +118,7 @@ class ReferenceAdmin(CustomAdmin):
     entity = 'reference'
     app = 'Ваша справка готова. Вы можете получить ее в КарГТУ, 1 корпус, кабинет № 109.'
     list_per_page = 15
-    list_filter = ('receipt_year', 'exclude_year', 'date_of_application', 'education_form', 'course', 'status')
+    list_filter = ('date_of_application', 'receipt_year', 'exclude_year', 'education_form', 'course', 'status')
     list_display = ('last_name', 'first_name', 'patronymic', 'specialty', 'date_of_application', 'status',
                     'print')
     readonly_fields = ('id_card',)
@@ -126,7 +126,7 @@ class ReferenceAdmin(CustomAdmin):
                      'individual_identification_number')
 
     def id_card(self, obj):
-        return format_html(f"""<img src="{obj.iin_attachment.url}">""")
+        return format_html(f"""<img src="{obj.iin_attachment.url}" width="300px">""")
 
 
 @admin.register(AcademicLeave)
@@ -153,13 +153,14 @@ class DuplicateAdmin(CustomAdmin):
     entity = 'duplicate'
     app = 'Ваш дубликат готов. Вы можете получить его в КарГТУ, 1 корпус, кабинет № 109.'
     list_per_page = 15
-    list_filter = ('graduation_year', 'date_of_application', 'status')
+    list_filter = ('date_of_application', 'graduation_year', 'reason', 'duplicate_type', 'status')
     list_display = ('last_name', 'first_name', 'patronymic', 'date_of_application', 'status', 'print')
     readonly_fields = ('id_card',)
-    search_fields = get_model_fields(Duplicate)
+    search_fields = ('last_name', 'first_name', 'patronymic', 'address', 'specialty__name',
+                     'individual_identification_number')
 
     def id_card(self, obj):
-        return format_html(f"""<img src="{obj.iin_attachment.url}">""")
+        return format_html(f"""<img src="{obj.iin_attachment.url}" width="300px">""")
 
 
 @admin.register(Transfer)
@@ -170,13 +171,14 @@ class TransferAdmin(CustomAdmin):
     entity = 'transfer'
     app = 'Ваше заявление подписано. Вы можете получить его в КарГТУ, 1 корпус, кабинет № 109.'
     list_per_page = 15
-    list_filter = ('faculty', 'date_of_application', 'foundation', 'status')
+    list_filter = ('date_of_application', 'faculty', 'foundation', 'status')
     list_display = ('last_name', 'first_name', 'patronymic', 'date_of_application', 'status', 'print')
     readonly_fields = ('id_card',)
-    search_fields = get_model_fields(Transfer)
+    search_fields = ('last_name', 'first_name', 'patronymic', 'address', 'current_specialty__name',
+                     'specialty__name', 'individual_identification_number', 'university', 'group')
 
     def id_card(self, obj):
-        return format_html(f"""<img src="{obj.iin_attachment.url}">""")
+        return format_html(f"""<img src="{obj.iin_attachment.url}" width="300px">""")
 
 
 @admin.register(TransferKSTU)
@@ -190,13 +192,14 @@ class TransferKSTUAdmin(CustomAdmin):
           'для заключения договора. При себе иметь удостоверение личности. ' \
           'После подписания договора подойти в каб. № 109, 1 корпус.'
     list_per_page = 15
-    list_filter = ('faculty', 'date_of_application', 'foundation', 'status')
+    list_filter = ('date_of_application', 'faculty', 'course', 'foundation', 'status')
     list_display = ('last_name', 'first_name', 'patronymic', 'date_of_application', 'status', 'print')
     readonly_fields = ('id_card',)
-    search_fields = get_model_fields(Transfer)
+    search_fields = ('last_name', 'first_name', 'patronymic', 'address', 'current_specialty__name',
+                     'specialty__name', 'individual_identification_number', 'university', 'group')
 
     def id_card(self, obj):
-        return format_html(f"""<img src="{obj.iin_attachment.url}">""")
+        return format_html(f"""<img src="{obj.iin_attachment.url}" width="300px">""")
 
 
 @admin.register(Recovery)
@@ -207,11 +210,11 @@ class RecoveryAdmin(CustomAdmin):
     entity = 'recovery'
     app = 'Ваше заявление принято.'
     list_per_page = 15
-    list_filter = ('faculty', 'date_of_application', 'status')
+    list_filter = ('date_of_application', 'faculty', 'course', 'status')
     list_display = ('last_name', 'first_name', 'patronymic', 'date_of_application', 'status', 'print')
     readonly_fields = ('id_card',)
-    search_fields = get_model_fields(Transfer)
+    search_fields = ('last_name', 'first_name', 'patronymic', 'address', 'specialty__name',
+                     'individual_identification_number', 'university', 'group')
 
     def id_card(self, obj):
-        return format_html(f"""<img src="{obj.iin_attachment.url}">""")
-
+        return format_html(f"""<img src="{obj.iin_attachment.url}" width="300px">""")

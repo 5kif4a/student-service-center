@@ -61,16 +61,16 @@
         </div>
         <div class="form-row">
             <div class="form-group col">
-                {{ form.university|as_crispy_field }}
-            </div>
-            <div class="form-group col">
                 {{ form.faculty|as_crispy_field }}
             </div>
             <div class="form-group col">
-                {{ form.specialty|as_crispy_field }}
+                {{ form.group|as_crispy_field }}
             </div>
             <div class="form-group col">
-                {{ form.group|as_crispy_field }}
+                {{ form.university|as_crispy_field }}
+            </div>
+            <div class="form-group col">
+                {{ form.specialty|as_crispy_field }}
             </div>
             <div class="form-group col">
                 {{ form.foundation|as_crispy_field }}
@@ -93,6 +93,7 @@
             </div>
         </div>
         {{ form.captcha }}
+        <p class="text-muted">* - обязательные поля для заполнения</p>
         <button type="submit" class="btn btn-success mt-1">Отправить заявку</button>
     </div>
 </form>

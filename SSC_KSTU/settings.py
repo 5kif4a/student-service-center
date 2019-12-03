@@ -44,7 +44,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'ssc.apps.SccConfig',
     'crispy_forms',
-    'captcha'
+    'captcha',
 ]
 
 # recaptcha settings

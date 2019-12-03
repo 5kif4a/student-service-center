@@ -113,7 +113,7 @@ class DuplicateView(TemplateView):
     form_class = DuplicateForm
     template_name = 'ssc/duplicate.html'
     context = {'status': statuses.get('duplicate')}
-    mail_template = 'mails/base.html'
+    mail_template = 'mails/duplicate.html'
 
     @login_required
     def render(self, obj_id):

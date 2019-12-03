@@ -67,6 +67,17 @@
         </div>
         <div class="form-row">
             <div class="form-group col">
+                {{ form.address|as_crispy_field }}
+            </div>
+            <div class="form-group col">
+                {{ form.email|as_crispy_field }}
+            </div>
+            <div class="form-group col">
+                {{ form.phone_number|as_crispy_field }}
+            </div>
+        </div>
+        <div class="form-row">
+            <div class="form-group col">
                 {{ form.course|as_crispy_field }}
             </div>
             <div class="form-group col">
@@ -86,27 +97,17 @@
             <div class="form-group col">
                 {{ form.exclude_year|as_crispy_field }}
             </div>
-        </div>
-        <div class="form-row">
-            <div class="form-group col">
-                {{ form.address|as_crispy_field }}
-            </div>
-            <div class="form-group col">
-                {{ form.email|as_crispy_field }}
-            </div>
-            <div class="form-group col">
-                {{ form.phone_number|as_crispy_field }}
-            </div>
-        </div>
-        <div class="form-row">
             <div class="form-group col">
                 {{ form.reason|as_crispy_field }}
             </div>
+        </div>
+        <div class="form-row">
             <div class="form-group col">
                 {{ form.iin_attachment|as_crispy_field }}
             </div>
         </div>
         {{ form.captcha }}
+        <p class="text-muted">* - обязательные поля для заполнения</p>
         <button type="submit" class="btn btn-success mt-1">Отправить заявку</button>
     </div>
 </form>
