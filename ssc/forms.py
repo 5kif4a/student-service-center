@@ -1,4 +1,4 @@
-from django.forms import ModelForm, NumberInput, FileInput
+from django.forms import ModelForm, NumberInput, FileInput, TextInput
 from ssc.models import *
 from captcha.fields import ReCaptchaField, ReCaptchaV3
 
@@ -20,6 +20,8 @@ class ReferenceForm(ModelForm):
         fields = "__all__"
         widgets = {
             'course': NumberInput(attrs={'min': 1, 'max': 5}),
+            'receipt_year': NumberInput(attrs={'min': 1953, 'max': year_}),
+            'exclude_year': NumberInput(attrs={'min': 1953, 'max': year_})
         }
 
     def __init__(self, *args, **kwargs):
@@ -86,6 +88,10 @@ class TransferForm(ModelForm):
         )
     )
 
+    widgets = {
+        'course': NumberInput(attrs={'min': 1, 'max': 5})
+    }
+
     class Meta:
         model = Transfer
         fields = "__all__"
@@ -107,6 +113,10 @@ class TransferKSTUForm(ModelForm):
             }
         )
     )
+
+    widgets = {
+        'course': NumberInput(attrs={'min': 1, 'max': 5})
+    }
 
     class Meta:
         model = TransferKSTU
@@ -131,6 +141,10 @@ class RecoveryForm(ModelForm):
             }
         )
     )
+
+    widgets = {
+        'course': NumberInput(attrs={'min': 1, 'max': 5})
+    }
 
     class Meta:
         model = Recovery
