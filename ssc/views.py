@@ -8,7 +8,7 @@ from django.core.files.storage import FileSystemStorage
 # Create your views here.
 
 # Текущий ректор
-rector_name = Rector.objects.filter(status=True)[0].name
+# rector_name = Rector.objects.filter(status=True)[0].name
 
 
 # главная страница
