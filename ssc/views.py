@@ -11,7 +11,7 @@ from django.db.models import ObjectDoesNotExist
 # Текущий ректор
 try:
     rector_name = Rector.objects.filter(status=True)[0].name
-except ObjectDoesNotExist:
+except IndexError:
     rector_name = 'ФИО ректора КарГТУ'
 
 
