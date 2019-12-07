@@ -54,6 +54,7 @@ faculties = [('горный', 'горный'),
              ('инженерной экономики и менеджмента', 'инженерной экономики и менеджмента')
              ]
 
+
 # Логирование
 logger = logging.getLogger('SSC_KSTU')
 logger.setLevel(logging.INFO)

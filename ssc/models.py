@@ -1,15 +1,8 @@
 from django.db import models
 from django.utils.translation import gettext_lazy as _
-from django.core.validators import RegexValidator, MinValueValidator, MaxValueValidator
 from hashid_field import HashidAutoField
 from ssc.utilities import *
-import datetime as dt
-
-# Текущий год
-year_ = dt.datetime.now().year
-iin_regex = '^((0[48]|[2468][048]|[13579][26])0229[1-6]|000229[34]|\d\d((0[13578]|1[02])(0[1-9]|[12]\d|3[01])|(0[469]|11)(0[1-9]|[12]\d|30)|02(0[1-9]|1\d|2[0-8]))[1-6])\d{5}$'
-phone_number_regex = '^\+?77([0124567][0-8]\d{7})$'
-alphabet_regex = '/^[A-Za-z]+$/'
+from ssc.validators import *
 
 
 # Create your models here.
@@ -18,23 +11,13 @@ class Person(models.Model):
     """
     Абстрактный класс-модель - Личность
     """
-    last_name = models.CharField(max_length=50, verbose_name=_('Фамилия'),
-                                 validators=[RegexValidator(regex=alphabet_regex,
-                                                            message='В этом поле только символы')])
-    first_name = models.CharField(max_length=50, verbose_name=_('Имя'),
-                                  validators=[RegexValidator(regex=alphabet_regex,
-                                                             message='В этом поле только символы')])
-    patronymic = models.CharField(max_length=50, verbose_name=_('Отчество'),
-                                  validators=[RegexValidator(regex=alphabet_regex,
-                                                             message='В этом поле только символы')])
-    individual_identification_number = models.CharField(max_length=12, verbose_name=_('ИИН'),
-                                                        validators=[RegexValidator(regex=iin_regex,
-                                                                                   message='Введен неправильный ИИН')])
+    last_name = models.CharField(max_length=50, verbose_name=_('Фамилия'), validators=alphabet_validator)
+    first_name = models.CharField(max_length=50, verbose_name=_('Имя'), validators=alphabet_validator)
+    patronymic = models.CharField(max_length=50, verbose_name=_('Отчество'), validators=alphabet_validator)
+    individual_identification_number = models.CharField(max_length=12, verbose_name=_('ИИН'), validators=iin_validator)
     email = models.EmailField(verbose_name=_('Электронная почта'))
     address = models.CharField(max_length=500, verbose_name=_('Адрес'))
-    phone_number = models.CharField(max_length=16, verbose_name=_('Номер телефона'),
-                                    validators=[RegexValidator(regex=phone_number_regex,
-                                                               message='Введенный номер не соответствует формату')])
+    phone_number = models.CharField(max_length=16, verbose_name=_('Номер телефона'), validators=phone_number_validator)
 
     class Meta:
         abstract = True
@@ -74,10 +57,17 @@ class Application(models.Model):
     """
     Абстрактный класс-модель - Заявление(форма)
     """
-    course = models.IntegerField(verbose_name=_('Курс'), validators=[MinValueValidator(1), MaxValueValidator(5)])
+    reason_choices = None
+    default_reason = None
+
+    course = models.IntegerField(verbose_name=_('Курс'), validators=course_validator)
+    group = models.CharField(max_length=50, verbose_name=_('Группа'))
     specialty = models.ForeignKey(Specialty, on_delete=models.CASCADE, verbose_name=_('Шифр и название специальности'))
     date_of_application = models.DateTimeField(auto_now_add=True, verbose_name=_('Дата подачи заявления'))
-    group = models.CharField(max_length=50, verbose_name=_('Группа'))
+    reason = models.CharField(max_length=100, choices=reason_choices, default=default_reason,
+                              verbose_name=_('Причина'))
+    status = models.CharField(max_length=50, choices=application_statuses, default='Не проверено',
+                              verbose_name=_('Статус'))
 
     class Meta:
         abstract = True
@@ -103,7 +93,7 @@ class Student(models.Model):
     last_name = models.CharField(max_length=50, verbose_name=_('Фамилия'))
     first_name = models.CharField(max_length=50, verbose_name=_('Имя'))
     patronymic = models.CharField(max_length=50, verbose_name=_('Отчество'))
-    individual_identification_number = models.CharField(max_length=13, verbose_name=_('ИИН'),
+    individual_identification_number = models.CharField(max_length=12, verbose_name=_('ИИН'),
                                                         validators=[RegexValidator(regex=iin_regex,
                                                                                    message='Введен неправильный ИИН')])
     education_form = models.CharField(max_length=50, verbose_name=_('Форма обучения'))
@@ -128,19 +118,16 @@ class Reference(Person, Application):
     Модель(таблица) для заявления по услуге - "Выдача справки лицам, не завершившим высшее и послевузовское образование"
     Государственная услуга
     """
+    reason_choices = reference_reasons
+    default_reason = 'В связи с отчислением'
+
     id = HashidAutoField(primary_key=True, min_length=16)
     education_form = models.CharField(max_length=10, choices=education_types, default='Очное',
                                       verbose_name=_('Форма обучения'))
-    receipt_year = models.IntegerField(verbose_name=_('Год поступления'),
-                                       validators=[MinValueValidator(1953), MaxValueValidator(year_)])
-    exclude_year = models.IntegerField(verbose_name=_('Год отчисления'),
-                                       validators=[MinValueValidator(1953), MaxValueValidator(year_)])
+    receipt_year = models.IntegerField(verbose_name=_('Год поступления'), validators=course_validator)
+    exclude_year = models.IntegerField(verbose_name=_('Год отчисления'), validators=course_validator)
     iin_attachment = models.ImageField(upload_to='references/',
                                        verbose_name=_('Прикрепление копии документа, удостоверяющего личность'))
-    reason = models.CharField(max_length=100, choices=reference_reasons, default='В связи с отчислением',
-                              verbose_name=_('Причина'))
-    status = models.CharField(max_length=50, choices=application_statuses, default='Не проверено',
-                              verbose_name=_('Статус'))
 
     class Meta:
         verbose_name = _('заявление на выдачу справки, не завершившим высшее и послевуз. обр-е')
@@ -169,23 +156,20 @@ class Reference(Person, Application):
 #         verbose_name = _('заявление на предоставление общежития в ВУЗах')
 #         verbose_name_plural = _('заявления на предоставление общежития в ВУЗах')
 
-class Duplicate(Person):
+class Duplicate(Person, Application):
     """
     Модель(таблица) для заявления по услуге - "Выдача дубликатов документов о высшем и послевузовском образовании"
     Государственная услуга
     """
+    reason_choices = duplicate_reasons
+    default_reason = 'утерей'
+
     id = HashidAutoField(primary_key=True, min_length=16)
-    graduation_year = models.IntegerField(verbose_name=_('Год окончания ВУЗа'),
-                                          validators=[MinValueValidator(1953), MaxValueValidator(year_)])
-    specialty = models.ForeignKey(Specialty, on_delete=models.CASCADE, verbose_name=_('Шифр и название специальности'))
-    date_of_application = models.DateTimeField(auto_now_add=True, verbose_name=_('Дата подачи заявления'))
+    graduation_year = models.IntegerField(verbose_name=_('Год окончания ВУЗа'), validators=course_validator)
     iin_attachment = models.ImageField(upload_to='duplicates/',
                                        verbose_name=_('Прикрепление копии документа, удостоверяющего личность'))
-    reason = models.CharField(max_length=30, choices=duplicate_reasons, default='Утеря', verbose_name=_('Причина'))
     duplicate_type = models.CharField(max_length=100, choices=duplicate_types, default='Дубликат диплома',
                                       verbose_name=_('Тип дубликата'))
-    status = models.CharField(max_length=50, choices=application_statuses, default='Не проверено',
-                              verbose_name=_('Статус'))
 
     class Meta:
         verbose_name = _('заявление на выдачу дубликатов документов о высшем и послевузовском образовании')
@@ -195,17 +179,15 @@ class Duplicate(Person):
         return f'{self.last_name} {self.first_name} {self.patronymic}. ИИН: {self.individual_identification_number}'
 
 
-class AcademicLeave(Person):
+class AcademicLeave(Person, Application):
     """
     Предоставление академических отпусков обучающимся в организациях образования
     Государственная услуга
     """
+    reason_choices = academic_leave_reasons
+    default_reason = ''
+
     id = HashidAutoField(primary_key=True, min_length=16)
-    specialty = models.ForeignKey(Specialty, on_delete=models.CASCADE, verbose_name=_('Шифр и название специальности'))
-    date_of_application = models.DateTimeField(auto_now_add=True, verbose_name=_('Дата подачи заявления'))
-    reason = models.CharField(max_length=100, choices=academic_leave_reasons, default='', verbose_name=_('Причина'))
-    status = models.CharField(max_length=50, choices=application_statuses, default='Не проверено',
-                              verbose_name=_('Статус'))
     attachment = models.FileField(blank=True, null=True, verbose_name=_('Прикрепление'))
 
     class Meta:
@@ -216,7 +198,7 @@ class AcademicLeave(Person):
         return f'{self.last_name} {self.first_name} {self.patronymic}. ИИН: {self.individual_identification_number}'
 
 
-class TransferKSTU(Person):
+class TransferKSTU(Person, Application):
     """
     Перевод в КарГТУ
     """
@@ -225,13 +207,6 @@ class TransferKSTU(Person):
     university = models.CharField(max_length=500, verbose_name=_('Наименование предыдущего ВУЗа)'))
 
     faculty = models.CharField(max_length=200, choices=faculties, verbose_name=_('Факультет'))
-
-    specialty = models.ForeignKey(Specialty, on_delete=models.CASCADE, verbose_name=_('Шифр и название специальности'))
-
-    date_of_application = models.DateTimeField(auto_now_add=True, verbose_name=_('Дата подачи заявления'))
-
-    course = models.IntegerField(verbose_name=_('Курс'),
-                                 validators=[MinValueValidator(1), MaxValueValidator(5)])
 
     foundation = models.CharField(max_length=200, choices=foundation_types, default='на платной основе',
                                   verbose_name=_('Основа обучения'))
@@ -245,8 +220,7 @@ class TransferKSTU(Person):
 
     grant = models.FileField(blank=True, null=True, verbose_name=_('Свидительство о образовательном гранте'))
 
-    status = models.CharField(max_length=50, choices=application_statuses, default='Не проверено',
-                              verbose_name=_('Статус'))
+    reason = None
 
     class Meta:
         verbose_name = _('заявление на перевод в КарГТУ')
@@ -256,13 +230,11 @@ class TransferKSTU(Person):
         return f'{self.last_name} {self.first_name} {self.patronymic}. ИИН: {self.individual_identification_number}'
 
 
-class Transfer(Person):
+class Transfer(Person, Application):
     """
     Перевод в другой ВУЗ
     """
     id = HashidAutoField(primary_key=True, min_length=16)
-
-    group = models.CharField(max_length=50, verbose_name=_('Группа'))
 
     current_specialty = models.ForeignKey(Specialty, on_delete=models.CASCADE, verbose_name=_('Текущая специальность'),
                                           related_name='current_specialty')
@@ -273,7 +245,6 @@ class Transfer(Person):
 
     specialty = models.ForeignKey(Specialty, on_delete=models.CASCADE, verbose_name=_('Специальность перевода'),
                                   related_name='transfer_specialty')
-    date_of_application = models.DateTimeField(auto_now_add=True, verbose_name=_('Дата подачи заявления'))
 
     foundation = models.CharField(max_length=200, choices=foundation_types, default='на платной основе',
                                   verbose_name=_('Основа обучения'))
@@ -287,8 +258,7 @@ class Transfer(Person):
 
     grant = models.FileField(blank=True, null=True, verbose_name=_('Свидительство о образовательном гранте'))
 
-    status = models.CharField(max_length=50, choices=application_statuses, default='Не проверено',
-                              verbose_name=_('Статус'))
+    reason = None
 
     class Meta:
         verbose_name = _('заявление на перевод в другой ВУЗ')
@@ -298,20 +268,13 @@ class Transfer(Person):
         return f'{self.last_name} {self.first_name} {self.patronymic}. ИИН: {self.individual_identification_number}'
 
 
-class Recovery(Person):
+class Recovery(Person, Application):
     """
     Восстановление в число обучающихся
     """
     id = HashidAutoField(primary_key=True, min_length=16)
 
     university = models.CharField(max_length=500, verbose_name=_('Наименование предыдущего ВУЗа)'))
-
-    specialty = models.ForeignKey(Specialty, on_delete=models.CASCADE,
-                                  verbose_name=_('Шифр и наименование специальности'))
-
-    date_of_application = models.DateTimeField(auto_now_add=True, verbose_name=_('Дата подачи заявления'))
-
-    course = models.IntegerField(verbose_name=_('Курс'), validators=[MinValueValidator(1), MaxValueValidator(5)])
 
     faculty = models.CharField(max_length=200, choices=faculties, verbose_name=_('Факультет'))
 
@@ -322,8 +285,7 @@ class Recovery(Person):
 
     transcript = models.FileField(verbose_name=_('Копия транскрипта'))
 
-    status = models.CharField(max_length=50, choices=application_statuses, default='Не проверено',
-                              verbose_name=_('Статус'))
+    reason = None
 
     class Meta:
         verbose_name = _('заявление на восстановление в число обучающихся')
@@ -349,6 +311,23 @@ class Recovery(Person):
 #     """
 #     pass
 
+
+class Notification(models.Model):
+    """
+    Уведомление о заявлениях
+    """
+    id = HashidAutoField(primary_key=True, min_length=16)
+    date = models.DateTimeField(auto_now_add=True, verbose_name=_('Дата отправки уведомления'))
+    application_type = models.CharField(max_length=500)
+    url_for_application = models.URLField(verbose_name=_(''))
+    is_showed = models.BooleanField(verbose_name=_('Показано'))
+
+    class Meta:
+        verbose_name = 'Уведомление'
+        verbose_name_plural = 'Уведомления'
+
+    def __str__(self):
+        return f'Уведомление: {self.application_type}'
 
 # class Report(models.Model):
 #     pass

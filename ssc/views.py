@@ -5,10 +5,14 @@ from ssc.models import *
 from ssc.utilities import *
 from django.contrib.auth.decorators import login_required
 from django.core.files.storage import FileSystemStorage
+from django.db.models import ObjectDoesNotExist
 # Create your views here.
 
 # Текущий ректор
-rector_name = Rector.objects.filter(status=True)[0].name
+try:
+    rector_name = Rector.objects.filter(status=True)[0].name
+except ObjectDoesNotExist:
+    rector_name = 'ФИО ректора КарГТУ'
 
 
 # главная страница

@@ -55,6 +55,10 @@ SILENCED_SYSTEM_CHECKS = ['captcha.recaptcha_test_key_error']
 # crispy forms settings
 CRISPY_TEMPLATE_PACK = 'bootstrap4'
 
+# Django Jet Configs
+# JET_DEFAULT_THEME = 'default'
+# JET_SIDE_MENU_COMPACT = False
+
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',

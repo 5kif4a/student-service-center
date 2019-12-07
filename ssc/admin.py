@@ -9,6 +9,8 @@ admin.site.index_title = 'Центр обслуживания студентов
 admin.site.site_header = 'Центр обслуживания студентов'
 admin.site.site_title = 'Административная панель'
 
+# admin.site.index_template = 'custom_admin/base_site.html'
+
 
 # Метод получения всех полей модели(столбцов таблицы)
 def get_model_fields(model):
@@ -195,8 +197,8 @@ class TransferKSTUAdmin(CustomAdmin):
     list_filter = ('date_of_application', 'faculty', 'course', 'foundation', 'status')
     list_display = ('last_name', 'first_name', 'patronymic', 'date_of_application', 'status', 'print')
     readonly_fields = ('id_card',)
-    search_fields = ('last_name', 'first_name', 'patronymic', 'address', 'current_specialty__name',
-                     'specialty__name', 'individual_identification_number', 'university', 'group')
+    search_fields = ('last_name', 'first_name', 'patronymic', 'address',
+                     'specialty__name', 'individual_identification_number', 'university')
 
     def id_card(self, obj):
         return format_html(f"""<img src="{obj.iin_attachment.url}" width="300px">""")
@@ -214,7 +216,7 @@ class RecoveryAdmin(CustomAdmin):
     list_display = ('last_name', 'first_name', 'patronymic', 'date_of_application', 'status', 'print')
     readonly_fields = ('id_card',)
     search_fields = ('last_name', 'first_name', 'patronymic', 'address', 'specialty__name',
-                     'individual_identification_number', 'university', 'group')
+                     'individual_identification_number', 'university')
 
     def id_card(self, obj):
         return format_html(f"""<img src="{obj.iin_attachment.url}" width="300px">""")

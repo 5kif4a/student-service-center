@@ -36,58 +36,11 @@
 </div>
 {% endblock description %}
 {% block form %}
-{#<div class="row justify-content-center">#}
-{#    <div class="col text-center">#}
-{#        <button class="btn btn-primary" type="button" data-toggle="collapse" data-target="#collapseExample" aria-expanded="false" aria-controls="collapseExample">Перейти к форме заявления</button>#}
-{#    </div>#}
-{#</div>#}
-{#<form class="collapse p-2 m-2" id="collapseExample" method="post">#}
-{#    {% csrf_token %}#}
-{#    <div class="form-group">#}
-{#        <div class="form-row">#}
-{#            <div class="form-group col-sm">#}
-{#                {{ form.last_name|as_crispy_field }}#}
-{#            </div>#}
-{#            <div class="form-group col-sm">#}
-{#                {{ form.first_name|as_crispy_field }}#}
-{#            </div>#}
-{#            <div class="form-group col-sm">#}
-{#                {{ form.patronymic|as_crispy_field }}#}
-{#            </div>#}
-{#        </div>#}
-{#        <div class="form-row">#}
-{#            <div class="form-group col">#}
-{#                {{ form.course|as_crispy_field }}#}
-{#            </div>#}
-{#            <div class="form-group col">#}
-{#                {{ form.group|as_crispy_field }}#}
-{#            </div>#}
-{#            <div class="form-group col">#}
-{#                {{ form.specialty|as_crispy_field }}#}
-{#            </div>#}
-{#            <div class="form-group col">#}
-{#                {{ form.education_form|as_crispy_field }}#}
-{#            </div>#}
-{#        </div>#}
-{#        <div class="form-row">#}
-{#            <div class="form-group col">#}
-{#                {{ form.receipt_year|as_crispy_field }}#}
-{#            </div>#}
-{#            <div class="form-group col">#}
-{#                {{ form.exclude_year|as_crispy_field }}#}
-{#            </div>#}
-{#            <div class="form-group col">#}
-{#                {{ form.email|as_crispy_field }}#}
-{#            </div>#}
-{#            <div class="form-group col">#}
-{#                {{ form.phone_number|as_crispy_field }}#}
-{#            </div>#}
-{#        </div>#}
-{#        {{ form.reason|as_crispy_field }}#}
-{#        {{ form.captcha }}#}
-{#        <button type="submit" class="btn btn-success mt-1">Отправить заявку</button>#}
-{#    </div>#}
-{#</form>#}
+<div class="row justify-content-center m-2">
+    <div class="col text-center">
+        <a class="btn btn-primary btn-lg" href="https://ent.testcenter.kz/">Перейти к подаче заявления</a>
+    </div>
+</div>
 {% endblock form %}
 </div>
 {% endblock content%}
