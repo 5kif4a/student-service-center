@@ -11,3 +11,7 @@ media/
 .env
 admin/
 settings.py
+bin
+include
+lib
+.Python
