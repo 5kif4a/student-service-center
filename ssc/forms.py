@@ -48,6 +48,7 @@ class AcademicLeaveForm(ModelForm):
 
     def __init__(self, *args, **kwargs):
         super(AcademicLeaveForm, self).__init__(*args, **kwargs)
+        self.fields['reason'].label = 'Причина (в связи)'
         self.fields['specialty'].label = 'Специальность'
         self.fields['attachment'].label = 'Прикрепление файла копии заключения/решения/свидетельства/повестки'
         self.fields['status'].required = False
