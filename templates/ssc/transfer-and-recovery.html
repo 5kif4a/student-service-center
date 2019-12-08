@@ -5,31 +5,35 @@
 {% block description %}
 <h3 class="text-center p-3">Перевод и восстановление обучающихся в высших учебных заведениях</h3>
 <div class="alert alert-info text-center"><h5>Статус услуги: {% if status %}Автоматизирована <i class="fas fa-cogs fa-lg"></i>{% else %}в процессе разработки <i class="fab fa-dev fa-lg"></i>{% endif %}</h5></div>
-<div class="row">
-    <div class="col-3 m-2 border border-info">
-        <div class="row justify-content-center m-2">
-    <a class="btn btn-info" href="http://adilet.zan.kz/rus/docs/V1500012839#z7" target="_blank">Стандарт государственной услуги</a>
-    </div>
-    <div class="row justify-content-center m-2">
-        <a class="btn btn-info" href="https://egov.kz/cms/ru/services/professional_education/pass203-1_mon" target="_blank">Получение услуги на Egov</a>
-    </div>
-        <ul class="list-group list-group-flush">
-        <li class="list-group-item"><b>Государственный орган:</b> <a href="http://edu.gov.kz/ru" target="_blank">Министерство образования и науки РК</a></li>
-        <li class="list-group-item"><b>Получатели услуги:</b> Физические лица</li>
-        <li class="list-group-item"><b>Место предоставления услуги:</b>
-            <ul class="list-unstyled">
-                <li><a href="http://egov.kz/cms/ru/articles/2Fvusi_rk" target="_blank">Высшие учебные заведения РК</a></li>
-            </ul>
-        </li>
-        <li class="list-group-item"><b>Стоимость услуги:</b> Бесплатно</li>
-        <li class="list-group-item"><b>Сроки оказания услуги:</b> 1 рабочий день</li>
-        <li class="list-group-item"><b>Полное наименование услуги:</b> Перевод и восстановление обучающихся в высших учебных заведениях</li>
-    </ul>
-    </div>
-    <div class="col m-2">
-        <a href="/transfer" class="btn btn-outline-primary btn-lg btn-block" role="button">Форма заявления на перевод в другой ВУЗ</a>
-        <a href="/transfer-kstu" class="btn btn-outline-primary btn-lg btn-block" role="button">Форма заявления на перевод в КарГТУ</a>
-        <a href="/recovery" class="btn btn-outline-primary btn-lg btn-block" role="button">Форма заявления на восстановление в число обучающихся</a>
+<div class="container">
+    <div class="row text-break">
+        <div class="col m-2 border border-info">
+            <ul class="list-group list-group-flush">
+            <li class="list-group-item"><b>Государственный орган:</b> <a href="http://edu.gov.kz/ru" target="_blank">Министерство образования и науки РК</a></li>
+            <li class="list-group-item"><b>Получатели услуги:</b> Физические лица</li>
+            <li class="list-group-item"><b>Место предоставления услуги:</b>
+                <ul class="list-unstyled">
+                    <li><a href="http://egov.kz/cms/ru/articles/2Fvusi_rk" target="_blank">Высшие учебные заведения РК</a></li>
+                </ul>
+            </li>
+            <li class="list-group-item"><b>Стоимость услуги:</b> Бесплатно</li>
+            <li class="list-group-item"><b>Сроки оказания услуги:</b> 1 рабочий день</li>
+            <li class="list-group-item"><b>Полное наименование услуги:</b> Перевод и восстановление обучающихся в высших учебных заведениях</li>
+        </ul>
+        </div>
+        <div class="col-md-9 mb-2">
+            <div class="row mb-2">
+                <div class="col-lg mt-2">
+                    <a class="btn btn-info btn-block" href="http://adilet.zan.kz/rus/docs/V1500012839#z7" target="_blank">Стандарт государственной услуги</a>
+                </div>
+                <div class="col-lg mt-2">
+                    <a class="btn btn-info btn-block" href="https://egov.kz/cms/ru/services/professional_education/pass203-1_mon" target="_blank">Получение услуги на Egov</a>
+                </div>
+            </div>
+            <a href="/transfer" class="btn btn-outline-primary btn-lg btn-block" role="button">Форма заявления на перевод в другой ВУЗ</a>
+            <a href="/transfer-kstu" class="btn btn-outline-primary btn-lg btn-block" role="button">Форма заявления на перевод в КарГТУ</a>
+            <a href="/recovery" class="btn btn-outline-primary btn-lg btn-block" role="button">Форма заявления на восстановление в число обучающихся</a>
+        </div>
     </div>
 </div>
 {% endblock description %}
