@@ -5,104 +5,108 @@
 {% block description %}
 <h3 class="text-center p-3">Предоставление академических отпусков обучающимся в организациях образования</h3>
 <div class="alert alert-info text-center"><h5>Статус услуги: {% if status %}Автоматизирована <i class="fas fa-cogs fa-lg"></i>{% else %}в процессе разработки <i class="fab fa-dev fa-lg"></i>{% endif %}</h5></div>
-<div class="row">
-    <div class="col-3 m-2 border border-info">
-        <div class="row justify-content-center m-1">
-            <a class="btn btn-info" href="http://adilet.zan.kz/rus/docs/V1700015647#z16" target="_blank">Стандарт государственной услуги</a>
+<div class="container">
+    <div class="row text-break">
+        <div class="col m-2 border border-info">
+            <ul class="list-group list-group-flush">
+            <li class="list-group-item"><b>Государственный орган:</b> <a href="http://edu.gov.kz/ru" target="_blank">Министерство образования и науки РК</a></li>
+            <li class="list-group-item"><b>Получатели услуги:</b> Физические лица</li>
+            <li class="list-group-item"><b>Место предоставления услуги:</b>
+                <ul class="list-unstyled">
+                    <li>Организациями технического и профессионального, послесреднего, высшего и послевузовского образования</li>
+                    <li><a href="https://gov4c.kz/ru/kontakty/adresa/" target="_blank">НАО «Государственная корпорация «Правительство для граждан»</a></li>
+                </ul>
+            </li>
+            <li class="list-group-item"><b>Стоимость услуги:</b> Бесплатно</li>
+            <li class="list-group-item"><b>Сроки оказания услуги:</b> 3 рабочих дня</li>
+            <li class="list-group-item"><b>Полное наименование услуги:</b> Предоставление академических отпусков обучающимся в организациях образования</li>
+        </ul>
         </div>
-        <div class="row justify-content-center m-1">
-            <a class="btn btn-info" href="https://egov.kz/cms/ru/services/professional_education/pass203_2_mon" target="_blank">Получение услуги на Egov</a>
+    {% block form %}
+        <div class="col-md-9 mb-2">
+        <div class="row mb-2">
+            <div class="col-lg mt-2">
+                <a class="btn btn-info btn-block" href="http://adilet.zan.kz/rus/docs/V1700015647#z16" target="_blank">Стандарт государственной услуги</a>
+            </div>
+            <div class="col-lg mt-2">
+                <a class="btn btn-info btn-block" href="https://egov.kz/cms/ru/services/professional_education/pass203_2_mon" target="_blank">Получение услуги на Egov</a>
+            </div>
         </div>
-        <ul class="list-group list-group-flush">
-        <li class="list-group-item"><b>Государственный орган:</b> <a href="http://edu.gov.kz/ru" target="_blank">Министерство образования и науки РК</a></li>
-        <li class="list-group-item"><b>Получатели услуги:</b> Физические лица</li>
-        <li class="list-group-item"><b>Место предоставления услуги:</b>
-            <ul class="list-unstyled">
-                <li>Организациями технического и профессионального, послесреднего, высшего и послевузовского образования</li>
-                <li><a href="https://gov4c.kz/ru/kontakty/adresa/" target="_blank">НАО «Государственная корпорация «Правительство для граждан»</a></li>
-            </ul>
-        </li>
-        <li class="list-group-item"><b>Стоимость услуги:</b> Бесплатно</li>
-        <li class="list-group-item"><b>Сроки оказания услуги:</b> 3 рабочих дня</li>
-        <li class="list-group-item"><b>Полное наименование услуги:</b> Предоставление академических отпусков обучающимся в организациях образования</li>
-    </ul>
+        <table class="table table-bordered table-hover table-sm">
+            <h4>Необходимые документы</h4>
+            <thead class="thead-light">
+                <th>Услуга</th>
+                <th>Документы</th>
+            </thead>
+            <tbody>
+            <tr>
+                <td>Для предоставления академического отпуска по болезни продолжительностью сроком от 6 до 12 месяцев</td>
+                <td>Заключения врачебно-консультативной комиссии при амбулаторно-поликлинической организации.</td>
+            </tr>
+            <tr>
+                <td>Для предоставления академического отпуска в случае болезни туберкулезом продолжительностью сроком не более 36 месяцев</td>
+                <td>Решения Централизованной врачебно-консультативной комиссии противотуберкулезной организации.</td>
+            </tr>
+            <tr>
+                <td>Для предоставления академического отпуска до достижения ребенком возраста трех лет</td>
+                <td>Документы (свидетельство) о рождении, усыновлении или удочерении ребенка</td>
+            </tr>
+            <tr>
+                <td>Для предоставления академического отпуска студентам-призывникам</td>
+                <td>Повестка о призыве на воинскую службу</td>
+            </tr>
+            </tbody>
+        </table>
+    <form class="p-2 border border-primary" method="post" enctype="multipart/form-data">
+        <h4 class="text-center">Форма заявления</h4>
+        {% csrf_token %}
+        <div class="form-group">
+            <div class="form-row">
+                <div class="form-group col-sm">
+                    {{ form.last_name|as_crispy_field }}
+                </div>
+                <div class="form-group col-sm">
+                    {{ form.first_name|as_crispy_field }}
+                </div>
+                <div class="form-group col-sm">
+                    {{ form.patronymic|as_crispy_field }}
+                </div>
+                <div class="form-group col-sm">
+                    {{ form.individual_identification_number|as_crispy_field }}
+                </div>
+            </div>
+            <div class="form-row align-items-end">
+                <div class="form-group col-sm">
+                    {{ form.address|as_crispy_field }}
+                </div>
+                <div class="form-group col-sm">
+                    {{ form.email|as_crispy_field }}
+                </div>
+                <div class="form-group col-sm">
+                    {{ form.phone_number|as_crispy_field }}
+                </div>
+            </div>
+            <div class="form-row align-items-end">
+                <div class="form-group col-sm">
+                    {{ form.specialty|as_crispy_field }}
+                </div>
+                <div class="form-group col-sm">
+                    {{ form.reason|as_crispy_field }}
+                </div>
+            </div>
+            <div class="form-row">
+                <div class="form-group col-sm">
+                    {{ form.attachment|as_crispy_field }}
+                </div>
+            </div>
+            {{ form.captcha }}
+            <p class="text-muted">* - обязательные поля для заполнения</p>
+            <button type="submit" class="btn btn-success mt-1">Отправить заявку</button>
+        </div>
+    </form>
     </div>
-{% block form %}
-    <div class="col m-2">
-    <table class="table table-bordered table-hover table-sm">
-        <h4>Необходимые документы</h4>
-        <thead class="thead-light">
-            <th>Услуга</th>
-            <th>Документы</th>
-        </thead>
-        <tbody>
-        <tr>
-            <td>Для предоставления академического отпуска по болезни продолжительностью сроком от 6 до 12 месяцев</td>
-            <td>Заключения врачебно-консультативной комиссии при амбулаторно-поликлинической организации.</td>
-        </tr>
-        <tr>
-            <td>Для предоставления академического отпуска в случае болезни туберкулезом продолжительностью сроком не более 36 месяцев</td>
-            <td>Решения Централизованной врачебно-консультативной комиссии противотуберкулезной организации.</td>
-        </tr>
-        <tr>
-            <td>Для предоставления академического отпуска до достижения ребенком возраста трех лет</td>
-            <td>Документы (свидетельство) о рождении, усыновлении или удочерении ребенка</td>
-        </tr>
-        <tr>
-            <td>Для предоставления академического отпуска студентам-призывникам</td>
-            <td>Повестка о призыве на воинскую службу</td>
-        </tr>
-        </tbody>
-    </table>
-<form class="p-2 border border-primary" method="post" enctype="multipart/form-data">
-    <h4 class="text-center">Форма заявления</h4>
-    {% csrf_token %}
-    <div class="form-group">
-        <div class="form-row">
-            <div class="form-group col-sm">
-                {{ form.last_name|as_crispy_field }}
-            </div>
-            <div class="form-group col-sm">
-                {{ form.first_name|as_crispy_field }}
-            </div>
-            <div class="form-group col-sm">
-                {{ form.patronymic|as_crispy_field }}
-            </div>
-            <div class="form-group col-sm">
-                {{ form.individual_identification_number|as_crispy_field }}
-            </div>
-        </div>
-        <div class="form-row">
-            <div class="form-group col">
-                {{ form.address|as_crispy_field }}
-            </div>
-            <div class="form-group col">
-                {{ form.email|as_crispy_field }}
-            </div>
-            <div class="form-group col">
-                {{ form.phone_number|as_crispy_field }}
-            </div>
-        </div>
-        <div class="form-row">
-            <div class="form-group col">
-                {{ form.specialty|as_crispy_field }}
-            </div>
-            <div class="form-group col">
-                {{ form.reason|as_crispy_field }}
-            </div>
-        </div>
-        <div class="form-row">
-            <div class="form-group col">
-                {{ form.attachment|as_crispy_field }}
-            </div>
-        </div>
-        {{ form.captcha }}
-        <p class="text-muted">* - обязательные поля для заполнения</p>
-        <button type="submit" class="btn btn-success mt-1">Отправить заявку</button>
+    {% endblock %}
     </div>
-</form>
-</div>
-{% endblock %}
 </div>
 </div>
 {% endblock description %}
