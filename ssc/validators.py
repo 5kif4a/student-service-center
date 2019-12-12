@@ -30,10 +30,12 @@ phone_number_validator = (RegexValidator(regex=phone_number_regex, message='Вв
 course_validator = (MinValueValidator(1), MaxValueValidator(5))
 education_years_validator = (MinValueValidator(1953), MaxValueValidator(year_))
 
-file_ext_validator = (FileExtensionValidator())
+file_ext_validator = FileExtensionValidator(
+    allowed_extensions=('jpg', 'jpeg', 'png', 'pdf'),
+    message='Допускаются файлы толькок с расширением .jpg, .jpeg, .png, .pdf')
 
 
-def filesize_validator(value):
+def file_size_validator(value):
     filesize = value.size
 
     if filesize > 2621440:

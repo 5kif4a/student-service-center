@@ -44,7 +44,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'ssc.apps.SccConfig',
     'crispy_forms',
-    'captcha',
+    'captcha'
 ]
 
 # recaptcha settings
@@ -54,10 +54,6 @@ SILENCED_SYSTEM_CHECKS = ['captcha.recaptcha_test_key_error']
 
 # crispy forms settings
 CRISPY_TEMPLATE_PACK = 'bootstrap4'
-
-# Django Jet Configs
-# JET_DEFAULT_THEME = 'default'
-# JET_SIDE_MENU_COMPACT = False
 
 
 MIDDLEWARE = [
@@ -104,7 +100,7 @@ WSGI_APPLICATION = 'SSC_KSTU.wsgi.application'
 # }
 
 # MySQL DB connection Settings
-DATABASES = {'default': env.db('SQLITE_URL')}
+DATABASES = {'default': env.db('DATABASE_URL')}
 
 
 # Password validation
