@@ -9,7 +9,8 @@ admin.site.index_title = 'Центр обслуживания студентов
 admin.site.site_header = 'Центр обслуживания студентов'
 admin.site.site_title = 'Административная панель'
 
-# admin.site.index_template = 'custom_admin/base_site.html'
+# кастомная главная страница админ.панели
+admin.site.index_template = 'custom_admin/base_site.html'
 
 
 # Метод получения всех полей модели(столбцов таблицы)

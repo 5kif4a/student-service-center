@@ -12,11 +12,17 @@ class Person(models.Model):
     Абстрактный класс-модель - Личность
     """
     last_name = models.CharField(max_length=50, verbose_name=_('Фамилия'), validators=alphabet_validator)
+
     first_name = models.CharField(max_length=50, verbose_name=_('Имя'), validators=alphabet_validator)
+
     patronymic = models.CharField(max_length=50, blank=True, verbose_name=_('Отчество'), validators=alphabet_validator)
+
     individual_identification_number = models.CharField(max_length=12, verbose_name=_('ИИН'), validators=iin_validator)
+
     email = models.EmailField(verbose_name=_('Электронная почта'))
+
     address = models.CharField(max_length=500, verbose_name=_('Адрес'))
+
     phone_number = models.CharField(max_length=16, verbose_name=_('Номер телефона'), validators=phone_number_validator)
 
     class Meta:
@@ -28,6 +34,7 @@ class Specialty(models.Model):
     Специальность
     """
     id = HashidAutoField(primary_key=True, min_length=16)
+
     name = models.CharField(max_length=200, verbose_name=_('Шифр и название специальности'))
 
     class Meta:
@@ -43,6 +50,7 @@ class University(models.Model):
     Университет
     """
     id = HashidAutoField(primary_key=True, min_length=16)
+
     name = models.CharField(max_length=200, verbose_name=_('Название университета'))
 
     class Meta:
@@ -58,9 +66,13 @@ class Application(models.Model):
     Абстрактный класс-модель - Заявление(форма)
     """
     course = models.IntegerField(verbose_name=_('Курс'), validators=course_validator)
+
     group = models.CharField(max_length=50, verbose_name=_('Группа'))
+
     specialty = models.ForeignKey(Specialty, on_delete=models.CASCADE, verbose_name=_('Шифр и название специальности'))
+
     date_of_application = models.DateTimeField(auto_now_add=True, verbose_name=_('Дата подачи заявления'))
+
     status = models.CharField(max_length=50, choices=application_statuses, default='Не проверено',
                               verbose_name=_('Статус'))
 
@@ -74,6 +86,7 @@ class Rector(models.Model):
     Ректор
     """
     name = models.CharField(max_length=100, verbose_name=_('ФИО ректора'))
+
     status = models.BooleanField(unique=True, verbose_name=_('Статус ректора'))
 
     class Meta:
@@ -86,16 +99,26 @@ class Student(models.Model):
     Студент
     """
     last_name = models.CharField(max_length=50, verbose_name=_('Фамилия'))
+
     first_name = models.CharField(max_length=50, verbose_name=_('Имя'))
+
     patronymic = models.CharField(max_length=50, blank=True, verbose_name=_('Отчество'))
+
     individual_identification_number = models.CharField(max_length=12, blank=True, verbose_name=_('ИИН'),
                                                         validators=iin_validator)
+
     education_form = models.CharField(max_length=50, verbose_name=_('Форма обучения'))
+
     language_department = models.CharField(max_length=50, verbose_name=_('Языковое отделение'))
+
     degree = models.CharField(max_length=50, verbose_name=_('Степень обучения'))
+
     course = models.IntegerField(verbose_name=_('Курс'), validators=course_validator)
+
     faculty = models.CharField(max_length=50, verbose_name=_('Факультет'))
+
     specialty = models.CharField(max_length=100, verbose_name=_('Специальность'))
+
     student_status = models.CharField(max_length=50, verbose_name=_('Статус студента'))
 
     class Meta:
@@ -112,17 +135,21 @@ class Reference(Person, Application):
     Модель(таблица) для заявления по услуге - "Выдача справки лицам, не завершившим высшее и послевузовское образование"
     Государственная услуга
     """
-    reason_choices = reference_reasons
-    default_reason = 'В связи с отчислением'
 
     id = HashidAutoField(primary_key=True, min_length=16)
+
     education_form = models.CharField(max_length=10, choices=education_types, default='Очное',
                                       verbose_name=_('Форма обучения'))
-    receipt_year = models.IntegerField(verbose_name=_('Год поступления'), validators=course_validator)
-    exclude_year = models.IntegerField(verbose_name=_('Год отчисления'), validators=course_validator)
-    iin_attachment = models.ImageField(upload_to='references/',
-                                       verbose_name=_('Прикрепление копии документа, удостоверяющего личность'))
-    reason = models.CharField(max_length=100, choices=reason_choices, default=default_reason,
+
+    receipt_year = models.IntegerField(verbose_name=_('Год поступления'), validators=education_years_validator)
+
+    exclude_year = models.IntegerField(verbose_name=_('Год отчисления'), validators=education_years_validator)
+
+    iin_attachment = models.ImageField(upload_to='reference/',
+                                       verbose_name=_('Прикрепление копии документа, удостоверяющего личность'),
+                                       validators=[file_size_validator])
+
+    reason = models.CharField(max_length=100, choices=reference_reasons, default='в связи с отчислением',
                               verbose_name=_('Причина'))
 
     class Meta:
@@ -137,20 +164,32 @@ class Reference(Person, Application):
 #     """
 #     Прием документов для участия в конкурсе на обучение за рубежом, в том числе академической мобильности
 #     """
-#     pass
-#
-#
-#
-# class Hostel(Person, Application):
-#     """
-#     Предоставление общежития в высших учебных заведениях
-#     Государственная услуга
-#     """
-#     place_of_arrival = models.CharField(max_length=200, verbose_name=_('Место прибытия'))
 #
 #     class Meta:
-#         verbose_name = _('заявление на предоставление общежития в ВУЗах')
-#         verbose_name_plural = _('заявления на предоставление общежития в ВУЗах')
+#         verbose_name = _('заявление на участие в конкурсе на обучение за рубежом, в том числе академической мобильности')
+#         verbose_name_plural = _('заявления на участие в конкурсе на обучение за рубежом, в том числе академической мобильности')
+
+
+class Hostel(Person, Application):
+    """
+    Предоставление общежития в высших учебных заведениях
+    Государственная услуга
+    """
+    faculty = models.CharField(max_length=200, choices=faculties, verbose_name=_('Факультет'))
+
+    place_of_arrival = models.CharField(max_length=200, verbose_name=_('Место прибытия'))
+
+    iin_attachment = models.ImageField(upload_to='hostel/',
+                                       verbose_name=_('Прикрепление копии документа, удостоверяющего личность'),
+                                       validators=[file_size_validator])
+
+    attachment = models.FileField(upload_to='hostel/', blank=True, null=True, verbose_name=_('Прикрепление'),
+                                  validators=[file_size_validator, file_ext_validator])
+
+    class Meta:
+        verbose_name = _('заявление на предоставление общежития в ВУЗах')
+        verbose_name_plural = _('заявления на предоставление общежития в ВУЗах')
+
 
 class Duplicate(Person, Application):
     """
@@ -158,9 +197,13 @@ class Duplicate(Person, Application):
     Государственная услуга
     """
     id = HashidAutoField(primary_key=True, min_length=16)
+
     graduation_year = models.IntegerField(verbose_name=_('Год окончания ВУЗа'), validators=course_validator)
-    iin_attachment = models.ImageField(upload_to='duplicates/',
-                                       verbose_name=_('Прикрепление копии документа, удостоверяющего личность'))
+
+    iin_attachment = models.ImageField(upload_to='duplicate/iin',
+                                       verbose_name=_('Прикрепление копии документа, удостоверяющего личность'),
+                                       validators=[file_size_validator])
+
     duplicate_type = models.CharField(max_length=100, choices=duplicate_types, default='Дубликат диплома',
                                       verbose_name=_('Тип дубликата'))
 
@@ -184,7 +227,10 @@ class AcademicLeave(Person, Application):
     Государственная услуга
     """
     id = HashidAutoField(primary_key=True, min_length=16)
-    attachment = models.FileField(blank=True, null=True, verbose_name=_('Прикрепление'))
+
+    attachment = models.FileField(upload_to='academicleave/', blank=True, null=True, verbose_name=_('Прикрепление'),
+                                  validators=[file_size_validator, file_ext_validator])
+
     reason = models.CharField(max_length=100, choices=academic_leave_reasons, default='состоянием здоровья',
                               verbose_name=_('Причина'))
 
@@ -212,12 +258,15 @@ class TransferKSTU(Person, Application):
     foundation = models.CharField(max_length=200, choices=foundation_types, default='на платной основе',
                                   verbose_name=_('Основа обучения'))
 
-    iin_attachment = models.ImageField(upload_to='recovery/',
-                                       verbose_name=_('Прикрепление копии документа, удостоверяющего личность'))
+    iin_attachment = models.ImageField(upload_to='transferkstu/',
+                                       verbose_name=_('Прикрепление копии документа, удостоверяющего личность'),
+                                       validators=[file_size_validator])
 
-    reference = models.FileField(verbose_name=_('Академическая справка'))
+    reference = models.FileField(verbose_name=_('Академическая справка'), blank=True,
+                                 validators=[file_size_validator, file_ext_validator])
 
-    transcript = models.FileField(verbose_name=_('Копия транскрипта'))
+    transcript = models.FileField(verbose_name=_('Копия транскрипта'),
+                                  validators=[file_size_validator, file_ext_validator])
 
     grant = models.FileField(blank=True, null=True, verbose_name=_('Свидительство о образовательном гранте'))
 
@@ -251,14 +300,18 @@ class Transfer(Person, Application):
     foundation = models.CharField(max_length=200, choices=foundation_types, default='на платной основе',
                                   verbose_name=_('Основа обучения'))
 
-    iin_attachment = models.ImageField(upload_to='recovery/',
-                                       verbose_name=_('Прикрепление копии документа, удостоверяющего личность'))
+    iin_attachment = models.ImageField(upload_to='transfer/',
+                                       verbose_name=_('Прикрепление копии документа, удостоверяющего личность'),
+                                       validators=[file_size_validator])
 
-    reference = models.FileField(verbose_name=_('Академическая справка'))
+    reference = models.FileField(verbose_name=_('Академическая справка'), blank=True,
+                                 validators=[file_size_validator, file_ext_validator])
 
-    transcript = models.FileField(verbose_name=_('Копия транскрипта'))
+    transcript = models.FileField(verbose_name=_('Копия транскрипта'),
+                                  validators=[file_size_validator, file_ext_validator])
 
-    grant = models.FileField(blank=True, null=True, verbose_name=_('Свидительство о образовательном гранте'))
+    grant = models.FileField(blank=True, null=True, verbose_name=_('Свидительство о образовательном гранте'),
+                             validators=[file_size_validator, file_ext_validator])
 
     course = None
     reason = None
@@ -282,11 +335,14 @@ class Recovery(Person, Application):
     faculty = models.CharField(max_length=200, choices=faculties, verbose_name=_('Факультет'))
 
     iin_attachment = models.ImageField(upload_to='recovery/',
-                                       verbose_name=_('Прикрепление копии документа, удостоверяющего личность'))
+                                       verbose_name=_('Прикрепление копии документа, удостоверяющего личность'),
+                                       validators=[file_size_validator])
 
-    reference = models.FileField(verbose_name=_('Академическая справка'))
+    reference = models.FileField(verbose_name=_('Академическая справка'), blank=True,
+                                 validators=[file_size_validator, file_ext_validator])
 
-    transcript = models.FileField(verbose_name=_('Копия транскрипта'))
+    transcript = models.FileField(verbose_name=_('Копия транскрипта'),
+                                  validators=[file_size_validator, file_ext_validator])
 
     group = None
     reason = None
@@ -299,19 +355,9 @@ class Recovery(Person, Application):
         return f'{self.last_name} {self.first_name} {self.patronymic}. ИИН: {self.individual_identification_number}'
 
 
-#
 # class PlaceOfStudy(Person):
 #     """
 #     Выдача справки с места учебы
-#     """
-#     pass
-#
-#
-# class FreeFood(Person, Application):
-#     """
-#     Предоставление бесплатного питания отдельным категориям граждан,
-#     а также лицам, находящимся под опекой (попечительством) и патронатом,
-#     обучающимся и воспитанникам организаций технического и профессионального, послесреднего и высшего образования
 #     """
 #     pass
 
