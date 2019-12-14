@@ -198,7 +198,7 @@ class Duplicate(Person, Application):
     """
     id = HashidAutoField(primary_key=True, min_length=16)
 
-    graduation_year = models.IntegerField(verbose_name=_('Год окончания ВУЗа'), validators=course_validator)
+    graduation_year = models.IntegerField(verbose_name=_('Год окончания ВУЗа'), validators=education_years_validator)
 
     iin_attachment = models.ImageField(upload_to='duplicate/iin',
                                        verbose_name=_('Прикрепление копии документа, удостоверяющего личность'),
