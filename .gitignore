@@ -16,3 +16,4 @@ include
 lib
 .Python
 .DS_Store
+*.pdf

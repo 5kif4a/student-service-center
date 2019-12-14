@@ -75,14 +75,29 @@ def postgraduate(request):
         return render(request, 'ssc/postgraduate.html', context)
 
 
-def abroad(request):
-    if request.method == 'POST':
-        return redirect('')
-    else:
-        context = {
-            'status': statuses.get('abroad')
-        }
-        return render(request, 'ssc/abroad.html', context)
+class AbroadView(TemplateView):
+    """
+    Представления для подачи заявления по услуге
+    "Прием документов для участия в конкурсе на обучение за рубежом, в том числе академической мобильности"
+    Государственная услуга
+    """
+    form_class = AbroadForm
+    template_name = 'ssc/abroad.html'
+    mail_template = 'mails/abroad.html'
+    context = {}
+
+    @login_required
+    def render(self, obj_id):
+        app = Abroad.objects.get(id=obj_id)
+        if app.status not in ('Не проверено', 'Отозвано на исправление'):
+            context = {
+                'rector_name': rector_name,
+                'app': app,
+                'qr_code': generate_qr_code('http://www.kstu.kz/')
+            }
+            return render_pdf('applications/abroad.html', context)
+        else:
+            return HttpResponse('<center><h1>Заявление не потверждено</h1></center>')
 
 
 def certificate(request):
@@ -95,16 +110,29 @@ def certificate(request):
         return render(request, 'ssc/certificate.html', context)
 
 
-def hostel(request):
-        if request.method == 'POST':
-            return redirect('')
-        else:
-            # form = ReferenceForm()
+class HostelView(TemplateView):
+    """
+    Представления для подачи заявления по услуге
+    "Предоставление общежития обучающимся в высших учебных заведениях"
+    Государственная услуга
+    """
+    form_class = HostelForm
+    template_name = 'ssc/hostel.html'
+    context = {'status': statuses.get('hostel')}
+    mail_template = 'mails/hostel.html'
+
+    @login_required
+    def render(self, obj_id):
+        app = Hostel.objects.get(id=obj_id)
+        if app.status not in ('Не проверено', 'Отозвано на исправление'):
             context = {
-                # 'form': form
-                'status': statuses.get('hostel')
+                'rector_name': rector_name,
+                'app': app,
+                'qr_code': generate_qr_code('http://www.kstu.kz/')
             }
-            return render(request, 'ssc/hostel.html', context)
+            return render_pdf('applications/hostel.html', context)
+        else:
+            return HttpResponse('<center><h1>Заявление не потверждено</h1></center>')
 
 
 class DuplicateView(TemplateView):
@@ -265,6 +293,15 @@ class RecoveryView(TemplateView):
             return render_pdf('applications/recovery.html', context)
         else:
             return HttpResponse('<center><h1>Заявление не потверждено</h1></center>')
+
+
+@login_required
+def stats(request):
+    """
+    Выгрузка по статистике
+    """
+    template = 'custom_admin/stats.html'
+    return render(request, template)
 
 
 def page_not_found(request, exception):

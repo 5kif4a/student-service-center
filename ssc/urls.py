@@ -8,11 +8,13 @@ bachelor_urls = [path('bachelor', views.bachelor)]
 
 postgraduate_urls = [path('postgraduate', views.postgraduate)]
 
-abroad_urls = [path('abroad', views.abroad)]
+abroad_urls = [path('abroad', views.AbroadView.as_view()),
+               path('abroad/report/<obj_id>', views.AbroadView.render)]
 
 certificate_urls = [path('certificate', views.certificate)]
 
-hostel_urls = [path('hostel', views.hostel)]
+hostel_urls = [path('hostel', views.HostelView.as_view()),
+               path('hostel/report/<obj_id>', views.HostelView.render)]
 
 duplicate_urls = [path('duplicate', views.DuplicateView.as_view()),
                   path('duplicate/report/<obj_id>/', views.DuplicateView.render)]
@@ -33,7 +35,7 @@ transfer_and_recovery_urls = [path('transfer-and-recovery', views.transfer_and_r
 
 
 urlpatterns = [
-    path('', views.index),
+    path('', views.index)
 ] + bachelor_urls + \
     postgraduate_urls + \
     abroad_urls + \

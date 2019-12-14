@@ -21,7 +21,7 @@ class Person(models.Model):
 
     email = models.EmailField(verbose_name=_('Электронная почта'))
 
-    address = models.CharField(max_length=500, verbose_name=_('Адрес'))
+    address = models.CharField(max_length=500, verbose_name=_('Адрес проживания'))
 
     phone_number = models.CharField(max_length=16, verbose_name=_('Номер телефона'), validators=phone_number_validator)
 
@@ -160,14 +160,23 @@ class Reference(Person, Application):
         return f'{self.last_name} {self.first_name} {self.patronymic}. ИИН: {self.individual_identification_number}'
 
 
-# class Abroad(Person, Application):
-#     """
-#     Прием документов для участия в конкурсе на обучение за рубежом, в том числе академической мобильности
-#     """
-#
-#     class Meta:
-#         verbose_name = _('заявление на участие в конкурсе на обучение за рубежом, в том числе академической мобильности')
-#         verbose_name_plural = _('заявления на участие в конкурсе на обучение за рубежом, в том числе академической мобильности')
+class Abroad(Person, Application):
+    """
+    Прием документов для участия в конкурсе на обучение за рубежом, в том числе академической мобильности
+    """
+
+    university = models.ForeignKey(University, on_delete=models.CASCADE, verbose_name=_('Университет'))
+    iin_attachment = models.ImageField(upload_to='reference/',
+                                       verbose_name=_('Прикрепление копии документа, удостоверяющего личность'),
+                                       validators=[file_size_validator])
+
+    semester = models.CharField(max_length=200, choices=semesters, verbose_name=_('Семестр'))
+
+    specialty = None
+
+    class Meta:
+        verbose_name = _('заявление на участие в конкурсе на обучение за рубежом, в том числе академической мобильности')
+        verbose_name_plural = _('заявления на участие в конкурсе на обучение за рубежом, в том числе академической мобильности')
 
 
 class Hostel(Person, Application):
@@ -178,6 +187,8 @@ class Hostel(Person, Application):
     faculty = models.CharField(max_length=200, choices=faculties, verbose_name=_('Факультет'))
 
     place_of_arrival = models.CharField(max_length=200, verbose_name=_('Место прибытия'))
+
+    hostel = models.CharField(max_length=200, choices=hostels, verbose_name=_('Общежитие'))
 
     iin_attachment = models.ImageField(upload_to='hostel/',
                                        verbose_name=_('Прикрепление копии документа, удостоверяющего личность'),

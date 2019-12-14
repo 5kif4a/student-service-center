@@ -1,8 +1,10 @@
 from django.utils.html import format_html
-from django.contrib import admin
 from ssc.models import *
+from ssc.views import stats
 from ssc.utilities import *
-# Register your models here.
+from django.contrib import admin
+from django.urls import path
+
 
 # Заголовки админ.сайта
 admin.site.index_title = 'Центр обслуживания студентов'
@@ -18,6 +20,7 @@ def get_model_fields(model):
     return [field.name for field in model._meta.get_fields()][1:]
 
 
+# Register your models here.
 @admin.register(Student)
 class StudentAdmin(admin.ModelAdmin):
     """
@@ -146,6 +149,45 @@ class AcademicLeaveAdmin(CustomAdmin):
     readonly_fields = ('attachment',)
     search_fields = ('last_name', 'first_name', 'patronymic', 'address', 'specialty__name',
                      'individual_identification_number')
+
+
+@admin.register(Abroad)
+class AbroadAdmin(CustomAdmin):
+    """
+    Админ.панель академ.мобильности
+    """
+    entity = 'abroad'
+    # TODO: текст от международного отдела
+    app = ''
+    list_per_page = 15
+    list_filter = ('date_of_application', 'course', 'status')
+    list_display = ('last_name', 'first_name', 'patronymic', 'date_of_application', 'status',
+                    'print')
+    readonly_fields = ('id_card',)
+    search_fields = ('last_name', 'first_name', 'patronymic', 'address',
+                     'individual_identification_number')
+
+    def id_card(self, obj):
+        return format_html(f"""<img src="{obj.iin_attachment.url}" width="300px">""")
+
+
+@admin.register(Hostel)
+class HostelAdmin(CustomAdmin):
+    """
+    Админ.панель предоставления общежития
+    """
+    entity = 'hostel'
+    app = 'Ваша справка готова. Вы можете получить ее в КарГТУ, 1 корпус, кабинет № 109.'
+    list_per_page = 15
+    list_filter = ('date_of_application', 'faculty', 'course', 'status')
+    list_display = ('last_name', 'first_name', 'patronymic', 'specialty', 'date_of_application', 'status',
+                    'print')
+    readonly_fields = ('id_card',)
+    search_fields = ('last_name', 'first_name', 'patronymic', 'address', 'specialty__name',
+                     'individual_identification_number')
+
+    def id_card(self, obj):
+        return format_html(f"""<img src="{obj.iin_attachment.url}" width="300px">""")
 
 
 @admin.register(Duplicate)

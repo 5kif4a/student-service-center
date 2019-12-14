@@ -54,6 +54,49 @@ class AcademicLeaveForm(ModelForm):
         self.fields['status'].required = False
 
 
+class AbroadForm(ModelForm):
+    """
+    Форма для заявление услуги - "Прием документов для участия в конкурсе на обучение за рубежом, в том числе академической мобильности"
+    """
+    captcha = ReCaptchaField(
+        widget=ReCaptchaV3(
+            attrs={
+                'required_score': 0.85
+            }
+        )
+    )
+
+    class Meta:
+        model = Abroad
+        fields = "__all__"
+
+    def __init__(self, *args, **kwargs):
+        super(AbroadForm, self).__init__(*args, **kwargs)
+        self.fields['status'].required = False
+
+
+class HostelForm(ModelForm):
+    """
+    Форма для заявление услуги - "Предоставление общежития в высших учебных заведениях"
+    """
+    captcha = ReCaptchaField(
+        widget=ReCaptchaV3(
+            attrs={
+                'required_score': 0.85
+            }
+        )
+    )
+
+    class Meta:
+        model = Hostel
+        fields = "__all__"
+
+    def __init__(self, *args, **kwargs):
+        super(HostelForm, self).__init__(*args, **kwargs)
+        self.fields['specialty'].label = 'Специальность'
+        self.fields['status'].required = False
+
+
 class DuplicateForm(ModelForm):
     """
     Форма для заявление услуги - "Выдача справки лицам, не завершившим высшее и послевузовское образование"

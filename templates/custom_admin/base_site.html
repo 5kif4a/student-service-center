@@ -10,7 +10,10 @@
 {% endblock %}
 
 {% block welcome-msg %}
-<button class="button" onclick="notify()"><i class="far fa-bell"></i></button>
+{% if user.is_superuser %}
+    <a href="/admin/stats">Статистика</a>/
+{% endif %}
+<button class="button" onclick="notify()"><i class="far fa-bell"></i></button>/
 {% trans 'Welcome,' %}
 <strong>{% firstof user.get_short_name user.get_username %}</strong>.
 {% endblock %}

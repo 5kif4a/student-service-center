@@ -16,8 +16,10 @@ Including another URLconf
 from django.contrib import admin
 from django.conf.urls import handler403, handler404, handler500
 from django.urls import path, include
+from ssc.views import stats
 
 urlpatterns = [
+    path('admin/stats', stats),
     path('admin/', admin.site.urls),
     path('', include('ssc.urls'))
 ]
