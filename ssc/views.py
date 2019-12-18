@@ -295,7 +295,7 @@ class RecoveryView(TemplateView):
             return HttpResponse('<center><h1>Заявление не потверждено</h1></center>')
 
 
-@login_required
+@login_required(login_url='/admin/login')
 def stats(request):
     """
     Выгрузка по статистике
