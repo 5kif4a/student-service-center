@@ -1,9 +1,7 @@
 from django.utils.html import format_html
 from ssc.models import *
-from ssc.views import stats
 from ssc.utilities import *
 from django.contrib import admin
-from django.urls import path
 
 
 # Заголовки админ.сайта
@@ -169,6 +167,38 @@ class AbroadAdmin(CustomAdmin):
 
     def id_card(self, obj):
         return format_html(f"""<img src="{obj.iin_attachment.url}" width="300px">""")
+
+    def response_change(self, request, obj):
+        # Потверждение заявления
+        if "_verify" in request.POST:
+            # Если потвержден - выдаем сообщение, что заявление уже потверждено
+            if obj.status in 'Потверждено':
+                self.message_user(request, f"{obj} уже потвержден")
+            # Если не потверждено - потверждаем и отправляем письмо на почту
+            else:
+                obj.status = 'Подтверждено'
+                obj.save()
+
+                # Сотрудники международного отдела, пишут письма студентам сами
+                # Убираем автоматическое уведомление электронной почтой
+
+                self.message_user(request, f"""Заявление "{obj}" потверждено""")
+            # return HttpResponseRedirect(".")
+        # Если заявление заполнено неправильно, отправляем письмо с уведомлением
+        if "_send_for_correction" in request.POST:
+            if obj.status is not 'Отозвано на исправление':
+                note = request.POST.get('note')
+                to = (obj.email,)
+                ctx = {'name': obj.first_name,
+                       'note': note}
+                obj.status = 'Отозвано на исправление'
+                obj.save()
+
+                send_email('mails/revoke.html', ctx, to)
+                self.message_user(request, f"Письмо с уведомлением отправлено {obj}")
+            else:
+                self.message_user(request, f"Письмо с уведомлением уже отправлено {obj}")
+        return super().response_change(request, obj)
 
 
 @admin.register(Hostel)

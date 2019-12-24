@@ -84,7 +84,7 @@ class AbroadView(TemplateView):
     form_class = AbroadForm
     template_name = 'ssc/abroad.html'
     mail_template = 'mails/abroad.html'
-    context = {}
+    context = {'status': statuses.get('abroad')}
 
     @login_required
     def render(self, obj_id):

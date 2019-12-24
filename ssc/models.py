@@ -172,6 +172,10 @@ class Abroad(Person, Application):
 
     semester = models.CharField(max_length=200, choices=semesters, verbose_name=_('Семестр'))
 
+    transcript = models.FileField(upload_to='abroad/', blank=True, null=True,
+                                  verbose_name=_('Прикрепление копии транскрипта'),
+                                  validators=[file_size_validator, file_ext_validator])
+
     specialty = None
 
     class Meta:
