@@ -1,6 +1,5 @@
 *.config
 *.sqlite3
-img/
 migrations/
 *.pyc
 venv/
