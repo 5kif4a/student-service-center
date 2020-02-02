@@ -128,6 +128,7 @@ class ReferenceAdmin(CustomAdmin):
     readonly_fields = ('id_card',)
     search_fields = ('last_name', 'first_name', 'patronymic', 'address', 'specialty__name',
                      'individual_identification_number')
+    autocomplete_fields = ('specialty',)
 
     def id_card(self, obj):
         return format_html(f"""<img src="{obj.iin_attachment.url}" width="300px">""")
@@ -147,6 +148,7 @@ class AcademicLeaveAdmin(CustomAdmin):
     readonly_fields = ('attachment',)
     search_fields = ('last_name', 'first_name', 'patronymic', 'address', 'specialty__name',
                      'individual_identification_number')
+    autocomplete_fields = ('specialty',)
 
 
 @admin.register(Abroad)
@@ -215,6 +217,7 @@ class HostelAdmin(CustomAdmin):
     readonly_fields = ('id_card',)
     search_fields = ('last_name', 'first_name', 'patronymic', 'address', 'specialty__name',
                      'individual_identification_number')
+    autocomplete_fields = ('specialty',)
 
     def id_card(self, obj):
         return format_html(f"""<img src="{obj.iin_attachment.url}" width="300px">""")
@@ -250,7 +253,8 @@ class TransferAdmin(CustomAdmin):
     list_display = ('last_name', 'first_name', 'patronymic', 'date_of_application', 'status', 'print')
     readonly_fields = ('id_card',)
     search_fields = ('last_name', 'first_name', 'patronymic', 'address', 'current_specialty__name',
-                     'specialty__name', 'individual_identification_number', 'university', 'group')
+                     'individual_identification_number', 'university', 'group')
+    autocomplete_fields = ('current_specialty',)
 
     def id_card(self, obj):
         return format_html(f"""<img src="{obj.iin_attachment.url}" width="300px">""")
@@ -272,6 +276,7 @@ class TransferKSTUAdmin(CustomAdmin):
     readonly_fields = ('id_card',)
     search_fields = ('last_name', 'first_name', 'patronymic', 'address',
                      'specialty__name', 'individual_identification_number', 'university')
+    autocomplete_fields = ('specialty',)
 
     def id_card(self, obj):
         return format_html(f"""<img src="{obj.iin_attachment.url}" width="300px">""")
@@ -290,6 +295,7 @@ class RecoveryAdmin(CustomAdmin):
     readonly_fields = ('id_card',)
     search_fields = ('last_name', 'first_name', 'patronymic', 'address', 'specialty__name',
                      'individual_identification_number', 'university')
+    autocomplete_fields = ('specialty',)
 
     def id_card(self, obj):
         return format_html(f"""<img src="{obj.iin_attachment.url}" width="300px">""")
