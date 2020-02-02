@@ -97,27 +97,27 @@ class HostelForm(ModelForm):
         self.fields['status'].required = False
 
 
-class DuplicateForm(ModelForm):
-    """
-    Форма для заявление услуги - "Выдача справки лицам, не завершившим высшее и послевузовское образование"
-    """
-    captcha = ReCaptchaField(
-        widget=ReCaptchaV3(
-            attrs={
-                'required_score': 0.85
-            }
-        )
-    )
-
-    class Meta:
-        model = Duplicate
-        fields = "__all__"
-
-    def __init__(self, *args, **kwargs):
-        super(DuplicateForm, self).__init__(*args, **kwargs)
-        self.fields['reason'].label = 'Причина (в связи)'
-        self.fields['specialty'].label = 'Специальность'
-        self.fields['status'].required = False
+# class DuplicateForm(ModelForm):
+#     """
+#     Форма для заявление услуги - "Выдача справки лицам, не завершившим высшее и послевузовское образование"
+#     """
+#     captcha = ReCaptchaField(
+#         widget=ReCaptchaV3(
+#             attrs={
+#                 'required_score': 0.85
+#             }
+#         )
+#     )
+#
+#     class Meta:
+#         model = Duplicate
+#         fields = "__all__"
+#
+#     def __init__(self, *args, **kwargs):
+#         super(DuplicateForm, self).__init__(*args, **kwargs)
+#         self.fields['reason'].label = 'Причина (в связи)'
+#         self.fields['specialty'].label = 'Специальность'
+#         self.fields['status'].required = False
 
 
 class TransferForm(ModelForm):

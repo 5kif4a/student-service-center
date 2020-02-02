@@ -11,7 +11,7 @@ from django.core.files.storage import FileSystemStorage
 try:
     rector_name = Rector.objects.filter(status=True)[0].name
 except IndexError:
-    rector_name = 'ФИО ректора КарГТУ'
+    rector_name = 'Ибатов Марат Кенесович'
 
 
 # главная страница
@@ -141,23 +141,23 @@ class DuplicateView(TemplateView):
     "Выдача справки лицам, не завершившим высшее и послевузовское образование"
     Государственная услуга
     """
-    form_class = DuplicateForm
+    # form_class = DuplicateForm
     template_name = 'ssc/duplicate.html'
     context = {'status': statuses.get('duplicate')}
     mail_template = 'mails/duplicate.html'
 
-    @login_required
-    def render(self, obj_id):
-        app = Duplicate.objects.get(id=obj_id)
-        if app.status not in ('Не проверено', 'Отозвано на исправление'):
-            context = {
-                'rector_name': rector_name,
-                'app': app,
-                'qr_code': generate_qr_code('http://www.kstu.kz/')
-            }
-            return render_pdf('applications/duplicate.html', context)
-        else:
-            return HttpResponse('<center><h1>Заявление не потверждено</h1></center>')
+    # @login_required
+    # def render(self, obj_id):
+    #     app = Duplicate.objects.get(id=obj_id)
+    #     if app.status not in ('Не проверено', 'Отозвано на исправление'):
+    #         context = {
+    #             'rector_name': rector_name,
+    #             'app': app,
+    #             'qr_code': generate_qr_code('http://www.kstu.kz/')
+    #         }
+    #         return render_pdf('applications/duplicate.html', context)
+    #     else:
+    #         return HttpResponse('<center><h1>Заявление не потверждено</h1></center>')
 
 
 class AcademicLeaveView(TemplateView):

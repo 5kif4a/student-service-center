@@ -206,34 +206,34 @@ class Hostel(Person, Application):
         verbose_name_plural = _('заявления на предоставление общежития в ВУЗах')
 
 
-class Duplicate(Person, Application):
-    """
-    Модель(таблица) для заявления по услуге - "Выдача дубликатов документов о высшем и послевузовском образовании"
-    Государственная услуга
-    """
-    id = HashidAutoField(primary_key=True, min_length=16)
-
-    graduation_year = models.IntegerField(verbose_name=_('Год окончания ВУЗа'), validators=education_years_validator)
-
-    iin_attachment = models.ImageField(upload_to='duplicate/iin',
-                                       verbose_name=_('Прикрепление копии документа, удостоверяющего личность'),
-                                       validators=[file_size_validator])
-
-    duplicate_type = models.CharField(max_length=100, choices=duplicate_types, default='Дубликат диплома',
-                                      verbose_name=_('Тип дубликата'))
-
-    reason = models.CharField(max_length=100, choices=duplicate_reasons, default='утерей',
-                              verbose_name=_('Причина'))
-
-    course = None
-    group = None
-
-    class Meta:
-        verbose_name = _('заявление на выдачу дубликатов документов о высшем и послевузовском образовании')
-        verbose_name_plural = _('заявления на выдачу дубликатов документов о высшем и послевузовском образовании')
-
-    def __str__(self):
-        return f'{self.last_name} {self.first_name} {self.patronymic}. ИИН: {self.individual_identification_number}'
+# class Duplicate(Person, Application):
+#     """
+#     Модель(таблица) для заявления по услуге - "Выдача дубликатов документов о высшем и послевузовском образовании"
+#     Государственная услуга
+#     """
+#     id = HashidAutoField(primary_key=True, min_length=16)
+#
+#     graduation_year = models.IntegerField(verbose_name=_('Год окончания ВУЗа'), validators=education_years_validator)
+#
+#     iin_attachment = models.ImageField(upload_to='duplicate/iin',
+#                                        verbose_name=_('Прикрепление копии документа, удостоверяющего личность'),
+#                                        validators=[file_size_validator])
+#
+#     duplicate_type = models.CharField(max_length=100, choices=duplicate_types, default='Дубликат диплома',
+#                                       verbose_name=_('Тип дубликата'))
+#
+#     reason = models.CharField(max_length=100, choices=duplicate_reasons, default='утерей',
+#                               verbose_name=_('Причина'))
+#
+#     course = None
+#     group = None
+#
+#     class Meta:
+#         verbose_name = _('заявление на выдачу дубликатов документов о высшем и послевузовском образовании')
+#         verbose_name_plural = _('заявления на выдачу дубликатов документов о высшем и послевузовском образовании')
+#
+#     def __str__(self):
+#         return f'{self.last_name} {self.first_name} {self.patronymic}. ИИН: {self.individual_identification_number}'
 
 
 class AcademicLeave(Person, Application):
@@ -242,6 +242,8 @@ class AcademicLeave(Person, Application):
     Государственная услуга
     """
     id = HashidAutoField(primary_key=True, min_length=16)
+
+    faculty = models.CharField(max_length=200, choices=faculties, verbose_name=_('Факультет'))
 
     attachment = models.FileField(upload_to='academicleave/', blank=True, null=True, verbose_name=_('Прикрепление'),
                                   validators=[file_size_validator, file_ext_validator])
@@ -309,24 +311,12 @@ class Transfer(Person, Application):
 
     faculty = models.CharField(max_length=200, choices=faculties, verbose_name=_('Факультет'))
 
-    specialty = models.ForeignKey(Specialty, on_delete=models.CASCADE, verbose_name=_('Специальность перевода'),
-                                  related_name='transfer_specialty')
-
     foundation = models.CharField(max_length=200, choices=foundation_types, default='на платной основе',
                                   verbose_name=_('Основа обучения'))
 
     iin_attachment = models.ImageField(upload_to='transfer/',
                                        verbose_name=_('Прикрепление копии документа, удостоверяющего личность'),
                                        validators=[file_size_validator])
-
-    reference = models.FileField(verbose_name=_('Академическая справка'), blank=True,
-                                 validators=[file_size_validator, file_ext_validator])
-
-    transcript = models.FileField(verbose_name=_('Копия транскрипта'),
-                                  validators=[file_size_validator, file_ext_validator])
-
-    grant = models.FileField(blank=True, null=True, verbose_name=_('Свидительство о образовательном гранте'),
-                             validators=[file_size_validator, file_ext_validator])
 
     course = None
     reason = None
@@ -383,7 +373,7 @@ class Notification(models.Model):
     """
     id = HashidAutoField(primary_key=True, min_length=16)
     date = models.DateTimeField(auto_now_add=True, verbose_name=_('Дата отправки уведомления'))
-    application_type = models.CharField(max_length=500)
+    application_type = models.CharField(max_length=500, verbose_name=_('Тип заявления'))
     url_for_application = models.URLField(verbose_name=_(''))
     is_showed = models.BooleanField(verbose_name=_('Показано'))
 

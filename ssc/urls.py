@@ -17,7 +17,8 @@ hostel_urls = [path('hostel', views.HostelView.as_view()),
                path('hostel/report/<obj_id>', views.HostelView.render)]
 
 duplicate_urls = [path('duplicate', views.DuplicateView.as_view()),
-                  path('duplicate/report/<obj_id>/', views.DuplicateView.render)]
+                  # path('duplicate/report/<obj_id>/', views.DuplicateView.render)
+                  ]
 
 reference_urls = [path('reference', views.ReferenceView.as_view()),
                   path('reference/report/<obj_id>/', views.ReferenceView.render)]

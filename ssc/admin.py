@@ -220,22 +220,22 @@ class HostelAdmin(CustomAdmin):
         return format_html(f"""<img src="{obj.iin_attachment.url}" width="300px">""")
 
 
-@admin.register(Duplicate)
-class DuplicateAdmin(CustomAdmin):
-    """
-    Админ.панель дубликатов
-    """
-    entity = 'duplicate'
-    app = 'Ваш дубликат готов. Вы можете получить его в КарГТУ, 1 корпус, кабинет № 109.'
-    list_per_page = 15
-    list_filter = ('date_of_application', 'reason', 'duplicate_type', 'status')
-    list_display = ('last_name', 'first_name', 'patronymic', 'date_of_application', 'status', 'print')
-    readonly_fields = ('id_card',)
-    search_fields = ('last_name', 'first_name', 'patronymic', 'address', 'specialty__name',
-                     'individual_identification_number')
-
-    def id_card(self, obj):
-        return format_html(f"""<img src="{obj.iin_attachment.url}" width="300px">""")
+# @admin.register(Duplicate)
+# class DuplicateAdmin(CustomAdmin):
+#     """
+#     Админ.панель дубликатов
+#     """
+#     entity = 'duplicate'
+#     app = 'Ваш дубликат готов. Вы можете получить его в КарГТУ, 1 корпус, кабинет № 109.'
+#     list_per_page = 15
+#     list_filter = ('date_of_application', 'reason', 'duplicate_type', 'status')
+#     list_display = ('last_name', 'first_name', 'patronymic', 'date_of_application', 'status', 'print')
+#     readonly_fields = ('id_card',)
+#     search_fields = ('last_name', 'first_name', 'patronymic', 'address', 'specialty__name',
+#                      'individual_identification_number')
+#
+#     def id_card(self, obj):
+#         return format_html(f"""<img src="{obj.iin_attachment.url}" width="300px">""")
 
 
 @admin.register(Transfer)
