@@ -35,9 +35,11 @@
         <li class="nav-item">
             <a class="nav-link" href="#" data-toggle="modal" data-target="#exampleModalScrollable"><i class="fas fa-book"></i></i> Инструкция</a>
         </li>
+        {% if admin %}
         <li class="nav-item">
         <a class="nav-link" href="/admin" target="_blank">Панель управления</a>
       </li>
+        {% endif %}
     </ul>
     <ul class="navbar-nav ml-auto">
       <li class="nav-item dropdown">

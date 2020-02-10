@@ -1,8 +1,16 @@
 from django.urls import path, include
-from django.conf.urls.static import static
 from django.conf import settings
 from django.conf.urls import url
+from django.contrib.auth.decorators import login_required
+from django.views.static import serve
 from . import views
+
+
+# Protected media serving
+@login_required(login_url='/')
+def protected_serve(request, path, document_root=None, show_indexes=False):
+    return serve(request, path, document_root, show_indexes)
+
 
 bachelor_urls = [path('bachelor', views.bachelor)]
 
@@ -36,7 +44,8 @@ transfer_and_recovery_urls = [path('transfer-and-recovery', views.transfer_and_r
 
 
 urlpatterns = [
-    path('', views.index)
+    path('', views.index),
+    url(r'^%s(?P<path>.*)$' % settings.MEDIA_URL[1:], protected_serve, {'document_root': settings.MEDIA_ROOT})
 ] + bachelor_urls + \
     postgraduate_urls + \
     abroad_urls + \
@@ -45,5 +54,5 @@ urlpatterns = [
     duplicate_urls + \
     reference_urls + \
     academic_leave_urls + \
-    transfer_and_recovery_urls + \
-    static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+    transfer_and_recovery_urls
+

@@ -10,8 +10,8 @@ from django.core.files.storage import FileSystemStorage
 # Текущий ректор
 try:
     rector_name = Rector.objects.filter(status=True)[0].name
-except IndexError:
-    rector_name = 'Ибатов Марат Кенесович'
+except:
+    rector_name = 'Ибатову Марату Кенесовичу'
 
 
 # главная страница
@@ -145,6 +145,11 @@ class DuplicateView(TemplateView):
     template_name = 'ssc/duplicate.html'
     context = {'status': statuses.get('duplicate')}
     mail_template = 'mails/duplicate.html'
+
+    def get(self, request):
+        # form = self.form_class()
+        # self.context['form'] = form
+        return render(request, self.template_name, self.context)
 
     # @login_required
     # def render(self, obj_id):
