@@ -150,7 +150,7 @@ class Reference(Person, Application):
                                              validators=[file_size_validator])
 
     iin_attachment_back = models.ImageField(upload_to='reference_attachments/',
-                                            verbose_name=_('Прикрепление копии документа, удостоверяющего личность - задняя сторона'),
+                                            verbose_name=_('Прикрепление копии документа, удостоверяющего личность - обратная сторона'),
                                             validators=[file_size_validator])
 
     reason = models.CharField(max_length=100, choices=reference_reasons, default='в связи с отчислением',
@@ -176,7 +176,7 @@ class Abroad(Person, Application):
                                              validators=[file_size_validator])
 
     iin_attachment_back = models.ImageField(upload_to='abroad_attachments/',
-                                            verbose_name=_('Прикрепление копии документа, удостоверяющего личность - задняя сторона'),
+                                            verbose_name=_('Прикрепление копии документа, удостоверяющего личность - обратная сторона'),
                                             validators=[file_size_validator])
 
     semester = models.CharField(max_length=200, choices=semesters, verbose_name=_('Семестр'))
@@ -208,7 +208,7 @@ class Hostel(Person, Application):
                                              validators=[file_size_validator])
 
     iin_attachment_back = models.ImageField(upload_to='hostel_attachments/',
-                                            verbose_name=_('Прикрепление копии документа, удостоверяющего личность - задняя сторона'),
+                                            verbose_name=_('Прикрепление копии документа, удостоверяющего личность - обратная сторона'),
                                             validators=[file_size_validator])
 
     attachment = models.FileField(upload_to='hostel/', blank=True, null=True, verbose_name=_('Прикрепление'),
@@ -263,7 +263,7 @@ class AcademicLeave(Person, Application):
                                              validators=[file_size_validator])
 
     iin_attachment_back = models.ImageField(upload_to='academic_leave_attachments/',
-                                            verbose_name=_('Прикрепление копии документа, удостоверяющего личность - задняя сторона'),
+                                            verbose_name=_('Прикрепление копии документа, удостоверяющего личность - обратная сторона'),
                                             validators=[file_size_validator])
 
     attachment = models.FileField(upload_to='hostel/', blank=True, null=True, verbose_name=_('Прикрепление'),
@@ -301,7 +301,7 @@ class TransferKSTU(Person, Application):
                                              validators=[file_size_validator])
 
     iin_attachment_back = models.ImageField(upload_to='transfer_kstu_attachments/',
-                                            verbose_name=_('Прикрепление копии документа, удостоверяющего личность - задняя сторона'),
+                                            verbose_name=_('Прикрепление копии документа, удостоверяющего личность - обратная сторона'),
                                             validators=[file_size_validator])
 
     reference = models.FileField(verbose_name=_('Академическая справка'), blank=True,
@@ -344,7 +344,7 @@ class Transfer(Person, Application):
                                              validators=[file_size_validator])
 
     iin_attachment_back = models.ImageField(upload_to='transfer_attachments/',
-                                            verbose_name=_('Прикрепление копии документа, удостоверяющего личность - задняя сторона'),
+                                            verbose_name=_('Прикрепление копии документа, удостоверяющего личность - обратная сторона'),
                                             validators=[file_size_validator])
 
     course = None
@@ -373,7 +373,7 @@ class Recovery(Person, Application):
                                              validators=[file_size_validator])
 
     iin_attachment_back = models.ImageField(upload_to='recovery_attachments/',
-                                            verbose_name=_('Прикрепление копии документа, удостоверяющего личность - задняя сторона'),
+                                            verbose_name=_('Прикрепление копии документа, удостоверяющего личность - обратная сторона'),
                                             validators=[file_size_validator])
 
     reference = models.FileField(verbose_name=_('Академическая справка'), blank=True,
