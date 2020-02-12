@@ -83,11 +83,11 @@ class CustomAdmin(admin.ModelAdmin):
         # Потверждение заявления
         if "_verify" in request.POST:
             # Если потвержден - выдаем сообщение, что заявление уже потверждено
-            if obj.status in 'Потверждено':
+            if obj.status == 'Завершено':
                 self.message_user(request, f"{obj} уже потвержден")
             # Если не потверждено - потверждаем и отправляем письмо на почту
             else:
-                obj.status = 'Подтверждено'
+                obj.status = 'Завершено'
                 obj.save()
 
                 ctx = {'name': obj.first_name,
@@ -95,11 +95,11 @@ class CustomAdmin(admin.ModelAdmin):
                 to = (obj.email,)
 
                 send_email('mails/ready.html', ctx, to)
-                self.message_user(request, f"""Заявление "{obj}" потверждено""")
+                self.message_user(request, f"""Обработка заявления "{obj}" завершена""")
             # return HttpResponseRedirect(".")
         # Если заявление заполнено неправильно, отправляем письмо с уведомлением
         if "_send_for_correction" in request.POST:
-            if obj.status is not 'Отозвано на исправление':
+            if obj.status != 'Отозвано на исправление':
                 note = request.POST.get('note')
                 to = (obj.email,)
                 ctx = {'name': obj.first_name,
@@ -174,17 +174,17 @@ class AbroadAdmin(CustomAdmin):
         # Потверждение заявления
         if "_verify" in request.POST:
             # Если потвержден - выдаем сообщение, что заявление уже потверждено
-            if obj.status in 'Потверждено':
+            if obj.status == 'Завершено':
                 self.message_user(request, f"{obj} уже потвержден")
             # Если не потверждено - потверждаем и отправляем письмо на почту
             else:
-                obj.status = 'Подтверждено'
+                obj.status = 'Завершено'
                 obj.save()
 
                 # Сотрудники международного отдела, пишут письма студентам сами
                 # Убираем автоматическое уведомление электронной почтой
 
-                self.message_user(request, f"""Заявление "{obj}" потверждено""")
+                self.message_user(request, f"""Обработка заявления "{obj}" завершена""")
             # return HttpResponseRedirect(".")
         # Если заявление заполнено неправильно, отправляем письмо с уведомлением
         if "_send_for_correction" in request.POST:

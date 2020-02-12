@@ -374,7 +374,7 @@ class Notification(models.Model):
     id = HashidAutoField(primary_key=True, min_length=16)
     date = models.DateTimeField(auto_now_add=True, verbose_name=_('Дата отправки уведомления'))
     application_type = models.CharField(max_length=500, verbose_name=_('Тип заявления'))
-    url_for_application = models.URLField(verbose_name=_(''))
+    url_for_application = models.URLField(verbose_name=_('Ссылка на заявление'))
     is_showed = models.BooleanField(verbose_name=_('Показано'))
 
     class Meta:

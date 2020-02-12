@@ -40,7 +40,6 @@ class TemplateView(View):
         files = request.FILES
         fs = FileSystemStorage()
 
-        print(form.errors)
         if form.is_valid():
             for _, file in files.items():
                 fs.save(file.name, file)
