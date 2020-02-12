@@ -69,7 +69,7 @@ class CustomAdmin(admin.ModelAdmin):
 
     def print(self, obj):
         url = f'/{self.entity}/report/{obj.id}'
-        if obj.status == 'Завершено':
+        if obj.status in ('Подтверждено', 'Завершено'):
             button = f"""
                      <input type="button" class="button" value="Печать" onclick="window.open('{url}', '_blank')">
                      """
@@ -146,13 +146,17 @@ class ReferenceAdmin(CustomAdmin):
     list_filter = ('date_of_application', 'receipt_year', 'exclude_year', 'education_form', 'course', 'status')
     list_display = ('last_name', 'first_name', 'patronymic', 'specialty', 'date_of_application', 'status',
                     'print')
-    readonly_fields = ('id_card',)
     search_fields = ('last_name', 'first_name', 'patronymic', 'address', 'specialty__name',
                      'individual_identification_number')
     autocomplete_fields = ('specialty',)
 
-    def id_card(self, obj):
-        return format_html(f"""<img src="{obj.iin_attachment.url}" width="300px">""")
+    readonly_fields = ('id_card_front', 'id_card_back')
+
+    def id_card_front(self, obj):
+        return format_html(f"""<img src="{obj.iin_attachment_front.url}" width="300px">""")
+
+    def id_card_back(self, obj):
+        return format_html(f"""<img src="{obj.iin_attachment_front.url}" width="300px">""")
 
 
 @admin.register(AcademicLeave)
@@ -166,10 +170,17 @@ class AcademicLeaveAdmin(CustomAdmin):
     list_filter = ('date_of_application', 'status')
     list_display = ('last_name', 'first_name', 'patronymic', 'specialty', 'date_of_application', 'status',
                     'print')
-    readonly_fields = ('attachment',)
     search_fields = ('last_name', 'first_name', 'patronymic', 'address', 'specialty__name',
                      'individual_identification_number')
     autocomplete_fields = ('specialty',)
+
+    readonly_fields = ('attachment', 'id_card_front', 'id_card_back')
+
+    def id_card_front(self, obj):
+        return format_html(f"""<img src="{obj.iin_attachment_front.url}" width="300px">""")
+
+    def id_card_back(self, obj):
+        return format_html(f"""<img src="{obj.iin_attachment_front.url}" width="300px">""")
 
 
 @admin.register(Abroad)
@@ -184,12 +195,16 @@ class AbroadAdmin(CustomAdmin):
     list_filter = ('date_of_application', 'course', 'status')
     list_display = ('last_name', 'first_name', 'patronymic', 'date_of_application', 'status',
                     'print')
-    readonly_fields = ('id_card',)
     search_fields = ('last_name', 'first_name', 'patronymic', 'address',
                      'individual_identification_number')
 
-    def id_card(self, obj):
-        return format_html(f"""<img src="{obj.iin_attachment.url}" width="300px">""")
+    readonly_fields = ('id_card_front', 'id_card_back')
+
+    def id_card_front(self, obj):
+        return format_html(f"""<img src="{obj.iin_attachment_front.url}" width="300px">""")
+
+    def id_card_back(self, obj):
+        return format_html(f"""<img src="{obj.iin_attachment_front.url}" width="300px">""")
 
     def response_change(self, request, obj):
         # Потверждение заявления
@@ -235,13 +250,16 @@ class HostelAdmin(CustomAdmin):
     list_filter = ('date_of_application', 'faculty', 'course', 'status')
     list_display = ('last_name', 'first_name', 'patronymic', 'specialty', 'date_of_application', 'status',
                     'print')
-    readonly_fields = ('id_card',)
     search_fields = ('last_name', 'first_name', 'patronymic', 'address', 'specialty__name',
                      'individual_identification_number')
     autocomplete_fields = ('specialty',)
+    readonly_fields = ('id_card_front', 'id_card_back')
 
-    def id_card(self, obj):
-        return format_html(f"""<img src="{obj.iin_attachment.url}" width="300px">""")
+    def id_card_front(self, obj):
+        return format_html(f"""<img src="{obj.iin_attachment_front.url}" width="300px">""")
+
+    def id_card_back(self, obj):
+        return format_html(f"""<img src="{obj.iin_attachment_front.url}" width="300px">""")
 
 
 # @admin.register(Duplicate)
@@ -272,13 +290,16 @@ class TransferAdmin(CustomAdmin):
     list_per_page = 15
     list_filter = ('date_of_application', 'faculty', 'foundation', 'status')
     list_display = ('last_name', 'first_name', 'patronymic', 'date_of_application', 'status', 'print')
-    readonly_fields = ('id_card',)
     search_fields = ('last_name', 'first_name', 'patronymic', 'address', 'current_specialty__name',
                      'individual_identification_number', 'university', 'group')
     autocomplete_fields = ('current_specialty',)
+    readonly_fields = ('id_card_front', 'id_card_back')
 
-    def id_card(self, obj):
-        return format_html(f"""<img src="{obj.iin_attachment.url}" width="300px">""")
+    def id_card_front(self, obj):
+        return format_html(f"""<img src="{obj.iin_attachment_front.url}" width="300px">""")
+
+    def id_card_back(self, obj):
+        return format_html(f"""<img src="{obj.iin_attachment_front.url}" width="300px">""")
 
 
 @admin.register(TransferKSTU)
@@ -294,13 +315,16 @@ class TransferKSTUAdmin(CustomAdmin):
     list_per_page = 15
     list_filter = ('date_of_application', 'faculty', 'course', 'foundation', 'status')
     list_display = ('last_name', 'first_name', 'patronymic', 'date_of_application', 'status', 'print')
-    readonly_fields = ('id_card',)
     search_fields = ('last_name', 'first_name', 'patronymic', 'address',
                      'specialty__name', 'individual_identification_number', 'university')
     autocomplete_fields = ('specialty',)
+    readonly_fields = ('id_card_front', 'id_card_back')
 
-    def id_card(self, obj):
-        return format_html(f"""<img src="{obj.iin_attachment.url}" width="300px">""")
+    def id_card_front(self, obj):
+        return format_html(f"""<img src="{obj.iin_attachment_front.url}" width="300px">""")
+
+    def id_card_back(self, obj):
+        return format_html(f"""<img src="{obj.iin_attachment_front.url}" width="300px">""")
 
 
 @admin.register(Recovery)
@@ -313,10 +337,13 @@ class RecoveryAdmin(CustomAdmin):
     list_per_page = 15
     list_filter = ('date_of_application', 'faculty', 'course', 'status')
     list_display = ('last_name', 'first_name', 'patronymic', 'date_of_application', 'status', 'print')
-    readonly_fields = ('id_card',)
     search_fields = ('last_name', 'first_name', 'patronymic', 'address', 'specialty__name',
                      'individual_identification_number', 'university')
     autocomplete_fields = ('specialty',)
+    readonly_fields = ('id_card_front', 'id_card_back')
 
-    def id_card(self, obj):
-        return format_html(f"""<img src="{obj.iin_attachment.url}" width="300px">""")
+    def id_card_front(self, obj):
+        return format_html(f"""<img src="{obj.iin_attachment_front.url}" width="300px">""")
+
+    def id_card_back(self, obj):
+        return format_html(f"""<img src="{obj.iin_attachment_front.url}" width="300px">""")

@@ -89,12 +89,18 @@
                     </div>
                     <div class="form-row">
                         <div class="form-group col-sm">
-                            {{ form.iin_attachment|as_crispy_field }}
+                            {{ form.iin_attachment_front|as_crispy_field }}
                         </div>
+                        <div class="form-group col-sm">
+                            {{ form.iin_attachment_back|as_crispy_field }}
+                        </div>
+                    </div>
+                    <div class="form-row">
                         <div class="form-group col-sm">
                             {{ form.transcript|as_crispy_field }}
                         </div>
                     </div>
+                    <div class="alert alert-danger">Фотографии или отсканированные изображения документов должны быть четкими, видны все данные документа!</div>
                     {{ form.captcha }}
                     <p class="text-muted">* - обязательные поля для заполнения</p>
                     <button type="submit" class="btn btn-success mt-1">Отправить заявку</button>

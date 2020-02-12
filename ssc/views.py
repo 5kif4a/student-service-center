@@ -88,7 +88,7 @@ class AbroadView(TemplateView):
     @login_required
     def render(self, obj_id):
         app = Abroad.objects.get(id=obj_id)
-        if app.status not in ('Не проверено', 'Подтверждено', 'Отозвано на исправление'):
+        if app.status not in ('Не проверено', 'Отозвано на исправление'):
             context = {
                 'rector_name': rector_name,
                 'app': app,
@@ -96,7 +96,7 @@ class AbroadView(TemplateView):
             }
             return render_pdf('applications/abroad.html', context)
         else:
-            return HttpResponse('<center><h1>Обработка заявления не завершена!</h1></center>')
+            return HttpResponse('<center><h1>Заявление не потверждено!</h1></center>')
 
 
 def certificate(request):
@@ -123,7 +123,7 @@ class HostelView(TemplateView):
     @login_required
     def render(self, obj_id):
         app = Hostel.objects.get(id=obj_id)
-        if app.status not in ('Не проверено', 'Подтверждено', 'Отозвано на исправление'):
+        if app.status not in ('Не проверено', 'Отозвано на исправление'):
             context = {
                 'rector_name': rector_name,
                 'app': app,
@@ -131,7 +131,7 @@ class HostelView(TemplateView):
             }
             return render_pdf('applications/abroad.html', context)
         else:
-            return HttpResponse('<center><h1>Обработка заявления не завершена!</h1></center>')
+            return HttpResponse('<center><h1>Заявление не потверждено!</h1></center>')
 
 
 class DuplicateView(TemplateView):
@@ -178,7 +178,7 @@ class AcademicLeaveView(TemplateView):
     @login_required
     def render(self, obj_id):
         app = AcademicLeave.objects.get(id=obj_id)
-        if app.status not in ('Не проверено', 'Подтверждено', 'Отозвано на исправление'):
+        if app.status not in ('Не проверено', 'Отозвано на исправление'):
             context = {
                 'rector_name': rector_name,
                 'app': app,
@@ -186,7 +186,7 @@ class AcademicLeaveView(TemplateView):
             }
             return render_pdf('applications/abroad.html', context)
         else:
-            return HttpResponse('<center><h1>Обработка заявления не завершена!</h1></center>')
+            return HttpResponse('<center><h1>Заявление не потверждено!</h1></center>')
 
 
 class ReferenceView(TemplateView):
@@ -203,7 +203,7 @@ class ReferenceView(TemplateView):
     @login_required
     def render(self, obj_id):
         app = Reference.objects.get(id=obj_id)
-        if app.status not in ('Не проверено', 'Подтверждено', 'Отозвано на исправление'):
+        if app.status not in ('Не проверено', 'Отозвано на исправление'):
             context = {
                 'rector_name': rector_name,
                 'app': app,
@@ -211,7 +211,7 @@ class ReferenceView(TemplateView):
             }
             return render_pdf('applications/abroad.html', context)
         else:
-            return HttpResponse('<center><h1>Обработка заявления не завершена!</h1></center>')
+            return HttpResponse('<center><h1>Заявление не потверждено!</h1></center>')
 
 
 def transfer_and_recovery(request):
@@ -238,7 +238,7 @@ class TransferView(TemplateView):
     @login_required
     def render(self, obj_id):
         app = Transfer.objects.get(id=obj_id)
-        if app.status not in ('Не проверено', 'Подтверждено', 'Отозвано на исправление'):
+        if app.status not in ('Не проверено', 'Отозвано на исправление'):
             context = {
                 'rector_name': rector_name,
                 'app': app,
@@ -246,7 +246,7 @@ class TransferView(TemplateView):
             }
             return render_pdf('applications/abroad.html', context)
         else:
-            return HttpResponse('<center><h1>Обработка заявления не завершена!</h1></center>')
+            return HttpResponse('<center><h1>Заявление не потверждено!</h1></center>')
 
 
 class TransferKSTUView(TemplateView):
@@ -263,7 +263,7 @@ class TransferKSTUView(TemplateView):
     @login_required
     def render(self, obj_id):
         app = TransferKSTU.objects.get(id=obj_id)
-        if app.status not in ('Не проверено', 'Подтверждено', 'Отозвано на исправление'):
+        if app.status not in ('Не проверено', 'Отозвано на исправление'):
             context = {
                 'rector_name': rector_name,
                 'app': app,
@@ -271,7 +271,7 @@ class TransferKSTUView(TemplateView):
             }
             return render_pdf('applications/abroad.html', context)
         else:
-            return HttpResponse('<center><h1>Обработка заявления не завершена!</h1></center>')
+            return HttpResponse('<center><h1>Заявление не потверждено!</h1></center>')
 
 
 class RecoveryView(TemplateView):
@@ -288,7 +288,7 @@ class RecoveryView(TemplateView):
     @login_required
     def render(self, obj_id):
         app = Recovery.objects.get(id=obj_id)
-        if app.status not in ('Не проверено', 'Подтверждено', 'Отозвано на исправление'):
+        if app.status not in ('Не проверено', 'Отозвано на исправление'):
             context = {
                 'rector_name': rector_name,
                 'app': app,
@@ -296,7 +296,7 @@ class RecoveryView(TemplateView):
             }
             return render_pdf('applications/abroad.html', context)
         else:
-            return HttpResponse('<center><h1>Обработка заявления не завершена!</h1></center>')
+            return HttpResponse('<center><h1>Заявление не потверждено!</h1></center>')
 
 
 @login_required(login_url='/admin/login')
