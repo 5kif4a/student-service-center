@@ -69,23 +69,58 @@ class CustomAdmin(admin.ModelAdmin):
 
     def print(self, obj):
         url = f'/{self.entity}/report/{obj.id}'
-        if obj.status == 'Подтверждено':
+        if obj.status == 'Завершено':
             button = f"""
                      <input type="button" class="button" value="Печать" onclick="window.open('{url}', '_blank')">
                      """
         else:
+            # TODO - refactor this HTML code
             button = f"""
-                    <input type="button" class="button" value="Печать" onclick="window.open('{url}', '_blank') disabled">
-                     """
+                    <input type="button" 
+                    class="button" 
+                    style="cursor: not-allowed; background-color: #DC3545" 
+                    value="Печать"
+                    onclick="window.open('{url}', '_blank')" 
+                    disabled>
+                    """
+
         return format_html(button)
 
     def response_change(self, request, obj):
+        # Если заявление заполнено неправильно, отправляем письмо с уведомлением
+        if "_send_for_correction" in request.POST:
+            if obj.status != 'Отозвано на исправление':
+                note = request.POST.get('note')
+
+                obj.status = 'Отозвано на исправление'
+                obj.save()
+
+                ctx = {'name': obj.first_name,
+                       'note': note}
+                to = (obj.email,)
+                send_email('mails/revoke.html', ctx, to)
+                self.message_user(request, f"Письмо с уведомлением отправлено {obj}")
+            else:
+                self.message_user(request, f"Письмо с уведомлением уже отправлено {obj}")
+
         # Потверждение заявления
         if "_verify" in request.POST:
-            # Если потвержден - выдаем сообщение, что заявление уже потверждено
-            if obj.status == 'Завершено':
+            # Если подтвержден - выдаем сообщение, что заявление уже подтверждено
+            if obj.status == 'Подтверждено':
                 self.message_user(request, f"{obj} уже потвержден")
-            # Если не потверждено - потверждаем и отправляем письмо на почту
+            # Если не потверждено - подтверждаем и отправляем письмо на почту
+            else:
+                obj.status = 'Подтверждено'
+                obj.save()
+
+                self.message_user(request, f"""{obj} подтверждено""")
+
+        # Завершение обработки заявления
+        if "_finish" in request.POST:
+            # Если завершено - выдаем сообщение, что заявление уже завершено
+            if obj.status is 'Завершено':
+                self.message_user(request, f"{obj} обработка завершена")
+            # Если не завершено - завершаем и отправляем письмо на почту
             else:
                 obj.status = 'Завершено'
                 obj.save()
@@ -93,24 +128,10 @@ class CustomAdmin(admin.ModelAdmin):
                 ctx = {'name': obj.first_name,
                        'app': self.app}
                 to = (obj.email,)
-
                 send_email('mails/ready.html', ctx, to)
-                self.message_user(request, f"""Обработка заявления "{obj}" завершена""")
-            # return HttpResponseRedirect(".")
-        # Если заявление заполнено неправильно, отправляем письмо с уведомлением
-        if "_send_for_correction" in request.POST:
-            if obj.status != 'Отозвано на исправление':
-                note = request.POST.get('note')
-                to = (obj.email,)
-                ctx = {'name': obj.first_name,
-                       'note': note}
-                obj.status = 'Отозвано на исправление'
-                obj.save()
 
-                send_email('mails/revoke.html', ctx, to)
-                self.message_user(request, f"Письмо с уведомлением отправлено {obj}")
-            else:
-                self.message_user(request, f"Письмо с уведомлением уже отправлено {obj}")
+                self.message_user(request, f"""Обработка заявления "{obj}" завершена. Письмо отправлено""")
+
         return super().response_change(request, obj)
 
 
