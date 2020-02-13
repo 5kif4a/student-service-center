@@ -129,7 +129,7 @@ class HostelView(TemplateView):
                 'app': app,
                 'qr_code': generate_qr_code('http://www.kstu.kz/')
             }
-            return render_pdf('applications/abroad.html', context)
+            return render_pdf('applications/hostel.html', context)
         else:
             return HttpResponse('<center><h1>Заявление не потверждено!</h1></center>')
 
@@ -184,7 +184,7 @@ class AcademicLeaveView(TemplateView):
                 'app': app,
                 'qr_code': generate_qr_code('http://www.kstu.kz/')
             }
-            return render_pdf('applications/abroad.html', context)
+            return render_pdf('applications/academic-leave.html', context)
         else:
             return HttpResponse('<center><h1>Заявление не потверждено!</h1></center>')
 
@@ -209,7 +209,7 @@ class ReferenceView(TemplateView):
                 'app': app,
                 'qr_code': generate_qr_code('http://www.kstu.kz/')
             }
-            return render_pdf('applications/abroad.html', context)
+            return render_pdf('applications/reference.html', context)
         else:
             return HttpResponse('<center><h1>Заявление не потверждено!</h1></center>')
 
@@ -244,7 +244,7 @@ class TransferView(TemplateView):
                 'app': app,
                 'qr_code': generate_qr_code('http://www.kstu.kz/')
             }
-            return render_pdf('applications/abroad.html', context)
+            return render_pdf('applications/transfer.html', context)
         else:
             return HttpResponse('<center><h1>Заявление не потверждено!</h1></center>')
 
@@ -269,7 +269,7 @@ class TransferKSTUView(TemplateView):
                 'app': app,
                 'qr_code': generate_qr_code('http://www.kstu.kz/')
             }
-            return render_pdf('applications/abroad.html', context)
+            return render_pdf('applications/transfer-kstu.html', context)
         else:
             return HttpResponse('<center><h1>Заявление не потверждено!</h1></center>')
 
@@ -294,7 +294,7 @@ class RecoveryView(TemplateView):
                 'app': app,
                 'qr_code': generate_qr_code('http://www.kstu.kz/')
             }
-            return render_pdf('applications/abroad.html', context)
+            return render_pdf('applications/recovery.html', context)
         else:
             return HttpResponse('<center><h1>Заявление не потверждено!</h1></center>')
 
