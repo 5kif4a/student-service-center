@@ -15,3 +15,5 @@ include
 lib
 .Python
 .DS_Store
+backup/
+new apps/

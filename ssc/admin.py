@@ -292,7 +292,7 @@ class TransferAdmin(CustomAdmin):
     list_display = ('last_name', 'first_name', 'patronymic', 'date_of_application', 'status', 'print')
     search_fields = ('last_name', 'first_name', 'patronymic', 'address', 'current_specialty__name',
                      'individual_identification_number', 'university', 'group')
-    autocomplete_fields = ('current_specialty',)
+    autocomplete_fields = ('current_specialty', 'specialty')
     readonly_fields = ('id_card_front', 'id_card_back')
 
     def id_card_front(self, obj):

@@ -191,12 +191,17 @@ class Abroad(Person, Application):
         verbose_name = _('заявление на участие в конкурсе на обучение за рубежом, в том числе академической мобильности')
         verbose_name_plural = _('заявления на участие в конкурсе на обучение за рубежом, в том числе академической мобильности')
 
+    def __str__(self):
+        return f'{self.last_name} {self.first_name} {self.patronymic}. ИИН: {self.individual_identification_number}'
+
 
 class Hostel(Person, Application):
     """
     Предоставление общежития в высших учебных заведениях
     Государственная услуга
     """
+    id = HashidAutoField(primary_key=True, min_length=16)
+
     faculty = models.CharField(max_length=200, choices=faculties, verbose_name=_('Факультет'))
 
     place_of_arrival = models.CharField(max_length=200, verbose_name=_('Место прибытия'))
@@ -217,6 +222,9 @@ class Hostel(Person, Application):
     class Meta:
         verbose_name = _('заявление на предоставление общежития в ВУЗах')
         verbose_name_plural = _('заявления на предоставление общежития в ВУЗах')
+
+    def __str__(self):
+        return f'{self.last_name} {self.first_name} {self.patronymic}. ИИН: {self.individual_identification_number}'
 
 
 # class Duplicate(Person, Application):
@@ -328,6 +336,8 @@ class Transfer(Person, Application):
     Перевод в другой ВУЗ
     """
     id = HashidAutoField(primary_key=True, min_length=16)
+
+    specialty = models.ForeignKey(Specialty, on_delete=models.CASCADE, verbose_name=_('Специальность перевода'))
 
     current_specialty = models.ForeignKey(Specialty, on_delete=models.CASCADE, verbose_name=_('Текущая специальность'),
                                           related_name='current_specialty')
