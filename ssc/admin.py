@@ -63,6 +63,7 @@ class CustomAdmin(admin.ModelAdmin):
     """
     Класс шаблон кастомной админ.панели для каждой услуги
     """
+    mail_template = None
     change_form_template = "custom_admin/change_form.html"
     entity = None
     app = None
@@ -113,6 +114,12 @@ class CustomAdmin(admin.ModelAdmin):
                 obj.status = 'Подтверждено'
                 obj.save()
 
+                # отправляем письмо после потверждения заявления
+                ctx = {'name': request.POST['first_name']}
+                to = (request.POST.get('email', ''),)
+
+                send_email(self.mail_template, ctx, to)
+
                 self.message_user(request, f"""{obj} подтверждено""")
 
         # Завершение обработки заявления
@@ -141,6 +148,7 @@ class ReferenceAdmin(CustomAdmin):
     Админ.панель академ.справок
     """
     entity = 'reference'
+    mail_template = 'mails/reference.html'
     app = 'Ваша справка готова. Вы можете получить ее в КарГТУ, 1 корпус, кабинет № 109.'
     list_per_page = 15
     list_filter = ('date_of_application', 'receipt_year', 'exclude_year', 'education_form', 'course', 'status')
@@ -156,7 +164,7 @@ class ReferenceAdmin(CustomAdmin):
         return format_html(f"""<img src="{obj.iin_attachment_front.url}" width="300px">""")
 
     def id_card_back(self, obj):
-        return format_html(f"""<img src="{obj.iin_attachment_front.url}" width="300px">""")
+        return format_html(f"""<img src="{obj.iin_attachment_back.url}" width="300px">""")
 
 
 @admin.register(AcademicLeave)
@@ -165,6 +173,7 @@ class AcademicLeaveAdmin(CustomAdmin):
     Админ.панель академ.отпусков
     """
     entity = 'academic-leave'
+    mail_template = 'mails/academic-leave.html'
     app = 'Ваш приказ готов. Вы можете получить его в КарГТУ, 1 корпус, кабинет № 109.'
     list_per_page = 15
     list_filter = ('date_of_application', 'status')
@@ -180,7 +189,7 @@ class AcademicLeaveAdmin(CustomAdmin):
         return format_html(f"""<img src="{obj.iin_attachment_front.url}" width="300px">""")
 
     def id_card_back(self, obj):
-        return format_html(f"""<img src="{obj.iin_attachment_front.url}" width="300px">""")
+        return format_html(f"""<img src="{obj.iin_attachment_back.url}" width="300px">""")
 
 
 @admin.register(Abroad)
@@ -189,6 +198,7 @@ class AbroadAdmin(CustomAdmin):
     Админ.панель академ.мобильности
     """
     entity = 'abroad'
+    mail_template = 'mails/abroad.html'
     # TODO: текст от международного отдела
     app = ''
     list_per_page = 15
@@ -204,7 +214,7 @@ class AbroadAdmin(CustomAdmin):
         return format_html(f"""<img src="{obj.iin_attachment_front.url}" width="300px">""")
 
     def id_card_back(self, obj):
-        return format_html(f"""<img src="{obj.iin_attachment_front.url}" width="300px">""")
+        return format_html(f"""<img src="{obj.iin_attachment_back.url}" width="300px">""")
 
     def response_change(self, request, obj):
         # Потверждение заявления
@@ -245,6 +255,7 @@ class HostelAdmin(CustomAdmin):
     Админ.панель предоставления общежития
     """
     entity = 'hostel'
+    mail_template = 'mails/hostel.html'
     app = 'Ваша справка готова. Вы можете получить ее в КарГТУ, 1 корпус, кабинет № 109.'
     list_per_page = 15
     list_filter = ('date_of_application', 'faculty', 'course', 'status')
@@ -259,7 +270,7 @@ class HostelAdmin(CustomAdmin):
         return format_html(f"""<img src="{obj.iin_attachment_front.url}" width="300px">""")
 
     def id_card_back(self, obj):
-        return format_html(f"""<img src="{obj.iin_attachment_front.url}" width="300px">""")
+        return format_html(f"""<img src="{obj.iin_attachment_back.url}" width="300px">""")
 
 
 # @admin.register(Duplicate)
@@ -286,6 +297,7 @@ class TransferAdmin(CustomAdmin):
     Админ.панель переводов в другой ВУЗ
     """
     entity = 'transfer'
+    mail_template = 'mails/transfer.html'
     app = 'Ваше заявление подписано. Вы можете получить его в КарГТУ, 1 корпус, кабинет № 109.'
     list_per_page = 15
     list_filter = ('date_of_application', 'faculty', 'foundation', 'status')
@@ -299,7 +311,7 @@ class TransferAdmin(CustomAdmin):
         return format_html(f"""<img src="{obj.iin_attachment_front.url}" width="300px">""")
 
     def id_card_back(self, obj):
-        return format_html(f"""<img src="{obj.iin_attachment_front.url}" width="300px">""")
+        return format_html(f"""<img src="{obj.iin_attachment_back.url}" width="300px">""")
 
 
 @admin.register(TransferKSTU)
@@ -308,6 +320,7 @@ class TransferKSTUAdmin(CustomAdmin):
     Админ.панель переводов в КарГТУ
     """
     entity = 'transfer-kstu'
+    mail_template = 'mails/transfer-kstu.html'
     app = 'Ваше заявление принято. Вам необходимо в течение 1 дня подойти в КарГТУ, ' \
           'главный корпус, кабинет № 309 б., ' \
           'для заключения договора. При себе иметь удостоверение личности. ' \
@@ -324,7 +337,7 @@ class TransferKSTUAdmin(CustomAdmin):
         return format_html(f"""<img src="{obj.iin_attachment_front.url}" width="300px">""")
 
     def id_card_back(self, obj):
-        return format_html(f"""<img src="{obj.iin_attachment_front.url}" width="300px">""")
+        return format_html(f"""<img src="{obj.iin_attachment_back.url}" width="300px">""")
 
 
 @admin.register(Recovery)
@@ -333,6 +346,7 @@ class RecoveryAdmin(CustomAdmin):
     Админ.панель - восстановление в число обучающихся
     """
     entity = 'recovery'
+    mail_template = 'mails/recovery.html'
     app = 'Ваше заявление принято.'
     list_per_page = 15
     list_filter = ('date_of_application', 'faculty', 'course', 'status')
@@ -346,4 +360,4 @@ class RecoveryAdmin(CustomAdmin):
         return format_html(f"""<img src="{obj.iin_attachment_front.url}" width="300px">""")
 
     def id_card_back(self, obj):
-        return format_html(f"""<img src="{obj.iin_attachment_front.url}" width="300px">""")
+        return format_html(f"""<img src="{obj.iin_attachment_back.url}" width="300px">""")

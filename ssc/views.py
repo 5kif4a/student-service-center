@@ -26,7 +26,6 @@ class TemplateView(View):
     form_class = None
     template_name = None
     context = None
-    mail_template = None
 
     def get(self, request):
         form = self.form_class()
@@ -44,11 +43,6 @@ class TemplateView(View):
             for _, file in files.items():
                 fs.save(file.name, file)
             form.save()
-
-            ctx = {'name': request.POST['first_name']}
-            to = (request.POST.get('email', ''),)
-
-            send_email(self.mail_template, ctx, to)
 
             return render(request, 'ssc/complete.html')
         return render(request, self.template_name, self.context)
@@ -82,7 +76,6 @@ class AbroadView(TemplateView):
     """
     form_class = AbroadForm
     template_name = 'ssc/abroad.html'
-    mail_template = 'mails/abroad.html'
     context = {'status': statuses.get('abroad')}
 
     @login_required
@@ -118,7 +111,6 @@ class HostelView(TemplateView):
     form_class = HostelForm
     template_name = 'ssc/hostel.html'
     context = {'status': statuses.get('hostel')}
-    mail_template = 'mails/hostel.html'
 
     @login_required
     def render(self, obj_id):
@@ -143,7 +135,7 @@ class DuplicateView(TemplateView):
     # form_class = DuplicateForm
     template_name = 'ssc/duplicate.html'
     context = {'status': statuses.get('duplicate')}
-    mail_template = 'mails/duplicate.html'
+    # mail_template = 'mails/duplicate.html'
 
     def get(self, request):
         # form = self.form_class()
@@ -173,7 +165,6 @@ class AcademicLeaveView(TemplateView):
     form_class = AcademicLeaveForm
     template_name = 'ssc/academic-leave.html'
     context = {'status': statuses.get('academic-leave')}
-    mail_template = 'mails/academic-leave.html'
 
     @login_required
     def render(self, obj_id):
@@ -198,7 +189,6 @@ class ReferenceView(TemplateView):
     form_class = ReferenceForm
     template_name = 'ssc/reference.html'
     context = {'status': statuses.get('reference')}
-    mail_template = 'mails/reference.html'
 
     @login_required
     def render(self, obj_id):
@@ -232,7 +222,6 @@ class TransferView(TemplateView):
     """
     form_class = TransferForm
     template_name = 'ssc/transfer.html'
-    mail_template = 'mails/transfer.html'
     context = {}
 
     @login_required
@@ -257,7 +246,6 @@ class TransferKSTUView(TemplateView):
     """
     form_class = TransferKSTUForm
     template_name = 'ssc/transfer-kstu.html'
-    mail_template = 'mails/transfer-kstu.html'
     context = {}
 
     @login_required
@@ -282,7 +270,6 @@ class RecoveryView(TemplateView):
     """
     form_class = RecoveryForm
     template_name = 'ssc/recovery.html'
-    mail_template = 'mails/recovery.html'
     context = {}
 
     @login_required
