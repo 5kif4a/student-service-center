@@ -170,7 +170,7 @@ class TransferKSTUForm(ModelForm):
         super(TransferKSTUForm, self).__init__(*args, **kwargs)
         self.fields['specialty'].label = 'Специальность'
         self.fields['university'].label = 'Предыдущий ВУЗ'
-        self.fields['grant'].label = 'Свидительство о образовательном гранте(если грант)'
+        self.fields['grant'].label = 'Свидетельство о образовательном гранте(если грант)'
         self.fields['status'].required = False
 
 
