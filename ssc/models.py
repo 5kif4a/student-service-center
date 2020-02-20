@@ -318,7 +318,7 @@ class TransferKSTU(Person, Application):
     transcript = models.FileField(verbose_name=_('Копия транскрипта'),
                                   validators=[file_size_validator, file_ext_validator])
 
-    grant = models.FileField(blank=True, null=True, verbose_name=_('Свидительство о образовательном гранте'))
+    grant = models.FileField(blank=True, null=True, verbose_name=_('Свидетельство о образовательном гранте'))
 
     group = None
     reason = None
