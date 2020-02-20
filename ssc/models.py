@@ -274,7 +274,7 @@ class AcademicLeave(Person, Application):
                                             verbose_name=_('Прикрепление копии документа, удостоверяющего личность - обратная сторона'),
                                             validators=[file_size_validator])
 
-    attachment = models.FileField(upload_to='hostel/', blank=True, null=True, verbose_name=_('Прикрепление'),
+    attachment = models.FileField(upload_to='hostel/', verbose_name=_('Прикрепление'),
                                   validators=[file_size_validator, file_ext_validator])
 
     reason = models.CharField(max_length=100, choices=academic_leave_reasons, default='состоянием здоровья',
