@@ -168,6 +168,7 @@ class Abroad(Person, Application):
     """
     Прием документов для участия в конкурсе на обучение за рубежом, в том числе академической мобильности
     """
+    id = HashidAutoField(primary_key=True, min_length=16)
 
     university = models.ForeignKey(University, on_delete=models.CASCADE, verbose_name=_('Университет'))
 

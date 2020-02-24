@@ -208,6 +208,8 @@ class AbroadAdmin(CustomAdmin):
     search_fields = ('last_name', 'first_name', 'patronymic', 'address',
                      'individual_identification_number')
 
+    autocomplete_fields = ('university', )
+
     readonly_fields = ('id_card_front', 'id_card_back')
 
     def id_card_front(self, obj):
