@@ -1,8 +1,12 @@
+import os
+import zipfile
+
 from django.utils.html import format_html
+from django.utils.six import StringIO
+
 from ssc.models import *
 from ssc.utilities import *
 from django.contrib import admin
-
 
 # Заголовки админ.сайта
 admin.site.index_title = 'Центр обслуживания студентов'
@@ -16,6 +20,11 @@ admin.site.index_template = 'custom_admin/base_site.html'
 # Метод получения всех полей модели(столбцов таблицы)
 def get_model_fields(model):
     return [field.name for field in model._meta.get_fields()][1:]
+
+
+# Получить необходимое поле модели
+def get_model_field(model, field):
+    return model._meta.get_field(field)
 
 
 # Register your models here.
@@ -208,7 +217,7 @@ class AbroadAdmin(CustomAdmin):
     search_fields = ('last_name', 'first_name', 'patronymic', 'address',
                      'individual_identification_number')
 
-    autocomplete_fields = ('university', )
+    autocomplete_fields = ('university',)
 
     readonly_fields = ('id_card_front', 'id_card_back')
 
@@ -349,6 +358,7 @@ class RecoveryAdmin(CustomAdmin):
     """
     entity = 'recovery'
     mail_template = 'mails/recovery.html'
+    change_form_template = "custom_admin/recovery.html"
     app = 'Ваше заявление принято.'
     list_per_page = 15
     list_filter = ('date_of_application', 'faculty', 'course', 'status')
@@ -363,3 +373,29 @@ class RecoveryAdmin(CustomAdmin):
 
     def id_card_back(self, obj):
         return format_html(f"""<img src="{obj.iin_attachment_back.url}" width="300px">""")
+
+    # TODO: code refactor
+    def response_change(self, request, obj):
+        if "_download" in request.POST:
+
+            reference = getattr(obj, get_model_field(Recovery, 'reference').name)
+            reference.name = "reference." + extension(reference.path)
+
+            transcript = Recovery._meta.get_field('transcript')
+            transcript = getattr(obj, transcript.name)
+
+            filenames = [reference.path, transcript.path, obj.iin_attachment_front.path, obj.iin_attachment_back.path]
+            zip_subdir = "recovery"
+            zip_filename = "%s.zip" % zip_subdir
+
+            response = HttpResponse(content_type='application/zip')
+            zip_file = zipfile.ZipFile(response, 'w')
+            for filename in filenames:
+                fdir, fname = os.path.split(filename)
+                zip_path = os.path.join(zip_subdir, fname)
+
+                zip_file.write(filename, zip_path)
+            response['Content-Disposition'] = 'attachment; filename={}'.format(zip_filename)
+            return response
+
+        return super().response_change(request, obj)
