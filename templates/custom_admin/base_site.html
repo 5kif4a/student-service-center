@@ -13,7 +13,10 @@
 {% if user.is_superuser %}
     <a href="/admin/stats">Статистика</a>/
 {% endif %}
-<button class="button" onclick="notify()"><i class="far fa-bell"></i></button>/
+<button class="button" onclick="window.open('/admin/stats')">
+    <i class="far fa-bell"></i>
+    <span id="notifications" class="badge badge-light"></span>
+</button>/
 {% trans 'Welcome,' %}
 <strong>{% firstof user.get_short_name user.get_username %}</strong>.
 {% endblock %}

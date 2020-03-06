@@ -1,11 +1,10 @@
-from django.shortcuts import HttpResponse
 from django.core.mail import EmailMessage
 from django.template.loader import render_to_string
+from django.http import HttpResponse
 import pdfkit
 import pyqrcode
 from SSC_KSTU.settings import env
 import logging
-
 
 # Путь к .exe файлу генерирующий PDF
 PATH_WKHTMLTOPDF = env.str('PATH_WKHTMLTOPDF')
@@ -101,3 +100,7 @@ def send_email(mail_template, context, to):
 def generate_qr_code(url):
     qr = pyqrcode.create(url)
     return qr.png_as_base64_str(scale=6)
+
+
+
+

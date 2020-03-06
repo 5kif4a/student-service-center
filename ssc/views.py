@@ -1,10 +1,14 @@
 from django.shortcuts import render, render_to_response, redirect
+from django.contrib.sites.shortcuts import get_current_site
 from django.views import View
+from django.http import JsonResponse
+from django.core import serializers
 from ssc.forms import *
 from ssc.models import *
 from ssc.utilities import *
 from django.contrib.auth.decorators import login_required
 from django.core.files.storage import FileSystemStorage
+import json
 # Create your views here.
 
 # Текущий ректор
@@ -26,6 +30,8 @@ class TemplateView(View):
     form_class = None
     template_name = None
     context = None
+    app_type = None
+    app_ref = None
 
     def get(self, request):
         form = self.form_class()
@@ -42,7 +48,14 @@ class TemplateView(View):
         if form.is_valid():
             for _, file in files.items():
                 fs.save(file.name, file)
-            form.save()
+            data = form.save()
+
+            # создаем уведомление
+            base_url = get_current_site(request)
+            url_for_app = f'{base_url}/admin/ssc/{self.app_ref}/{data.id}/change/'
+
+            n = Notification(application_type=self.app_type, url_for_application=url_for_app)
+            n.save()
 
             return render(request, 'ssc/complete.html')
         return render(request, self.template_name, self.context)
@@ -165,6 +178,8 @@ class AcademicLeaveView(TemplateView):
     form_class = AcademicLeaveForm
     template_name = 'ssc/academic-leave.html'
     context = {'status': statuses.get('academic-leave')}
+    app_type = 'Академический отпуск'
+    app_ref = 'academicleave'
 
     @login_required
     def render(self, obj_id):
@@ -284,6 +299,29 @@ class RecoveryView(TemplateView):
             return render_pdf('applications/recovery.html', context)
         else:
             return HttpResponse('<center><h1>Заявление не потверждено!</h1></center>')
+
+
+@login_required
+def get_notifications(request):
+    """
+    Получить все уведомления
+    :return:
+    """
+    notifications = Notification.objects.filter(is_showed=False).order_by('-date')
+    notifications = serializers.serialize("json", notifications)
+    data = json.loads(notifications, encoding='utf8')
+    return JsonResponse(data, safe=False)
+
+
+# отметить уведомление как прочитанное
+def mark_as_read(request, id_):
+    try:
+        n = Notification.objects.get(id_)
+        n.is_showed = True
+        n.save()
+        return HttpResponse('', status=200)
+    except Exception:
+        return HttpResponse(status=400)
 
 
 @login_required(login_url='/admin/login')
