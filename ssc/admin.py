@@ -241,7 +241,6 @@ class AcademicLeaveAdmin(CustomAdmin):
                 to = (obj.email,)
 
                 uploaded_file = request.FILES['scanned_file']
-
                 send_email_with_attachment("mails/ready.html", ctx, to, uploaded_file)
 
                 self.message_user(request, f"""Обработка заявления "{obj}" завершена. Письмо отправлено""")
