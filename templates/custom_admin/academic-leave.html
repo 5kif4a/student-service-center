@@ -53,12 +53,10 @@
       </div>
 
       <div class="modal-body">
-          <!--<form id="file_form" enctype="multipart/form-data" method="post" action="">{% csrf_token %}-->
           <div class="form-group">
             <label for="message-text" class="col-form-label">Скан. готового документа</label>
             <input name="scanned_file" id="scan-file-input" type="file" required>
           </div>
-         <!--  </form>  -->
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-secondary" data-dismiss="modal">Закрыть</button>
@@ -67,30 +65,5 @@
     </div>
   </div>
 </div>
-
-<script>
-  var formData = new FormData();
-
-// Add all regular fields to the formData
-$("form").serializeArray().forEach(function (element) {
-    formData.append(element["name"], element["value"]);
-});
-
-// Append the file field to the formData
-formData.append("scanned_file", $("#scan-file-input")[0].files[0]);
-
-$.ajax({
-    url: '/' + window.location.pathname,
-    data: formData,
-    type: 'POST',
-    // important settings:
-    cache: false,
-    contentType: false,
-    processData: false,
-    success: function (data) {
-        // your success callback
-    }
-});
-</script>
 
 {% endblock %}
