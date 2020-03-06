@@ -3,6 +3,7 @@ from ssc.models import *
 from ssc.utilities import *
 from django.contrib import admin
 
+
 # Заголовки админ.сайта
 admin.site.index_title = 'Центр обслуживания студентов'
 admin.site.site_header = 'Центр обслуживания студентов'
@@ -172,7 +173,6 @@ class AcademicLeaveAdmin(CustomAdmin):
     Админ.панель академ.отпусков
     """
     entity = 'academic-leave'
-    change_form_template = "custom_admin/academic-leave.html"
     mail_template = 'mails/academic-leave.html'
     app = 'Ваш приказ готов. Вы можете получить его в КарГТУ, 1 корпус, кабинет № 109.'
     list_per_page = 15
@@ -243,15 +243,14 @@ class AbroadAdmin(CustomAdmin):
     def response_change(self, request, obj):
         # Если заявление заполнено неправильно, отправляем письмо с уведомлением
         if "_send_for_correction" in request.POST:
-            if obj.status != 'Отозвано на исправление':
+            if obj.status is not 'Отозвано на исправление':
                 note = request.POST.get('note')
-
+                to = (obj.email,)
+                ctx = {'name': obj.first_name,
+                       'note': note}
                 obj.status = 'Отозвано на исправление'
                 obj.save()
 
-                ctx = {'name': obj.first_name,
-                       'note': note}
-                to = (obj.email,)
                 send_email('mails/revoke.html', ctx, to)
                 self.message_user(request, f"Письмо с уведомлением отправлено {obj}")
             else:
