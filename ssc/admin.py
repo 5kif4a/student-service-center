@@ -374,27 +374,40 @@ class RecoveryAdmin(CustomAdmin):
     def id_card_back(self, obj):
         return format_html(f"""<img src="{obj.iin_attachment_back.url}" width="300px">""")
 
-    # TODO: code refactor
     def response_change(self, request, obj):
         if "_download" in request.POST:
 
-            reference = getattr(obj, get_model_field(Recovery, 'reference').name)
-            reference.name = "reference." + extension(reference.path)
+            # Получения путей к целевым файлам и генерация новых имен
+            reference = getattr(obj, get_model_field(Recovery, 'reference').name).path
+            file_name = os.path.split(reference)[1]
+            reference_renamed = 'reference.' + file_name.split('.')[1]
 
-            transcript = Recovery._meta.get_field('transcript')
-            transcript = getattr(obj, transcript.name)
+            transcript = getattr(obj, get_model_field(Recovery, 'transcript').name).path
+            file_name = os.path.split(transcript)[1]
+            transcript_renamed = 'transcript.' + file_name.split('.')[1]
 
-            filenames = [reference.path, transcript.path, obj.iin_attachment_front.path, obj.iin_attachment_back.path]
+            iin_front = obj.iin_attachment_front.path
+            file_name = os.path.split(iin_front)[1]
+            iin_front_renamed = 'iin_front.' + file_name.split('.')[1]
+
+            iin_back = obj.iin_attachment_back.path
+            file_name = os.path.split(iin_back)[1]
+            iin_back_renamed = 'iin_back.' + file_name.split('.')[1]
+
+            files = {reference: reference_renamed, transcript: transcript_renamed,
+                            iin_front: iin_front_renamed, iin_back: iin_back_renamed}
+
+            # Генерация zip-файла по пути файла и необходимому ему имени внутри архива
             zip_subdir = "recovery"
             zip_filename = "%s.zip" % zip_subdir
 
             response = HttpResponse(content_type='application/zip')
             zip_file = zipfile.ZipFile(response, 'w')
-            for filename in filenames:
-                fdir, fname = os.path.split(filename)
-                zip_path = os.path.join(zip_subdir, fname)
 
-                zip_file.write(filename, zip_path)
+            for file_path in files:
+                zip_path = os.path.join(zip_subdir, files.get(file_path))
+                zip_file.write(file_path, zip_path)
+
             response['Content-Disposition'] = 'attachment; filename={}'.format(zip_filename)
             return response
 

@@ -103,8 +103,3 @@ def generate_qr_code(url):
     qr = pyqrcode.create(url)
     return qr.png_as_base64_str(scale=6)
 
-
-# Расширение файла
-def extension(file):
-    name, extension = os.path.splitext(file.name)
-    return extension
