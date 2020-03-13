@@ -90,6 +90,8 @@ class AbroadView(TemplateView):
     form_class = AbroadForm
     template_name = 'ssc/abroad.html'
     context = {'status': statuses.get('abroad')}
+    app_type = 'Академическая мобильность'
+    app_ref = 'abroad'
 
     @login_required
     def render(self, obj_id):
@@ -124,6 +126,8 @@ class HostelView(TemplateView):
     form_class = HostelForm
     template_name = 'ssc/hostel.html'
     context = {'status': statuses.get('hostel')}
+    app_type = 'Общежитие'
+    app_ref = 'hostel'
 
     @login_required
     def render(self, obj_id):
@@ -149,6 +153,8 @@ class DuplicateView(TemplateView):
     template_name = 'ssc/duplicate.html'
     context = {'status': statuses.get('duplicate')}
     # mail_template = 'mails/duplicate.html'
+    app_type = 'Дубликаты документов'
+    app_ref = 'duplicate'
 
     def get(self, request):
         # form = self.form_class()
@@ -204,6 +210,8 @@ class ReferenceView(TemplateView):
     form_class = ReferenceForm
     template_name = 'ssc/reference.html'
     context = {'status': statuses.get('reference')}
+    app_type = "Академическая справка"
+    app_ref = "reference"
 
     @login_required
     def render(self, obj_id):
@@ -238,6 +246,8 @@ class TransferView(TemplateView):
     form_class = TransferForm
     template_name = 'ssc/transfer.html'
     context = {}
+    app_type = "Перевод в другой ВУЗ"
+    app_ref = 'transfer'
 
     @login_required
     def render(self, obj_id):
@@ -262,6 +272,8 @@ class TransferKSTUView(TemplateView):
     form_class = TransferKSTUForm
     template_name = 'ssc/transfer-kstu.html'
     context = {}
+    app_type = 'Перевод в КарГТУ'
+    app_ref = 'transferkstu'
 
     @login_required
     def render(self, obj_id):
@@ -286,6 +298,9 @@ class RecoveryView(TemplateView):
     form_class = RecoveryForm
     template_name = 'ssc/recovery.html'
     context = {}
+    app_type = 'Восстановление в число обучающихся'
+    app_ref = 'recovery'
+
 
     @login_required
     def render(self, obj_id):
@@ -314,14 +329,11 @@ def get_notifications(request):
 
 
 # отметить уведомление как прочитанное
-def mark_as_read(request, id_):
-    try:
-        n = Notification.objects.get(id_)
-        n.is_showed = True
-        n.save()
-        return HttpResponse('', status=200)
-    except Exception:
-        return HttpResponse(status=400)
+def mark_as_read(request, obj_id):
+    n = Notification.objects.get(id=obj_id)
+    n.is_showed = True
+    n.save()
+    return HttpResponse("OK", status=200)
 
 
 @login_required(login_url='/admin/login')

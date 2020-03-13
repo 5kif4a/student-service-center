@@ -16,29 +16,30 @@ git clone https://github.com/5kif4a/student-service-center.git
 ```
 pip install virtualenv
 ```
-- Проект создавался на платформе Windows\
-Установку виртуальной среды на других платформах можно посмотреть на странице официальной [документации](https://docs.python.org/3/library/venv.html)
 - В директории проекта создать новую виртуальную среду
 ```
-# cmd.exe
 cd path_to_project
-py -m venv venv
+python3 -m venv venv
 ```
 - Активировать виртуальную среду
 ```
-# cmd.exe
+Windows
 venv\Scripts\activate.bat
+Linux
+source venv\bin\activate
 ```
 - Установить требуемые зависимости
 ```
 # cmd.exe
 pip install -r requirements.txt
 ```
+- На Windows для библиотеки mysqlclient требуется Microsoft Visual C++ 14.0 (или выше) - [Microsoft Visual C++ Build Tools](https://visualstudio.microsoft.com/ru/visual-cpp-build-tools/)
 - Создайте файл .env в корне проекта и пропишите нужные параметры по примеру
 ```
 DEBUG=True
 SECRET_KEY=ваш_секретный_ключ
 
+# подключение к БД MySQL
 DATABASE_URL=mysql://user:password@localhost:port/database
 SQLITE_URL=sqlite:///db.sqlite3
 
@@ -54,10 +55,11 @@ EMAIL_HOST_PASSWORD=пароль от почты
 EMAIL_USE_TLS=True
 EMAIL_USE_SSL=False
 
-PATH_WKHTMLTOPDF=path_to\...\wkhtmltopdf\bin\wkhtmltopdf.exe
+PATH_WKHTMLTOPDF=path_to_wkhtmltopdf
 ```
 - Миграция базы данных
 ```
+py manage.py magemigrations ssc 
 py manage.py migrate
 ```
 - Создание суперпользователя
@@ -73,13 +75,4 @@ email
 ```
 py manage.py runserver 8000
 ```
-**TODO LIST**
-- [x] Поиск в базе данных
-- [x] Фильтрация
-- [x] Конфигурацию переменными окружения
-- [ ] Логирование
-- [x] Генерация PDF
-- [x] Hash id, hash names for media files 
-- [x] Email notifications for students
-- [ ] Push notifications for moderators
 

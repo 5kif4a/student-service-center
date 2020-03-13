@@ -1,4 +1,5 @@
 from django.db import models
+from django.utils.html import format_html
 from django.utils.translation import gettext_lazy as _
 from hashid_field import HashidAutoField
 from ssc.utilities import *
@@ -430,12 +431,11 @@ class Notification(models.Model):
     application_type = models.CharField(max_length=500, verbose_name=_('Тип заявления'), choices=APPLICATIONS_TYPES)
     url_for_application = models.URLField(verbose_name=_('Ссылка на заявление'))
     is_showed = models.BooleanField(verbose_name=_('Прочитано?'), default=False)
-    # is_shown = models.BooleanField(verbose_name=_('Показазано?'), default=False)
-    # is_read = models.BooleanField(verbose_name=_('Прочитано?'), default=False)
 
     class Meta:
         verbose_name = 'Уведомление'
         verbose_name_plural = 'Уведомления'
+        ordering = ['-date']
 
     def __str__(self):
         return f'Уведомление: {self.application_type}'
