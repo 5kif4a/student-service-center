@@ -42,6 +42,8 @@ transfer_and_recovery_urls = [path('transfer-and-recovery', views.transfer_and_r
                               path('transfer-kstu/report/<obj_id>/', views.TransferKSTUView.render),
                               path('recovery/report/<obj_id>/', views.RecoveryView.render)]
 
+notifications_urls = [path('notifications', views.get_notifications),
+                      path('mark_as_read/<obj_id>', views.mark_as_read)]
 
 urlpatterns = [
     path('', views.index),
@@ -54,5 +56,6 @@ urlpatterns = [
     duplicate_urls + \
     reference_urls + \
     academic_leave_urls + \
-    transfer_and_recovery_urls
+    transfer_and_recovery_urls + \
+    notifications_urls
 

@@ -1,8 +1,8 @@
 import mimetypes
-
 from django.shortcuts import HttpResponse
 from django.core.mail import EmailMessage
 from django.template.loader import render_to_string
+from django.http import HttpResponse
 import pdfkit
 import pyqrcode
 from SSC_KSTU.settings import env
@@ -111,3 +111,7 @@ def send_email_with_attachment(mail_template, context, to, file):
 def generate_qr_code(url):
     qr = pyqrcode.create(url)
     return qr.png_as_base64_str(scale=6)
+
+
+
+

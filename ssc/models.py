@@ -1,4 +1,5 @@
 from django.db import models
+from django.utils.html import format_html
 from django.utils.translation import gettext_lazy as _
 from hashid_field import HashidAutoField
 from ssc.utilities import *
@@ -415,15 +416,26 @@ class Notification(models.Model):
     """
     Уведомление о заявлениях
     """
+    APPLICATIONS_TYPES = [('Академическая мобильность', 'Академическая мобильность'),
+                          ('Общежитие', 'Общежитие'),
+                          ('Дубликаты документов', 'Дубликаты документов'),
+                          ('Академическая справка', 'Академическая справка'),
+                          ('Академический отпуск', 'Академический отпуск'),
+                          ('Перевод в другой ВУЗ', 'Перевод в другой ВУЗ'),
+                          ('Перевод в КарГТУ', 'Перевод в КарГТУ'),
+                          ('Восстановление в число обучающихся', 'Восстановление в число обучающихся'),
+                          ]
+
     id = HashidAutoField(primary_key=True, min_length=16)
     date = models.DateTimeField(auto_now_add=True, verbose_name=_('Дата отправки уведомления'))
-    application_type = models.CharField(max_length=500, verbose_name=_('Тип заявления'))
+    application_type = models.CharField(max_length=500, verbose_name=_('Тип заявления'), choices=APPLICATIONS_TYPES)
     url_for_application = models.URLField(verbose_name=_('Ссылка на заявление'))
-    is_showed = models.BooleanField(verbose_name=_('Показано'))
+    is_showed = models.BooleanField(verbose_name=_('Прочитано?'), default=False)
 
     class Meta:
         verbose_name = 'Уведомление'
         verbose_name_plural = 'Уведомления'
+        ordering = ['-date']
 
     def __str__(self):
         return f'Уведомление: {self.application_type}'

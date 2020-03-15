@@ -1,10 +1,14 @@
 from django.shortcuts import render, render_to_response, redirect
+from django.contrib.sites.shortcuts import get_current_site
 from django.views import View
+from django.http import JsonResponse
+from django.core import serializers
 from ssc.forms import *
 from ssc.models import *
 from ssc.utilities import *
 from django.contrib.auth.decorators import login_required
 from django.core.files.storage import FileSystemStorage
+import json
 # Create your views here.
 
 # Текущий ректор
@@ -26,6 +30,8 @@ class TemplateView(View):
     form_class = None
     template_name = None
     context = None
+    app_type = None
+    app_ref = None
 
     def get(self, request):
         form = self.form_class()
@@ -42,7 +48,14 @@ class TemplateView(View):
         if form.is_valid():
             for _, file in files.items():
                 fs.save(file.name, file)
-            form.save()
+            data = form.save()
+
+            # создаем уведомление
+            base_url = get_current_site(request)
+            url_for_app = f'{base_url}/admin/ssc/{self.app_ref}/{data.id}/change/'
+
+            n = Notification(application_type=self.app_type, url_for_application=url_for_app)
+            n.save()
 
             return render(request, 'ssc/complete.html')
         return render(request, self.template_name, self.context)
@@ -77,6 +90,8 @@ class AbroadView(TemplateView):
     form_class = AbroadForm
     template_name = 'ssc/abroad.html'
     context = {'status': statuses.get('abroad')}
+    app_type = 'Академическая мобильность'
+    app_ref = 'abroad'
 
     @login_required
     def render(self, obj_id):
@@ -111,6 +126,8 @@ class HostelView(TemplateView):
     form_class = HostelForm
     template_name = 'ssc/hostel.html'
     context = {'status': statuses.get('hostel')}
+    app_type = 'Общежитие'
+    app_ref = 'hostel'
 
     @login_required
     def render(self, obj_id):
@@ -136,6 +153,8 @@ class DuplicateView(TemplateView):
     template_name = 'ssc/duplicate.html'
     context = {'status': statuses.get('duplicate')}
     # mail_template = 'mails/duplicate.html'
+    app_type = 'Дубликаты документов'
+    app_ref = 'duplicate'
 
     def get(self, request):
         # form = self.form_class()
@@ -165,6 +184,8 @@ class AcademicLeaveView(TemplateView):
     form_class = AcademicLeaveForm
     template_name = 'ssc/academic-leave.html'
     context = {'status': statuses.get('academic-leave')}
+    app_type = 'Академический отпуск'
+    app_ref = 'academicleave'
 
     @login_required
     def render(self, obj_id):
@@ -189,6 +210,8 @@ class ReferenceView(TemplateView):
     form_class = ReferenceForm
     template_name = 'ssc/reference.html'
     context = {'status': statuses.get('reference')}
+    app_type = "Академическая справка"
+    app_ref = "reference"
 
     @login_required
     def render(self, obj_id):
@@ -223,6 +246,8 @@ class TransferView(TemplateView):
     form_class = TransferForm
     template_name = 'ssc/transfer.html'
     context = {}
+    app_type = "Перевод в другой ВУЗ"
+    app_ref = 'transfer'
 
     @login_required
     def render(self, obj_id):
@@ -247,6 +272,8 @@ class TransferKSTUView(TemplateView):
     form_class = TransferKSTUForm
     template_name = 'ssc/transfer-kstu.html'
     context = {}
+    app_type = 'Перевод в КарГТУ'
+    app_ref = 'transferkstu'
 
     @login_required
     def render(self, obj_id):
@@ -271,6 +298,9 @@ class RecoveryView(TemplateView):
     form_class = RecoveryForm
     template_name = 'ssc/recovery.html'
     context = {}
+    app_type = 'Восстановление в число обучающихся'
+    app_ref = 'recovery'
+
 
     @login_required
     def render(self, obj_id):
@@ -284,6 +314,26 @@ class RecoveryView(TemplateView):
             return render_pdf('applications/recovery.html', context)
         else:
             return HttpResponse('<center><h1>Заявление не потверждено!</h1></center>')
+
+
+@login_required
+def get_notifications(request):
+    """
+    Получить все уведомления
+    :return:
+    """
+    notifications = Notification.objects.filter(is_showed=False).order_by('-date')
+    notifications = serializers.serialize("json", notifications)
+    data = json.loads(notifications, encoding='utf8')
+    return JsonResponse(data, safe=False)
+
+
+# отметить уведомление как прочитанное
+def mark_as_read(request, obj_id):
+    n = Notification.objects.get(id=obj_id)
+    n.is_showed = True
+    n.save()
+    return HttpResponse("OK", status=200)
 
 
 @login_required(login_url='/admin/login')
