@@ -179,6 +179,7 @@ class AcademicLeaveAdmin(CustomAdmin):
     """
     entity = 'academic-leave'
     mail_template = 'mails/academic-leave.html'
+    change_form_template = "custom_admin/academic-leave.html"
     app = 'Ваш приказ готов. Вы можете получить его в КарГТУ, 1 корпус, кабинет № 109.'
     list_per_page = 15
     list_filter = ('date_of_application', 'status')
@@ -189,6 +190,68 @@ class AcademicLeaveAdmin(CustomAdmin):
     autocomplete_fields = ('specialty',)
 
     readonly_fields = ('attachment', 'id_card_front', 'id_card_back')
+
+    def id_card_front(self, obj):
+        return format_html(f"""<img src="{obj.iin_attachment_front.url}" width="300px">""")
+
+    def id_card_back(self, obj):
+        return format_html(f"""<img src="{obj.iin_attachment_back.url}" width="300px">""")
+
+    def response_change(self, request, obj):
+        # Если заявление заполнено неправильно, отправляем письмо с уведомлением
+        if "_send_for_correction" in request.POST:
+            if obj.status != 'Отозвано на исправление':
+                note = request.POST.get('note')
+
+                obj.status = 'Отозвано на исправление'
+                obj.save()
+
+                ctx = {'name': obj.first_name,
+                       'note': note}
+                to = (obj.email,)
+                send_email('mails/revoke.html', ctx, to)
+                self.message_user(request, f"Письмо с уведомлением отправлено {obj}")
+            else:
+                self.message_user(request, f"Письмо с уведомлением уже отправлено {obj}")
+
+        # Потверждение заявления
+        if "_verify" in request.POST:
+            # Если подтвержден - выдаем сообщение, что заявление уже подтверждено
+            if obj.status == 'Подтверждено':
+                self.message_user(request, f"{obj} уже потвержден")
+            # Если не потверждено - подтверждаем и отправляем письмо на почту
+            else:
+                obj.status = 'Подтверждено'
+                obj.save()
+
+                # отправляем письмо после потверждения заявления
+                ctx = {'name': request.POST['first_name']}
+                to = (request.POST.get('email', ''),)
+
+                send_email(self.mail_template, ctx, to)
+
+                self.message_user(request, f"""{obj} подтверждено""")
+
+        # Завершение обработки заявления
+        if "_finish" in request.POST:
+            # Если завершено - выдаем сообщение, что заявление уже завершено
+            if obj.status is 'Завершено':
+                self.message_user(request, f"{obj} обработка завершена")
+            # Если не завершено - завершаем и отправляем письмо на почту
+            else:
+                obj.status = 'Завершено'
+                obj.save()
+
+                ctx = {'name': obj.first_name,
+                       'app': self.app}
+                to = (obj.email,)
+
+                uploaded_file = request.FILES['scanned_file']
+                send_email_with_attachment("mails/ready.html", ctx, to, uploaded_file)
+
+                self.message_user(request, f"""Обработка заявления "{obj}" завершена. Письмо отправлено""")
+
+        return super().response_change(request, obj)
 
 
 @admin.register(Abroad)
@@ -210,6 +273,13 @@ class AbroadAdmin(CustomAdmin):
     autocomplete_fields = ('university',)
 
     readonly_fields = ('id_card_front', 'id_card_back')
+
+
+    def id_card_front(self, obj):
+        return format_html(f"""<img src="{obj.iin_attachment_front.url}" width="300px">""")
+
+    def id_card_back(self, obj):
+        return format_html(f"""<img src="{obj.iin_attachment_back.url}" width="300px">""")
 
     def response_change(self, request, obj):
         # Потверждение заявления
