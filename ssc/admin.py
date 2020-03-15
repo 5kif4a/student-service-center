@@ -10,7 +10,6 @@ from django.contrib import admin
 
 from SSC_KSTU.settings import BASE_URL
 
-
 # Заголовки админ.сайта
 admin.site.index_title = 'Центр обслуживания студентов'
 admin.site.site_header = 'Центр обслуживания студентов'
@@ -386,7 +385,7 @@ class RecoveryAdmin(CustomAdmin):
     Админ.панель - восстановление в число обучающихся
     """
     entity = 'recovery'
-    mail_template = 'mails/change_form_recovery.html'
+    mail_template = 'mails/recovery.html'
     change_form_template = "custom_admin/change_form_recovery.html"
     app = 'Ваше заявление принято.'
     list_per_page = 15
@@ -469,7 +468,7 @@ class RecoveryAdmin(CustomAdmin):
 
         return super().response_change(request, obj)
 
-      
+
 # Уведомления
 def make_read(modeladmin, request, queryset):
     queryset.update(is_showed=True)
@@ -489,7 +488,7 @@ class NotificationAdmin(admin.ModelAdmin):
     fields = ('application_type', 'is_showed')
     exclude = ('url_for_application',)
     readonly_fields = ('application_type', 'url_for_application', 'is_showed')
-    actions = (make_read, )
+    actions = (make_read,)
 
     def mark_as_read(self, obj):
         """
