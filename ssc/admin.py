@@ -1,8 +1,8 @@
-import os
+import io
 import zipfile
+import datetime
 
 from django.utils.html import format_html
-from django.utils.six import StringIO
 
 from ssc.models import *
 from ssc.utilities import *
@@ -20,11 +20,6 @@ admin.site.index_template = 'custom_admin/base_site.html'
 # Метод получения всех полей модели(столбцов таблицы)
 def get_model_fields(model):
     return [field.name for field in model._meta.get_fields()][1:]
-
-
-# Получить необходимое поле модели
-def get_model_field(model, field):
-    return model._meta.get_field(field)
 
 
 # Register your models here.
@@ -357,8 +352,8 @@ class RecoveryAdmin(CustomAdmin):
     Админ.панель - восстановление в число обучающихся
     """
     entity = 'recovery'
-    mail_template = 'mails/recovery.html'
-    change_form_template = "custom_admin/recovery.html"
+    mail_template = 'mails/change_form_recovery.html'
+    change_form_template = "custom_admin/change_form_recovery.html"
     app = 'Ваше заявление принято.'
     list_per_page = 15
     list_filter = ('date_of_application', 'faculty', 'course', 'status')
@@ -375,40 +370,73 @@ class RecoveryAdmin(CustomAdmin):
         return format_html(f"""<img src="{obj.iin_attachment_back.url}" width="300px">""")
 
     def response_change(self, request, obj):
-        if "_download" in request.POST:
+        # Если заявление заполнено неправильно, отправляем письмо с уведомлением
+        if "_send_for_correction" in request.POST:
+            if obj.status != 'Отозвано на исправление':
+                note = request.POST.get('note')
 
-            # Получения путей к целевым файлам и генерация новых имен
-            reference = getattr(obj, get_model_field(Recovery, 'reference').name).path
-            file_name = os.path.split(reference)[1]
-            reference_renamed = 'reference.' + file_name.split('.')[1]
+                obj.status = 'Отозвано на исправление'
+                obj.save()
 
-            transcript = getattr(obj, get_model_field(Recovery, 'transcript').name).path
-            file_name = os.path.split(transcript)[1]
-            transcript_renamed = 'transcript.' + file_name.split('.')[1]
+                ctx = {'name': obj.first_name,
+                       'note': note}
+                to = (obj.email,)
+                send_email('mails/revoke.html', ctx, to)
+                self.message_user(request, f"Письмо с уведомлением отправлено {obj}")
+            else:
+                self.message_user(request, f"Письмо с уведомлением уже отправлено {obj}")
 
-            iin_front = obj.iin_attachment_front.path
-            file_name = os.path.split(iin_front)[1]
-            iin_front_renamed = 'iin_front.' + file_name.split('.')[1]
+        # Потверждение заявления
+        if "_verify" in request.POST:
+            # Если подтвержден - выдаем сообщение, что заявление уже подтверждено
+            if obj.status == 'Подтверждено':
+                self.message_user(request, f"{obj} уже потвержден")
+            # Если не потверждено - подтверждаем и отправляем письмо на почту
+            else:
+                obj.status = 'Подтверждено'
+                obj.save()
 
-            iin_back = obj.iin_attachment_back.path
-            file_name = os.path.split(iin_back)[1]
-            iin_back_renamed = 'iin_back.' + file_name.split('.')[1]
+                # отправляем письмо после потверждения заявления
+                ctx = {'name': request.POST['first_name']}
+                to = (request.POST.get('email', ''),)
 
-            files = {reference: reference_renamed, transcript: transcript_renamed,
-                            iin_front: iin_front_renamed, iin_back: iin_back_renamed}
+                send_email(self.mail_template, ctx, to)
 
-            # Генерация zip-файла по пути файла и необходимому ему имени внутри архива
-            zip_subdir = "recovery"
-            zip_filename = "%s.zip" % zip_subdir
+                self.message_user(request, f"""{obj} подтверждено""")
 
-            response = HttpResponse(content_type='application/zip')
-            zip_file = zipfile.ZipFile(response, 'w')
+        # Завершение обработки заявления
+        if "_finish" in request.POST:
+            # Если завершено - выдаем сообщение, что заявление уже завершено
+            if obj.status is 'Завершено':
+                self.message_user(request, f"{obj} обработка завершена")
+            # Если не завершено - завершаем и отправляем письмо на почту
+            else:
+                obj.status = 'Завершено'
+                obj.save()
 
-            for file_path in files:
-                zip_path = os.path.join(zip_subdir, files.get(file_path))
-                zip_file.write(file_path, zip_path)
+                ctx = {'name': obj.first_name,
+                       'app': self.app}
+                to = (obj.email,)
+                send_email('mails/ready.html', ctx, to)
 
-            response['Content-Disposition'] = 'attachment; filename={}'.format(zip_filename)
+                self.message_user(request, f"""Обработка заявления "{obj}" завершена. Письмо отправлено""")
+        # скачать архив с прикреплениями
+        if "_download_zip" in request.POST:
+            filenames = [obj.iin_attachment_front.path, obj.iin_attachment_back.path, obj.transcript.path]
+
+            # академ справка необязательное поле, может и не существовать
+            if obj.reference:
+                filenames.append(obj.reference.path)
+
+            zip_io = io.BytesIO()
+            with zipfile.ZipFile(zip_io, mode='w', compression=zipfile.ZIP_DEFLATED) as zip_file:
+                for filename in filenames:
+                    zip_file.write(filename, os.path.split(filename)[1])
+
+            zip_filename = f'{datetime.datetime.now().strftime("%m-%d-%Y - %H:%M:%S")}.zip'
+            response = HttpResponse(zip_io.getvalue(), content_type='application/x-zip-compressed')
+            response['Content-Disposition'] = f"attachment;filename*=UTF-8''{zip_filename}"
+            response['Content-Length'] = zip_io.tell()
             return response
 
         return super().response_change(request, obj)
