@@ -31,7 +31,7 @@ SECRET_KEY = env.str('SECRET_KEY')
 DEBUG = env.bool('DEBUG')
 
 ALLOWED_HOSTS = ['*']
-
+BASE_URL = env.str("BASE_URL")
 
 # Application definition
 
@@ -102,7 +102,7 @@ WSGI_APPLICATION = 'SSC_KSTU.wsgi.application'
 
 
 # MySQL DB connection Settings
-DATABASES = {'default': env.db('DATABASE_URL')}
+DATABASES = {'default': env.db('SQLITE_URL')}
 
 
 # Password validation
