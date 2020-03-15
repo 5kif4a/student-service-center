@@ -1,5 +1,6 @@
 const base_url = window.location.origin;
 const protocol = window.location.protocol;
+const delay = 3000;
 var popup_notifications = [];
 
 // Получить уведомления от сервера
@@ -24,7 +25,6 @@ function notification_action(id, url) {
     open_application_in_new_tab(url);
 }
 
-
 // Генерируем HTML код - список с уведомлениями в popover-e
 function notifications_to_html() {
     return get_notifications().then(notifications => {
@@ -37,10 +37,11 @@ function notifications_to_html() {
                 var url = new URL(protocol + n.fields.url_for_application);
                 const d = new Date(n.fields.date);
                 var dt = `${d.getHours()}:${d.getMinutes()}:${d.getSeconds()} - ${d.getDay()}/${d.getMonth()}/${d.getFullYear()}`;
-                list_items.push(`<li class="list-group-item p-0"><button class="btn btn-primary btn-sm btn-block" onclick="notification_action('${id}', '${url}')">${n.fields.application_type}<span class="badge badge-pill badge-light">${dt}</span></button></li>`);
+                var li = `<li class="list-group-item p-0"><button class="btn btn-primary btn-sm btn-block" onclick="notification_action('${id}', '${url}')">${n.fields.application_type}<span class="badge badge-pill badge-light">${dt}</span></button></li>`;
+                list_items.push(li);
             });
 
-            html = `<ul class="list-group list-group-flush">\n${list_items.join('\n')}\n<li class="list-group-item p-0"><a class="btn btn-primary btn-sm btn-block text-white" href="/admin/ssc/notification">Смотреть все</a></li></ul>`;
+            html = `<ul class="list-group list-group-flush">${list_items.join('')}<li class="list-group-item p-0"><a class="btn btn-primary btn-sm btn-block text-white" href="/admin/ssc/notification">Смотреть все</a></li></ul>`;
         } else {
             html = `<ul class="list-group list-group-flush"><li class="list-group-item p-0">Нет уведомлений</li></ul>`;
         }
@@ -51,7 +52,7 @@ function notifications_to_html() {
 // Popover с уведомлениями
 $(function () {
     notifications_to_html().then(html => {
-        $('[data-toggle="notifications"]').popover({
+        $('#popover-notifications').popover({
             title: 'Уведомления',
             trigger: 'focus',
             html: true,
@@ -68,7 +69,7 @@ $.notify.addStyle('app', {
             "<p>Дата: <span data-notify-text='date'></span></p>" +
             "<span id='url' data-notify-text='url' style='display: none'></span>" +
             "<span id='id' data-notify-text='id' style='display: none'></span>" +
-            "<button class='url'>Перейти к заявлению</button>" +
+            "<button class='url btn btn-secondary btn-sm'>Перейти к заявлению</button>" +
             "</div>",
         classes: {
             base: {
@@ -138,11 +139,20 @@ const contains = (list, obj) => {
 
 // Уведомления на "заднем фоне"
 function notify_background() {
+
+    // обновляем список уведомлений в popover-e
+    notifications_to_html()
+        .then(html => {
+            var popover = $('#popover-notifications').data('bs.popover');
+            popover.config.content = $($.parseHTML(html));
+        });
+
     get_notifications()
         .then(notifications => {
             // количество непрочитанных уведомлений показываем в колокольчике в навбаре
             $('#notifications').text(notifications.length);
-            notifications.map(n => {
+
+            notifications.slice(-5).map(n => {
                 if (!contains(popup_notifications, n)) {
                     show_nofitication(n.pk, n.fields.date, n.fields.application_type, n.fields.url_for_application);
                     popup_notifications.push(n);
@@ -154,5 +164,5 @@ function notify_background() {
         });
 }
 
-// каждые три секунды проверять новые уведомления
-setInterval(notify_background, 5000);
+// проверять новые уведомления на фоне
+setInterval(notify_background, delay);
