@@ -8,6 +8,9 @@ from ssc.models import *
 from ssc.utilities import *
 from django.contrib import admin
 
+from SSC_KSTU.settings import BASE_URL
+
+
 # Заголовки админ.сайта
 admin.site.index_title = 'Центр обслуживания студентов'
 admin.site.site_header = 'Центр обслуживания студентов'
@@ -72,6 +75,15 @@ class CustomAdmin(admin.ModelAdmin):
     entity = None
     app = None
 
+    def id_card_front(self, obj):
+        return format_html(f"""<img src="{obj.iin_attachment_front.url}" width="300px">""")
+
+    def id_card_back(self, obj):
+        return format_html(f"""<img src="{obj.iin_attachment_back.url}" width="300px">""")
+
+    id_card_front.short_description = "Уд.личности передняя сторона"
+    id_card_back.short_description = "Уд.личности обратная сторона"
+
     def print(self, obj):
         url = f'/{self.entity}/report/{obj.id}'
         if obj.status in ('Подтверждено', 'Завершено'):
@@ -90,6 +102,101 @@ class CustomAdmin(admin.ModelAdmin):
                     """
 
         return format_html(button)
+
+    print.short_description = "Печать"
+
+    def response_change(self, request, obj):
+        # Если заявление заполнено неправильно, отправляем письмо с уведомлением
+        if "_send_for_correction" in request.POST:
+            if obj.status != 'Отозвано на исправление':
+                note = request.POST.get('note')
+
+                obj.status = 'Отозвано на исправление'
+                obj.save()
+
+                ctx = {'name': obj.first_name,
+                       'note': note}
+                to = (obj.email,)
+                send_email('mails/revoke.html', ctx, to)
+                self.message_user(request, f"Письмо с уведомлением отправлено {obj}")
+            else:
+                self.message_user(request, f"Письмо с уведомлением уже отправлено {obj}")
+
+        # Потверждение заявления
+        if "_verify" in request.POST:
+            # Если подтвержден - выдаем сообщение, что заявление уже подтверждено
+            if obj.status == 'Подтверждено':
+                self.message_user(request, f"{obj} уже потвержден")
+            # Если не потверждено - подтверждаем и отправляем письмо на почту
+            else:
+                obj.status = 'Подтверждено'
+                obj.save()
+
+                # отправляем письмо после потверждения заявления
+                ctx = {'name': request.POST['first_name']}
+                to = (request.POST.get('email', ''),)
+
+                send_email(self.mail_template, ctx, to)
+
+                self.message_user(request, f"""{obj} подтверждено""")
+
+        # Завершение обработки заявления
+        if "_finish" in request.POST:
+            # Если завершено - выдаем сообщение, что заявление уже завершено
+            if obj.status == 'Завершено':
+                self.message_user(request, f"{obj} обработка завершена")
+            # Если не завершено - завершаем и отправляем письмо на почту
+            else:
+                obj.status = 'Завершено'
+                obj.save()
+
+                ctx = {'name': obj.first_name,
+                       'app': self.app}
+                to = (obj.email,)
+                send_email('mails/ready.html', ctx, to)
+
+                self.message_user(request, f"""Обработка заявления "{obj}" завершена. Письмо отправлено""")
+
+        return super().response_change(request, obj)
+
+
+@admin.register(Reference)
+class ReferenceAdmin(CustomAdmin):
+    """
+    Админ.панель академ.справок
+    """
+    entity = 'reference'
+    mail_template = 'mails/reference.html'
+    app = 'Ваша справка готова. Вы можете получить ее в КарГТУ, 1 корпус, кабинет № 109.'
+    list_per_page = 15
+    list_filter = ('date_of_application', 'receipt_year', 'exclude_year', 'education_form', 'course', 'status')
+    list_display = ('last_name', 'first_name', 'patronymic', 'specialty', 'date_of_application', 'status',
+                    'print')
+    search_fields = ('last_name', 'first_name', 'patronymic', 'address', 'specialty__name',
+                     'individual_identification_number')
+    autocomplete_fields = ('specialty',)
+
+    readonly_fields = ('id_card_front', 'id_card_back')
+
+
+@admin.register(AcademicLeave)
+class AcademicLeaveAdmin(CustomAdmin):
+    """
+    Админ.панель академ.отпусков
+    """
+    entity = 'academic-leave'
+    mail_template = 'mails/academic-leave.html'
+    change_form_template = "custom_admin/academic-leave.html"
+    app = 'Ваш приказ готов. Вы можете получить его в КарГТУ, 1 корпус, кабинет № 109.'
+    list_per_page = 15
+    list_filter = ('date_of_application', 'status')
+    list_display = ('last_name', 'first_name', 'patronymic', 'specialty', 'date_of_application', 'status',
+                    'print')
+    search_fields = ('last_name', 'first_name', 'patronymic', 'address', 'specialty__name',
+                     'individual_identification_number')
+    autocomplete_fields = ('specialty',)
+
+    readonly_fields = ('attachment', 'id_card_front', 'id_card_back')
 
     def response_change(self, request, obj):
         # Если заявление заполнено неправильно, отправляем письмо с уведомлением
@@ -139,61 +246,13 @@ class CustomAdmin(admin.ModelAdmin):
                 ctx = {'name': obj.first_name,
                        'app': self.app}
                 to = (obj.email,)
-                send_email('mails/ready.html', ctx, to)
+
+                uploaded_file = request.FILES['scanned_file']
+                send_email_with_attachment("mails/ready.html", ctx, to, uploaded_file)
 
                 self.message_user(request, f"""Обработка заявления "{obj}" завершена. Письмо отправлено""")
 
         return super().response_change(request, obj)
-
-
-@admin.register(Reference)
-class ReferenceAdmin(CustomAdmin):
-    """
-    Админ.панель академ.справок
-    """
-    entity = 'reference'
-    mail_template = 'mails/reference.html'
-    app = 'Ваша справка готова. Вы можете получить ее в КарГТУ, 1 корпус, кабинет № 109.'
-    list_per_page = 15
-    list_filter = ('date_of_application', 'receipt_year', 'exclude_year', 'education_form', 'course', 'status')
-    list_display = ('last_name', 'first_name', 'patronymic', 'specialty', 'date_of_application', 'status',
-                    'print')
-    search_fields = ('last_name', 'first_name', 'patronymic', 'address', 'specialty__name',
-                     'individual_identification_number')
-    autocomplete_fields = ('specialty',)
-
-    readonly_fields = ('id_card_front', 'id_card_back')
-
-    def id_card_front(self, obj):
-        return format_html(f"""<img src="{obj.iin_attachment_front.url}" width="300px">""")
-
-    def id_card_back(self, obj):
-        return format_html(f"""<img src="{obj.iin_attachment_back.url}" width="300px">""")
-
-
-@admin.register(AcademicLeave)
-class AcademicLeaveAdmin(CustomAdmin):
-    """
-    Админ.панель академ.отпусков
-    """
-    entity = 'academic-leave'
-    mail_template = 'mails/academic-leave.html'
-    app = 'Ваш приказ готов. Вы можете получить его в КарГТУ, 1 корпус, кабинет № 109.'
-    list_per_page = 15
-    list_filter = ('date_of_application', 'status')
-    list_display = ('last_name', 'first_name', 'patronymic', 'specialty', 'date_of_application', 'status',
-                    'print')
-    search_fields = ('last_name', 'first_name', 'patronymic', 'address', 'specialty__name',
-                     'individual_identification_number')
-    autocomplete_fields = ('specialty',)
-
-    readonly_fields = ('attachment', 'id_card_front', 'id_card_back')
-
-    def id_card_front(self, obj):
-        return format_html(f"""<img src="{obj.iin_attachment_front.url}" width="300px">""")
-
-    def id_card_back(self, obj):
-        return format_html(f"""<img src="{obj.iin_attachment_back.url}" width="300px">""")
 
 
 @admin.register(Abroad)
@@ -216,12 +275,6 @@ class AbroadAdmin(CustomAdmin):
 
     readonly_fields = ('id_card_front', 'id_card_back')
 
-    def id_card_front(self, obj):
-        return format_html(f"""<img src="{obj.iin_attachment_front.url}" width="300px">""")
-
-    def id_card_back(self, obj):
-        return format_html(f"""<img src="{obj.iin_attachment_back.url}" width="300px">""")
-
     def response_change(self, request, obj):
         # Потверждение заявления
         if "_verify" in request.POST:
@@ -237,10 +290,9 @@ class AbroadAdmin(CustomAdmin):
                 # Убираем автоматическое уведомление электронной почтой
 
                 self.message_user(request, f"""Обработка заявления "{obj}" завершена""")
-            # return HttpResponseRedirect(".")
         # Если заявление заполнено неправильно, отправляем письмо с уведомлением
         if "_send_for_correction" in request.POST:
-            if obj.status is not 'Отозвано на исправление':
+            if obj.status != 'Отозвано на исправление':
                 note = request.POST.get('note')
                 to = (obj.email,)
                 ctx = {'name': obj.first_name,
@@ -271,12 +323,6 @@ class HostelAdmin(CustomAdmin):
                      'individual_identification_number')
     autocomplete_fields = ('specialty',)
     readonly_fields = ('id_card_front', 'id_card_back')
-
-    def id_card_front(self, obj):
-        return format_html(f"""<img src="{obj.iin_attachment_front.url}" width="300px">""")
-
-    def id_card_back(self, obj):
-        return format_html(f"""<img src="{obj.iin_attachment_back.url}" width="300px">""")
 
 
 # @admin.register(Duplicate)
@@ -313,12 +359,6 @@ class TransferAdmin(CustomAdmin):
     autocomplete_fields = ('current_specialty', 'specialty')
     readonly_fields = ('id_card_front', 'id_card_back')
 
-    def id_card_front(self, obj):
-        return format_html(f"""<img src="{obj.iin_attachment_front.url}" width="300px">""")
-
-    def id_card_back(self, obj):
-        return format_html(f"""<img src="{obj.iin_attachment_back.url}" width="300px">""")
-
 
 @admin.register(TransferKSTU)
 class TransferKSTUAdmin(CustomAdmin):
@@ -339,12 +379,6 @@ class TransferKSTUAdmin(CustomAdmin):
     autocomplete_fields = ('specialty',)
     readonly_fields = ('id_card_front', 'id_card_back')
 
-    def id_card_front(self, obj):
-        return format_html(f"""<img src="{obj.iin_attachment_front.url}" width="300px">""")
-
-    def id_card_back(self, obj):
-        return format_html(f"""<img src="{obj.iin_attachment_back.url}" width="300px">""")
-
 
 @admin.register(Recovery)
 class RecoveryAdmin(CustomAdmin):
@@ -362,12 +396,6 @@ class RecoveryAdmin(CustomAdmin):
                      'individual_identification_number', 'university')
     autocomplete_fields = ('specialty',)
     readonly_fields = ('id_card_front', 'id_card_back')
-
-    def id_card_front(self, obj):
-        return format_html(f"""<img src="{obj.iin_attachment_front.url}" width="300px">""")
-
-    def id_card_back(self, obj):
-        return format_html(f"""<img src="{obj.iin_attachment_back.url}" width="300px">""")
 
     def response_change(self, request, obj):
         # Если заявление заполнено неправильно, отправляем письмо с уведомлением
@@ -440,3 +468,69 @@ class RecoveryAdmin(CustomAdmin):
             return response
 
         return super().response_change(request, obj)
+
+      
+# Уведомления
+def make_read(modeladmin, request, queryset):
+    queryset.update(is_showed=True)
+
+
+make_read.short_description = "Отметить прочитанными выделенные уведомления"
+
+
+@admin.register(Notification)
+class NotificationAdmin(admin.ModelAdmin):
+    """
+    Админ.панель для управления уведомлениями
+    """
+    list_per_page = 20
+    list_filter = ('application_type',)
+    list_display = ('application_type', 'date', 'is_showed', 'link', 'mark_as_read')
+    fields = ('application_type', 'is_showed')
+    exclude = ('url_for_application',)
+    readonly_fields = ('application_type', 'url_for_application', 'is_showed')
+    actions = (make_read, )
+
+    def mark_as_read(self, obj):
+        """
+        Кнопка в админ.панели, которая помечает уведомление как прочитанное
+        :param obj: объект - уведомление
+        :return: HTML
+        """
+        url = f'/mark_as_read/{obj.id}'
+
+        # можно было сделать как в CustomAdmin
+        func = "fetch('http://{}{}')".format(BASE_URL, url)
+
+        if obj.is_showed:
+            button = f"""<input 
+                         type="button" 
+                         class="button" 
+                         style="cursor: not-allowed; background-color: #DC3545" 
+                         value="Отметить как прочитанное" 
+                         disabled>"""
+        else:
+            button = f'<input type="submit" class="button" value="Отметить как прочитанное" onclick="{func}">'
+
+        return format_html(button)
+
+    def link(self, obj):
+        """
+        Ссылка на заявление
+        :param obj: Объект - уведомление
+        :return: HTML
+        """
+        url = ''
+        full_url = obj.url_for_application
+        if full_url.startswith(BASE_URL):
+            url = full_url[len(BASE_URL):]
+
+        link = f'<a href="{url}" target="_blank">Перейти к заявлению</a>'
+
+        return format_html(link)
+
+    def has_add_permission(self, request):
+        return False
+
+    link.short_description = "Заявление"
+    mark_as_read.short_description = "Отметить как прочитанное"

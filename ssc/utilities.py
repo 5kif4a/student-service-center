@@ -1,8 +1,9 @@
 import os
-
+import mimetypes
 from django.shortcuts import HttpResponse
 from django.core.mail import EmailMessage
 from django.template.loader import render_to_string
+from django.http import HttpResponse
 import pdfkit
 import pyqrcode
 from SSC_KSTU.settings import env
@@ -98,8 +99,16 @@ def send_email(mail_template, context, to):
     msg.send()
 
 
+# отправка письма с файлом
+def send_email_with_attachment(mail_template, context, to, file):
+    message = render_to_string(mail_template, context)
+    msg = EmailMessage(subject='Центр обслуживания студентов КарГТУ', body=message, to=to)
+    msg.content_subtype = 'html'
+    msg.attach(file.name, file.file.getvalue(), mimetypes.guess_type(file.name)[0])
+    msg.send()
+
+
 # Генерация QR кода - альтернатива подписи, как верификация пользователя услуги
 def generate_qr_code(url):
     qr = pyqrcode.create(url)
     return qr.png_as_base64_str(scale=6)
-
