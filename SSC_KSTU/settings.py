@@ -102,7 +102,10 @@ WSGI_APPLICATION = 'SSC_KSTU.wsgi.application'
 
 
 # MySQL DB connection Settings
-DATABASES = {'default': env.db('SQLITE_URL')}
+if DEBUG is True:
+    DATABASES = {'default': env.db('SQLITE_URL')}
+else:
+    DATABASES = {'default': env.db('DATABASE_URL')}
 
 
 # Password validation
