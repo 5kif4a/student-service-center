@@ -8,7 +8,7 @@ from ssc.models import *
 from ssc.utilities import *
 from django.contrib import admin
 
-from SSC_KSTU.settings import BASE_URL
+from SSC_KSTU.settings import BASE_URL, DEBUG
 
 # Заголовки админ.сайта
 admin.site.index_title = 'Центр обслуживания студентов'
@@ -497,9 +497,10 @@ class NotificationAdmin(admin.ModelAdmin):
         :return: HTML
         """
         url = f'/mark_as_read/{obj.id}'
+        protocol = 'http' if DEBUG else 'https'
 
         # можно было сделать как в CustomAdmin
-        func = "fetch('http://{}{}')".format(BASE_URL, url)
+        func = "fetch('{}://{}{}')".format(protocol, BASE_URL, url)
 
         if obj.is_showed:
             button = f"""<input 
