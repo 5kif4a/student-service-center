@@ -449,11 +449,8 @@ class RecoveryAdmin(CustomAdmin):
                 self.message_user(request, f"""Обработка заявления "{obj}" завершена. Письмо отправлено""")
         # скачать архив с прикреплениями
         if "_download_zip" in request.POST:
-            filenames = [obj.iin_attachment_front.path, obj.iin_attachment_back.path, obj.transcript.path]
-
-            # академ справка необязательное поле, может и не существовать
-            if obj.reference:
-                filenames.append(obj.reference.path)
+            filenames = [obj.iin_attachment_front.path, obj.iin_attachment_back.path, obj.attachment.path,
+                         obj.certificate.path]
 
             zip_io = io.BytesIO()
             with zipfile.ZipFile(zip_io, mode='w', compression=zipfile.ZIP_DEFLATED) as zip_file:
@@ -470,18 +467,17 @@ class RecoveryAdmin(CustomAdmin):
 
 
 # Уведомления
-def make_read(modeladmin, request, queryset):
-    queryset.update(is_showed=True)
-
-
-make_read.short_description = "Отметить прочитанными выделенные уведомления"
-
-
 @admin.register(Notification)
 class NotificationAdmin(admin.ModelAdmin):
     """
     Админ.панель для управления уведомлениями
     """
+
+    def make_read(self, request, queryset):
+        queryset.update(is_showed=True)
+
+    make_read.short_description = "Отметить прочитанными выделенные уведомления"
+
     list_per_page = 20
     list_filter = ('application_type',)
     list_display = ('application_type', 'date', 'is_showed', 'link', 'mark_as_read')
