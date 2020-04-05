@@ -46,16 +46,16 @@ notifications_urls = [path('notifications', views.get_notifications),
                       path('mark_as_read/<obj_id>', views.mark_as_read)]
 
 urlpatterns = [
-    path('', views.index),
-    url(r'^%s(?P<path>.*)$' % settings.MEDIA_URL[1:], protected_serve, {'document_root': settings.MEDIA_ROOT})
-] + bachelor_urls + \
-    postgraduate_urls + \
-    abroad_urls + \
-    certificate_urls + \
-    hostel_urls + \
-    duplicate_urls + \
-    reference_urls + \
-    academic_leave_urls + \
-    transfer_and_recovery_urls + \
-    notifications_urls
-
+                  path('', views.index),
+                  url(r'^%s(?P<path>.*)$' % settings.MEDIA_URL[1:], protected_serve,
+                      {'document_root': settings.MEDIA_ROOT})
+              ] + bachelor_urls + \
+              postgraduate_urls + \
+              abroad_urls + \
+              certificate_urls + \
+              hostel_urls + \
+              duplicate_urls + \
+              reference_urls + \
+              academic_leave_urls + \
+              transfer_and_recovery_urls + \
+              notifications_urls

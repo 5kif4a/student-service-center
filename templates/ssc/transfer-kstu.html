@@ -46,9 +46,9 @@
             </div>
         </div>
         <div class="form-row align-items-end">
-            <div class="form-group col-sm">
-                {{ form.address|as_crispy_field }}
-            </div>
+{#            <div class="form-group col-sm">#}
+{#                {{ form.address|as_crispy_field }}#}
+{#            </div>#}
             <div class="form-group col-sm">
                 {{ form.email|as_crispy_field }}
             </div>
@@ -56,18 +56,21 @@
                 {{ form.phone_number|as_crispy_field }}
             </div>
             <div class="form-group col-sm">
-                {{ form.faculty|as_crispy_field }}
+                {{ form.university|as_crispy_field }}
+            </div>
+            <div class="form-group col-sm">
+                {{ form.course|as_crispy_field }}
             </div>
         </div>
         <div class="form-row align-items-end">
             <div class="form-group col-sm">
-                {{ form.university|as_crispy_field }}
+                {{ form.specialty_on_previous_university|as_crispy_field }}
             </div>
             <div class="form-group col-sm">
                 {{ form.specialty|as_crispy_field }}
             </div>
             <div class="form-group col-sm">
-                {{ form.course|as_crispy_field }}
+                {{ form.faculty|as_crispy_field }}
             </div>
             <div class="form-group col-sm">
                 {{ form.foundation|as_crispy_field }}
@@ -82,11 +85,16 @@
             </div>
         </div>
         <div class="form-row">
+            <div class="form-group col-sm">
+                {{ form.permission_to_transfer|as_crispy_field }}
+            </div>
+            <div class="form-group col-sm">
+                {{ form.certificate|as_crispy_field }}
+            </div>
+        </div>
+        <div class="form-row">
             <div class="form-group col">
                 {{ form.transcript|as_crispy_field }}
-            </div>
-            <div class="form-group col">
-                {{ form.reference|as_crispy_field }}
             </div>
             <div class="form-group col">
                 {{ form.grant|as_crispy_field }}

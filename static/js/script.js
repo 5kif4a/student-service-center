@@ -3,6 +3,8 @@ $('[name="phone_number"]').mask('+00000000000', {placeholder: '+7__________'});
 
 // Chosen Autocomplete specialty option
 $('#id_specialty').chosen();
+$('#id_current_specialty').chosen();
+$('#id_specialty_on_previous_university').chosen();
 
 // Проверка основы обучения
 const selectedOption = $("#id_foundation option:selected").val();
