@@ -146,11 +146,13 @@ class Reference(Person, Application):
     exclude_year = models.IntegerField(verbose_name=_('Год отчисления'), validators=education_years_validator)
 
     iin_attachment_front = models.ImageField(upload_to='reference_attachments/',
-                                             verbose_name=_('Прикрепление копии документа, удостоверяющего личность - передняя сторона'),
+                                             verbose_name=_(
+                                                 'Прикрепление копии документа, удостоверяющего личность - передняя сторона'),
                                              validators=[file_size_validator])
 
     iin_attachment_back = models.ImageField(upload_to='reference_attachments/',
-                                            verbose_name=_('Прикрепление копии документа, удостоверяющего личность - обратная сторона'),
+                                            verbose_name=_(
+                                                'Прикрепление копии документа, удостоверяющего личность - обратная сторона'),
                                             validators=[file_size_validator])
 
     reason = models.CharField(max_length=100, choices=reference_reasons, default='в связи с отчислением',
@@ -173,11 +175,13 @@ class Abroad(Person, Application):
     university = models.ForeignKey(University, on_delete=models.CASCADE, verbose_name=_('Университет'))
 
     iin_attachment_front = models.ImageField(upload_to='abroad_attachments/',
-                                             verbose_name=_('Прикрепление копии документа, удостоверяющего личность - передняя сторона'),
+                                             verbose_name=_(
+                                                 'Прикрепление копии документа, удостоверяющего личность - передняя сторона'),
                                              validators=[file_size_validator])
 
     iin_attachment_back = models.ImageField(upload_to='abroad_attachments/',
-                                            verbose_name=_('Прикрепление копии документа, удостоверяющего личность - обратная сторона'),
+                                            verbose_name=_(
+                                                'Прикрепление копии документа, удостоверяющего личность - обратная сторона'),
                                             validators=[file_size_validator])
 
     semester = models.CharField(max_length=200, choices=semesters, verbose_name=_('Семестр'))
@@ -189,8 +193,10 @@ class Abroad(Person, Application):
     specialty = None
 
     class Meta:
-        verbose_name = _('заявление на участие в конкурсе на обучение за рубежом, в том числе академической мобильности')
-        verbose_name_plural = _('заявления на участие в конкурсе на обучение за рубежом, в том числе академической мобильности')
+        verbose_name = _(
+            'заявление на участие в конкурсе на обучение за рубежом, в том числе академической мобильности')
+        verbose_name_plural = _(
+            'заявления на участие в конкурсе на обучение за рубежом, в том числе академической мобильности')
 
     def __str__(self):
         return f'{self.last_name} {self.first_name} {self.patronymic}. ИИН: {self.individual_identification_number}'
@@ -210,11 +216,13 @@ class Hostel(Person, Application):
     hostel = models.CharField(max_length=200, choices=hostels, verbose_name=_('Общежитие'))
 
     iin_attachment_front = models.ImageField(upload_to='hostel_attachments/',
-                                             verbose_name=_('Прикрепление копии документа, удостоверяющего личность - передняя сторона'),
+                                             verbose_name=_(
+                                                 'Прикрепление копии документа, удостоверяющего личность - передняя сторона'),
                                              validators=[file_size_validator])
 
     iin_attachment_back = models.ImageField(upload_to='hostel_attachments/',
-                                            verbose_name=_('Прикрепление копии документа, удостоверяющего личность - обратная сторона'),
+                                            verbose_name=_(
+                                                'Прикрепление копии документа, удостоверяющего личность - обратная сторона'),
                                             validators=[file_size_validator])
 
     attachment = models.FileField(upload_to='hostel/', blank=True, null=True, verbose_name=_('Прикрепление'),
@@ -268,11 +276,13 @@ class AcademicLeave(Person, Application):
     faculty = models.CharField(max_length=200, choices=faculties, verbose_name=_('Факультет'))
 
     iin_attachment_front = models.ImageField(upload_to='academic_leave_attachments/',
-                                             verbose_name=_('Прикрепление копии документа, удостоверяющего личность - передняя сторона'),
+                                             verbose_name=_(
+                                                 'Прикрепление копии документа, удостоверяющего личность - передняя сторона'),
                                              validators=[file_size_validator])
 
     iin_attachment_back = models.ImageField(upload_to='academic_leave_attachments/',
-                                            verbose_name=_('Прикрепление копии документа, удостоверяющего личность - обратная сторона'),
+                                            verbose_name=_(
+                                                'Прикрепление копии документа, удостоверяющего личность - обратная сторона'),
                                             validators=[file_size_validator])
 
     attachment = models.FileField(upload_to='hostel/', verbose_name=_('Прикрепление'),
@@ -300,21 +310,30 @@ class TransferKSTU(Person, Application):
 
     university = models.CharField(max_length=500, verbose_name=_('Наименование предыдущего ВУЗа)'))
 
+    specialty_on_previous_university = models.ForeignKey(Specialty, on_delete=models.CASCADE,
+                                                         verbose_name=_('Специальность обучения в предыдущем ВУЗе'),
+                                                         related_name='specialty_on_previous_university')
+
     faculty = models.CharField(max_length=200, choices=faculties, verbose_name=_('Факультет'))
 
     foundation = models.CharField(max_length=200, choices=foundation_types, default='на платной основе',
                                   verbose_name=_('Основа обучения'))
 
     iin_attachment_front = models.ImageField(upload_to='transfer_kstu_attachments/',
-                                             verbose_name=_('Прикрепление копии документа, удостоверяющего личность - передняя сторона'),
+                                             verbose_name=_(
+                                                 'Прикрепление копии документа, удостоверяющего личность - передняя сторона'),
                                              validators=[file_size_validator])
 
     iin_attachment_back = models.ImageField(upload_to='transfer_kstu_attachments/',
-                                            verbose_name=_('Прикрепление копии документа, удостоверяющего личность - обратная сторона'),
+                                            verbose_name=_(
+                                                'Прикрепление копии документа, удостоверяющего личность - обратная сторона'),
                                             validators=[file_size_validator])
 
-    reference = models.FileField(verbose_name=_('Академическая справка'), blank=True,
-                                 validators=[file_size_validator, file_ext_validator])
+    permission_to_transfer = models.FileField(verbose_name=_('Разрешение на перевод с предыдущего ВУЗа'),
+                                              validators=[file_size_validator, file_ext_validator])
+
+    certificate = models.FileField(verbose_name=_('Копия сертификата ЕНТ'),
+                                   validators=[file_size_validator, file_ext_validator])
 
     transcript = models.FileField(verbose_name=_('Копия транскрипта'),
                                   validators=[file_size_validator, file_ext_validator])
@@ -322,6 +341,7 @@ class TransferKSTU(Person, Application):
     grant = models.FileField(blank=True, null=True, verbose_name=_('Свидетельство о образовательном гранте'))
 
     group = None
+    address = None
 
     class Meta:
         verbose_name = _('заявление на перевод в КарГТУ')
@@ -352,11 +372,13 @@ class Transfer(Person, Application):
     with_grant_preservation = models.BooleanField(default=False, verbose_name=_('с сохранением гранта'))
 
     iin_attachment_front = models.ImageField(upload_to='transfer_attachments/',
-                                             verbose_name=_('Прикрепление копии документа, удостоверяющего личность - передняя сторона'),
+                                             verbose_name=_(
+                                                 'Прикрепление копии документа, удостоверяющего личность - передняя сторона'),
                                              validators=[file_size_validator])
 
     iin_attachment_back = models.ImageField(upload_to='transfer_attachments/',
-                                            verbose_name=_('Прикрепление копии документа, удостоверяющего личность - обратная сторона'),
+                                            verbose_name=_(
+                                                'Прикрепление копии документа, удостоверяющего личность - обратная сторона'),
                                             validators=[file_size_validator])
 
     course = None
@@ -380,11 +402,13 @@ class Recovery(Person, Application):
     faculty = models.CharField(max_length=200, choices=faculties, verbose_name=_('Факультет'))
 
     iin_attachment_front = models.ImageField(upload_to='recovery_attachments/',
-                                             verbose_name=_('Прикрепление копии документа, удостоверяющего личность - передняя сторона'),
+                                             verbose_name=_(
+                                                 'Прикрепление копии документа, удостоверяющего личность - передняя сторона'),
                                              validators=[file_size_validator])
 
     iin_attachment_back = models.ImageField(upload_to='recovery_attachments/',
-                                            verbose_name=_('Прикрепление копии документа, удостоверяющего личность - обратная сторона'),
+                                            verbose_name=_(
+                                                'Прикрепление копии документа, удостоверяющего личность - обратная сторона'),
                                             validators=[file_size_validator])
 
     reference = models.FileField(verbose_name=_('Академическая справка'), blank=True,
