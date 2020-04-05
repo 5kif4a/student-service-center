@@ -411,13 +411,14 @@ class Recovery(Person, Application):
                                                 'Прикрепление копии документа, удостоверяющего личность - обратная сторона'),
                                             validators=[file_size_validator])
 
-    reference = models.FileField(verbose_name=_('Академическая справка'), blank=True,
-                                 validators=[file_size_validator, file_ext_validator])
-
-    transcript = models.FileField(verbose_name=_('Копия транскрипта'),
+    attachment = models.FileField(verbose_name=_('Копия транскрипта/Академическая справка'),
                                   validators=[file_size_validator, file_ext_validator])
 
+    certificate = models.FileField(verbose_name=_('Копия сертификата ЕНТ/КТА'),
+                                   validators=[file_size_validator, file_ext_validator])
+
     group = None
+    address = None
 
     class Meta:
         verbose_name = _('заявление на восстановление в число обучающихся')
