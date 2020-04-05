@@ -6,6 +6,7 @@ from django.core import serializers
 from ssc.forms import *
 from ssc.models import *
 from ssc.utilities import *
+from SSC_KSTU.settings import DEBUG
 from django.contrib.auth.decorators import login_required
 from django.core.files.storage import FileSystemStorage
 import json
@@ -58,27 +59,25 @@ class TemplateView(View):
             n.save()
 
             return render(request, 'ssc/complete.html')
+
+        if DEBUG:
+            print(form.errors)
+
         return render(request, self.template_name, self.context)
 
 
 def bachelor(request):
-    if request.method == 'POST':
-        return redirect('')
-    else:
-        context = {
-            'status': statuses.get('bachelor')
-        }
-        return render(request, 'ssc/bachelor.html', context)
+    context = {
+        'status': statuses.get('bachelor')
+    }
+    return render(request, 'ssc/bachelor.html', context)
 
 
 def postgraduate(request):
-    if request.method == 'POST':
-        return redirect('')
-    else:
-        context = {
-            'status': statuses.get('postgraduate')
-        }
-        return render(request, 'ssc/postgraduate.html', context)
+    context = {
+        'status': statuses.get('postgraduate')
+    }
+    return render(request, 'ssc/postgraduate.html', context)
 
 
 class AbroadView(TemplateView):
@@ -108,13 +107,10 @@ class AbroadView(TemplateView):
 
 
 def certificate(request):
-    if request.method == 'POST':
-        return redirect('')
-    else:
-        context = {
-            'status': statuses.get('certificate')
-        }
-        return render(request, 'ssc/certificate.html', context)
+    context = {
+        'status': statuses.get('certificate')
+    }
+    return render(request, 'ssc/certificate.html', context)
 
 
 class HostelView(TemplateView):
@@ -228,13 +224,10 @@ class ReferenceView(TemplateView):
 
 
 def transfer_and_recovery(request):
-    if request.method == 'POST':
-        return redirect('')
-    else:
-        context = {
-            'status': statuses.get('transfer-and-recovery')
-        }
-        return render(request, 'ssc/transfer-and-recovery.html', context)
+    context = {
+        'status': statuses.get('transfer-and-recovery')
+    }
+    return render(request, 'ssc/transfer-and-recovery.html', context)
 
 
 class TransferView(TemplateView):

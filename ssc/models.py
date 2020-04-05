@@ -1,5 +1,4 @@
 from django.db import models
-from django.utils.html import format_html
 from django.utils.translation import gettext_lazy as _
 from hashid_field import HashidAutoField
 from ssc.utilities import *
@@ -323,7 +322,6 @@ class TransferKSTU(Person, Application):
     grant = models.FileField(blank=True, null=True, verbose_name=_('Свидетельство о образовательном гранте'))
 
     group = None
-    reason = None
 
     class Meta:
         verbose_name = _('заявление на перевод в КарГТУ')
@@ -351,6 +349,8 @@ class Transfer(Person, Application):
     foundation = models.CharField(max_length=200, choices=foundation_types, default='на платной основе',
                                   verbose_name=_('Основа обучения'))
 
+    with_grant_preservation = models.BooleanField(default=False, verbose_name=_('с сохранением гранта'))
+
     iin_attachment_front = models.ImageField(upload_to='transfer_attachments/',
                                              verbose_name=_('Прикрепление копии документа, удостоверяющего личность - передняя сторона'),
                                              validators=[file_size_validator])
@@ -360,7 +360,6 @@ class Transfer(Person, Application):
                                             validators=[file_size_validator])
 
     course = None
-    reason = None
 
     class Meta:
         verbose_name = _('заявление на перевод в другой ВУЗ')
@@ -395,7 +394,6 @@ class Recovery(Person, Application):
                                   validators=[file_size_validator, file_ext_validator])
 
     group = None
-    reason = None
 
     class Meta:
         verbose_name = _('заявление на восстановление в число обучающихся')
