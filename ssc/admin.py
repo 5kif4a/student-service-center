@@ -1,14 +1,13 @@
+import datetime
 import io
 import zipfile
-import datetime
 
+from django.contrib import admin
 from django.utils.html import format_html
 
+from SSC_KSTU.settings import BASE_URL, DEBUG
 from ssc.models import *
 from ssc.utilities import *
-from django.contrib import admin
-
-from SSC_KSTU.settings import BASE_URL, DEBUG
 
 # Заголовки админ.сайта
 admin.site.index_title = 'Центр обслуживания студентов'
@@ -152,7 +151,7 @@ class CustomAdmin(admin.ModelAdmin):
                 ctx = {'name': obj.first_name,
                        'app': self.app}
                 to = (obj.email,)
-                send_email('mails/ready.html', ctx, to)
+                send_email("mails/ready/ready.html", ctx, to)
 
                 self.message_user(request, f"""Обработка заявления "{obj}" завершена. Письмо отправлено""")
 
@@ -186,7 +185,7 @@ class AcademicLeaveAdmin(CustomAdmin):
     entity = 'academic-leave'
     mail_template = 'mails/academic-leave.html'
     change_form_template = "custom_admin/academic-leave.html"
-    app = 'Ваш приказ готов. Вы можете получить его в КарГТУ, 1 корпус, кабинет № 109.'
+    # app = 'Ваш приказ готов. Вы можете получить его в КарГТУ, 1 корпус, кабинет № 109.'
     list_per_page = 15
     list_filter = ('date_of_application', 'status')
     list_display = ('last_name', 'first_name', 'patronymic', 'specialty', 'date_of_application', 'status',
@@ -242,12 +241,11 @@ class AcademicLeaveAdmin(CustomAdmin):
                 obj.status = 'Завершено'
                 obj.save()
 
-                ctx = {'name': obj.first_name,
-                       'app': self.app}
+                ctx = {'name': obj.first_name}
                 to = (obj.email,)
 
                 uploaded_file = request.FILES['scanned_file']
-                send_email_with_attachment("mails/ready.html", ctx, to, uploaded_file)
+                send_email_with_attachment("mails/ready/academic-leave.html", ctx, to, uploaded_file)
 
                 self.message_user(request, f"""Обработка заявления "{obj}" завершена. Письмо отправлено""")
 
@@ -262,48 +260,18 @@ class AbroadAdmin(CustomAdmin):
     entity = 'abroad'
     mail_template = 'mails/abroad.html'
     # TODO: текст от международного отдела
-    app = ''
+    app = 'Ваши документы для участия в конкурсе на обучение за рубежом, в том числе в рамках академической ' \
+          'мобильности приняты.'
     list_per_page = 15
     list_filter = ('date_of_application', 'course', 'status')
     list_display = ('last_name', 'first_name', 'patronymic', 'date_of_application', 'status',
                     'print')
-    search_fields = ('last_name', 'first_name', 'patronymic', 'address',
+    search_fields = ('last_name', 'first_name', 'patronymic',
                      'individual_identification_number')
 
-    autocomplete_fields = ('university',)
+    # autocomplete_fields = ('university',)
 
-    readonly_fields = ('id_card_front', 'id_card_back')
-
-    def response_change(self, request, obj):
-        # Потверждение заявления
-        if "_verify" in request.POST:
-            # Если потвержден - выдаем сообщение, что заявление уже потверждено
-            if obj.status == 'Завершено':
-                self.message_user(request, f"{obj} уже потвержден")
-            # Если не потверждено - потверждаем и отправляем письмо на почту
-            else:
-                obj.status = 'Завершено'
-                obj.save()
-
-                # Сотрудники международного отдела, пишут письма студентам сами
-                # Убираем автоматическое уведомление электронной почтой
-
-                self.message_user(request, f"""Обработка заявления "{obj}" завершена""")
-        # Если заявление заполнено неправильно, отправляем письмо с уведомлением
-        if "_send_for_correction" in request.POST:
-            if obj.status != 'Отозвано на исправление':
-                note = request.POST.get('note')
-                to = (obj.email,)
-                ctx = {'name': obj.first_name,
-                       'note': note}
-                obj.status = 'Отозвано на исправление'
-                obj.save()
-
-                send_email('mails/revoke.html', ctx, to)
-                self.message_user(request, f"Письмо с уведомлением отправлено {obj}")
-            else:
-                self.message_user(request, f"Письмо с уведомлением уже отправлено {obj}")
-        return super().response_change(request, obj)
+    # readonly_fields = ('id_card_front', 'id_card_back')
 
 
 @admin.register(Hostel)
@@ -444,7 +412,7 @@ class RecoveryAdmin(CustomAdmin):
                 ctx = {'name': obj.first_name,
                        'app': self.app}
                 to = (obj.email,)
-                send_email('mails/ready.html', ctx, to)
+                send_email("mails/ready/ready.html", ctx, to)
 
                 self.message_user(request, f"""Обработка заявления "{obj}" завершена. Письмо отправлено""")
         # скачать архив с прикреплениями

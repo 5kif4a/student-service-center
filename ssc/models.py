@@ -148,12 +148,14 @@ class Reference(Person, Application):
 
     iin_attachment_front = models.ImageField(upload_to='reference_attachments/',
                                              verbose_name=_(
-                                                 'Прикрепление копии документа, удостоверяющего личность - передняя сторона'),
+                                                 'Прикрепление копии документа, удостоверяющего личность - передняя '
+                                                 'сторона'),
                                              validators=[file_size_validator])
 
     iin_attachment_back = models.ImageField(upload_to='reference_attachments/',
                                             verbose_name=_(
-                                                'Прикрепление копии документа, удостоверяющего личность - обратная сторона'),
+                                                'Прикрепление копии документа, удостоверяющего личность - обратная '
+                                                'сторона'),
                                             validators=[file_size_validator])
 
     reason = models.CharField(max_length=100, choices=reference_reasons, default='в связи с отчислением',
@@ -173,25 +175,39 @@ class Abroad(Person, Application):
     """
     id = HashidAutoField(primary_key=True, min_length=16)
 
-    university = models.ForeignKey(University, on_delete=models.CASCADE, verbose_name=_('Университет'))
+    address = None
 
-    iin_attachment_front = models.ImageField(upload_to='abroad_attachments/',
-                                             verbose_name=_(
-                                                 'Прикрепление копии документа, удостоверяющего личность - передняя сторона'),
-                                             validators=[file_size_validator])
+    faculty = models.CharField(max_length=200, choices=faculties, verbose_name=_('Факультет'))
 
-    iin_attachment_back = models.ImageField(upload_to='abroad_attachments/',
-                                            verbose_name=_(
-                                                'Прикрепление копии документа, удостоверяющего личность - обратная сторона'),
-                                            validators=[file_size_validator])
+    # iin_attachment_front = models.ImageField(upload_to='abroad_attachments/',
+    #                                          verbose_name=_(
+    #                                              'Прикрепление копии документа, удостоверяющего личность - передняя '
+    #                                              'сторона'),
+    #                                          validators=[file_size_validator])
+    #
+    # iin_attachment_back = models.ImageField(upload_to='abroad_attachments/',
+    #                                         verbose_name=_(
+    #                                             'Прикрепление копии документа, удостоверяющего личность - обратная '
+    #                                             'сторона'),
+    #                                         validators=[file_size_validator])
 
-    semester = models.CharField(max_length=200, choices=semesters, verbose_name=_('Семестр'))
+    # semester = models.CharField(max_length=200, choices=semesters, verbose_name=_('Семестр'))
 
-    transcript = models.FileField(upload_to='abroad/', blank=True, null=True,
-                                  verbose_name=_('Прикрепление копии транскрипта'),
+    passport = models.FileField(upload_to='abroad/',
+                                verbose_name=_('Копия паспорта'),
+                                validators=[file_size_validator, file_ext_validator])
+
+    recommendation_letter = models.FileField(upload_to='abroad/',
+                                             verbose_name=_('Рекомендательное письмо'),
+                                             validators=[file_size_validator, file_ext_validator])
+
+    transcript = models.FileField(upload_to='abroad/',
+                                  verbose_name=_('Копия транскрипта'),
                                   validators=[file_size_validator, file_ext_validator])
 
-    specialty = None
+    certificate = models.FileField(upload_to='abroad/',
+                                   verbose_name=_('Сертификат, подтверждающий знание иностранного языка'),
+                                   validators=[file_size_validator, file_ext_validator])
 
     class Meta:
         verbose_name = _(

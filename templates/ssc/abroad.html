@@ -1,117 +1,147 @@
 {% extends "ssc/service_wrapper.html" %}
 {% load crispy_forms_tags %}
 {% block content %}
-<div class="container">
-{% block description %}
-<h3 class="text-center p-3">Прием документов для участия в конкурсе на обучение за рубежом в рамках академической мобильности</h3>
-<div class="alert alert-info text-center"><h5>Статус услуги: {% if status %}Автоматизирована <i class="fas fa-cogs fa-lg"></i>{% else %}в процессе разработки <i class="fab fa-dev fa-lg"></i></i>{% endif %}</h5></div>
-<div class="container">
-    <div class="row text-break">
-        <div class="col m-2 border border-info">
-            <ul class="list-group list-group-flush">
-                <li class="list-group-item"><b>Государственный орган:</b> Министерство образования и науки РК</li>
-                <li class="list-group-item"><b>Получатели услуги:</b> Физические лица</li>
-                <li class="list-group-item"><b>Место предоставления услуги:</b>
-                    <ul class="list-unstyled">
-                        <li><a href="http://egov.kz/cms/ru/articles/2Fvusi_rk" target="_blank">Высшие учебные заведения РК</a></li>
-                        <li><a href="https://egov.kz/cms/ru/government-services/for_citizen" target="_blank">Портал «электронного правительства»</a></li>
-                    </ul>
-                </li>
-                <li class="list-group-item"><b>Стоимость услуги:</b> Бесплатно</li>
-                <li class="list-group-item"><b>Сроки оказания услуги:</b> 1 рабочий день</li>
-                <li class="list-group-item"><b>Полное наименование услуги:</b> Прием документов для участия в конкурсе на обучение за рубежом в рамках академической мобильности</li>
-            </ul>
-        </div>
-        <div class="col-md-9 mb-2">
-            <div class="row mb-2">
-                <div class="col-lg mt-2">
-                    <a class="btn btn-info btn-block" href="https://egov.kz/cms/ru/services/professional_education/pass203_mon" target="_blank">Получение услуги на Egov</a>
+    <div class="container">
+        {% block description %}
+            <h3 class="text-center p-3">Прием документов для участия в конкурсе на обучение за рубежом в рамках
+                академической мобильности</h3>
+            <div class="alert alert-info text-center"><h5>Статус услуги: {% if status %}Автоматизирована
+                <i class="fas fa-cogs fa-lg"></i>{% else %}в процессе разработки <i class="fab fa-dev fa-lg"></i>
+                </i>{% endif %}</h5></div>
+            <div class="container">
+                <div class="row text-break">
+                    <div class="col m-2 border border-info">
+                        <ul class="list-group list-group-flush">
+                            <li class="list-group-item"><b>Государственный орган:</b> Министерство образования и науки
+                                РК
+                            </li>
+                            <li class="list-group-item"><b>Получатели услуги:</b> Физические лица</li>
+                            <li class="list-group-item"><b>Место предоставления услуги:</b>
+                                <ul class="list-unstyled">
+                                    <li><a href="http://egov.kz/cms/ru/articles/2Fvusi_rk" target="_blank">Высшие
+                                        учебные заведения РК</a></li>
+                                    <li><a href="https://egov.kz/cms/ru/government-services/for_citizen"
+                                           target="_blank">Портал «электронного правительства»</a></li>
+                                </ul>
+                            </li>
+                            <li class="list-group-item"><b>Стоимость услуги:</b> Бесплатно</li>
+                            <li class="list-group-item"><b>Сроки оказания услуги:</b> 1 рабочий день</li>
+                            <li class="list-group-item"><b>Полное наименование услуги:</b> Прием документов для участия
+                                в конкурсе на обучение за рубежом в рамках академической мобильности
+                            </li>
+                        </ul>
+                    </div>
+                    <div class="col-md-9 mb-2">
+                        <div class="row mb-2">
+                            <div class="col-lg mt-2">
+                                <a class="btn btn-info btn-block"
+                                   href="https://egov.kz/cms/ru/services/professional_education/pass203_mon"
+                                   target="_blank">Получение услуги на Egov</a>
+                            </div>
+                        </div>
+                        <table class="table table-bordered table-hover table-sm">
+                            <h4>Необходимые документы</h4>
+                            <thead class="thead-light">
+                            <th>Услуга</th>
+                            <th>Документы</th>
+                            </thead>
+                            <tbody>
+                            <tr>
+                                <td rowspan="5">Прием документов для участия в конкурсе на обучение за рубежом в рамках
+                                    академической мобильности
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>Копия паспорта</td>
+                            </tr>
+                            <tr>
+                                <td>Рекомендательное письмо</td>
+                            </tr>
+                            <tr>
+                                <td>Копия транскрипта</td>
+                            </tr>
+                            <tr>
+                                <td>Сертификат, подтверждающий знание иностранного языка</td>
+                            </tr>
+                            </tbody>
+                        </table>
+                        {% block form %}
+                            <form class="p-2 border border-primary" method="post" enctype="multipart/form-data">
+                                <h4 class="text-center">Форма заявления</h4>
+                                {% csrf_token %}
+                                <div class="form-group">
+                                    <div class="form-row">
+                                        <div class="form-group col-sm">
+                                            {{ form.last_name|as_crispy_field }}
+                                        </div>
+                                        <div class="form-group col-sm">
+                                            {{ form.first_name|as_crispy_field }}
+                                        </div>
+                                        <div class="form-group col-sm">
+                                            {{ form.patronymic|as_crispy_field }}
+                                        </div>
+                                        <div class="form-group col-sm">
+                                            {{ form.individual_identification_number|as_crispy_field }}
+                                        </div>
+                                    </div>
+                                    <div class="form-row align-items-end">
+                                        <div class="form-group col-sm">
+                                            {{ form.email|as_crispy_field }}
+                                        </div>
+                                        <div class="form-group col-sm">
+                                            {{ form.phone_number|as_crispy_field }}
+                                        </div>
+                                    </div>
+                                    <div class="form-row">
+                                        <div class="form-group col-sm">
+                                            {{ form.course|as_crispy_field }}
+                                        </div>
+                                        <div class="form-group col-sm">
+                                            {{ form.specialty|as_crispy_field }}
+                                        </div>
+                                        <div class="form-group col-sm">
+                                            {{ form.group|as_crispy_field }}
+                                        </div>
+                                        <div class="form-group col-sm">
+                                            {{ form.faculty|as_crispy_field }}
+                                        </div>
+                                    </div>
+                                    <div class="form-row">
+{#                                        <div class="form-group col-sm">#}
+{#                                            {{ form.iin_attachment_front|as_crispy_field }}#}
+{#                                        </div>#}
+{#                                        <div class="form-group col-sm">#}
+{#                                            {{ form.iin_attachment_back|as_crispy_field }}#}
+{#                                        </div>#}
+                                        <div class="form-group col-sm">
+                                            {{ form.passport|as_crispy_field }}
+                                        </div>
+                                        <div class="form-group col-sm">
+                                            {{ form.recommendation_letter|as_crispy_field }}
+                                        </div>
+                                    </div>
+                                    <div class="form-row">
+                                        <div class="form-group col-sm">
+                                            {{ form.transcript|as_crispy_field }}
+                                        </div>
+                                        <div class="form-group col-sm">
+                                            {{ form.certificate|as_crispy_field }}
+                                        </div>
+                                    </div>
+                                    <div class="alert alert-danger">Фотографии или отсканированные изображения
+                                        документов должны быть четкими, видны все данные документа!
+                                    </div>
+                                    {{ form.captcha }}
+                                    <p class="text-muted">* - обязательные поля для заполнения</p>
+                                    <button type="submit" class="btn btn-success mt-1">Отправить заявку</button>
+                                </div>
+                            </form>
+                            </div>
+                        {% endblock form %}
                 </div>
             </div>
-            <li class="list-group-item"><b>Необходимые документы:</b>
-                <ol>
-                    <li>Заявление.</li>
-                    <li>Рекомендательные письма.</li>
-                    <li>Индивидуальный учебный план.</li>
-                    <li>Копия транскрипта (для обучающегося).</li>
-                    <li>Медицинская справка (для выезжающего за границу).</li>
-                    <li>Копия официального приглашения зарубежного высшего учебного заведения.</li>
-                    <li>Копия приказа высшего учебного заведения о командировании за рубеж.</li>
-                    <li>Письменное согласие родителей (опекунов, законных представителей) претендента на направление для обучения за рубежом в рамках академической мобильности, на период более двух месяцев (лицам, не достигшим 18 лет).</li>
-                    <li>Соглашение, подписанное между претендентом, принимающим и отправляющим высшими учебными заведениями.</li>
-                </ol>
-            </li>
-            {% block form %}
-            <form class="p-2 border border-primary" method="post" enctype="multipart/form-data">
-                <h4 class="text-center">Форма заявления</h4>
-                {% csrf_token %}
-                <div class="form-group">
-                    <div class="form-row">
-                        <div class="form-group col-sm">
-                            {{ form.last_name|as_crispy_field }}
-                        </div>
-                        <div class="form-group col-sm">
-                            {{ form.first_name|as_crispy_field }}
-                        </div>
-                        <div class="form-group col-sm">
-                            {{ form.patronymic|as_crispy_field }}
-                        </div>
-                        <div class="form-group col-sm">
-                            {{ form.individual_identification_number|as_crispy_field }}
-                        </div>
-                    </div>
-                    <div class="form-row align-items-end">
-                        <div class="form-group col-sm">
-                            {{ form.address|as_crispy_field }}
-                        </div>
-                        <div class="form-group col-sm">
-                            {{ form.email|as_crispy_field }}
-                        </div>
-                        <div class="form-group col-sm">
-                            {{ form.phone_number|as_crispy_field }}
-                        </div>
-                    </div>
-                    <div class="form-row">
-                        <div class="form-group col-sm">
-                            {{ form.course|as_crispy_field }}
-                        </div>
-                        <div class="form-group col-sm">
-                            {{ form.group|as_crispy_field }}
-                        </div>
-                    </div>
-                    <div class="form-row">
-                        <div class="form-group col-sm">
-                            {{ form.university|as_crispy_field }}
-                        </div>
-                         <div class="form-group col-sm">
-                            {{ form.semester|as_crispy_field }}
-                        </div>
-                    </div>
-                    <div class="form-row">
-                        <div class="form-group col-sm">
-                            {{ form.iin_attachment_front|as_crispy_field }}
-                        </div>
-                        <div class="form-group col-sm">
-                            {{ form.iin_attachment_back|as_crispy_field }}
-                        </div>
-                    </div>
-                    <div class="form-row">
-                        <div class="form-group col-sm">
-                            {{ form.transcript|as_crispy_field }}
-                        </div>
-                    </div>
-                    <div class="alert alert-danger">Фотографии или отсканированные изображения документов должны быть четкими, видны все данные документа!</div>
-                    {{ form.captcha }}
-                    <p class="text-muted">* - обязательные поля для заполнения</p>
-                    <button type="submit" class="btn btn-success mt-1">Отправить заявку</button>
-                </div>
-            </form>
-        </div>
-            {% endblock form %}
-        </div>
-    </div>
-</div>
-{% endblock description %}
+            </div>
+        {% endblock description %}
 
-</div>
-{% endblock content%}
+    </div>
+{% endblock content %}

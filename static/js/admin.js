@@ -36,7 +36,7 @@ function notifications_to_html() {
                 var id = n.pk;
                 var url = new URL(protocol + n.fields.url_for_application);
                 const d = new Date(n.fields.date);
-                var dt = `${d.getHours()}:${d.getMinutes()}:${d.getSeconds()} - ${d.getDay()}/${d.getMonth()}/${d.getFullYear()}`;
+                var dt = `${d.toLocaleString()}`;
                 var li = `<li class="list-group-item p-0"><button class="btn btn-primary btn-sm btn-block" onclick="notification_action('${id}', '${url}')">${n.fields.application_type}<span class="badge badge-pill badge-light">${dt}</span></button></li>`;
                 list_items.push(li);
             });
@@ -105,7 +105,7 @@ $(document).on('click', '.notifyjs-app-base .url', function () {
 // Показать уведомление
 function show_nofitication(id, date, type, url) {
     const d = new Date(date);
-    const dt = `${d.getHours()}:${d.getMinutes()}:${d.getSeconds()} - ${d.getDay()}/${d.getMonth()}/${d.getFullYear()}`;
+    const dt = `${d.toLocaleString()}`;
     const data = {
         button: "Перейти к заявлению",
         id: id,
