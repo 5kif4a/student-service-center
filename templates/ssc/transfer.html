@@ -6,27 +6,27 @@
 <h3 class="text-center p-3">Перевод в другой ВУЗ</h3>
     {% block form %}
     <div class="col">
-        <table class="table table-bordered table-hover table-sm">
-        <h4>Необходимые документы</h4>
-        <thead class="thead-light">
-            <th>Услуга</th>
-            <th>Документы</th>
-        </thead>
-        <tbody>
-        <tr>
-            <td rowspan="4">При переводе в другой ВУЗ</td>
-        </tr>
-        <tr>
-            <td>Удостоверение личности услугополучателя</td>
-        </tr>
-        <tr>
-            <td>Академическая справка</td>
-        </tr>
-        <tr>
-            <td>Копия транскрипта</td>
-        </tr>
-        </tbody>
-    </table>
+{#        <table class="table table-bordered table-hover table-sm">#}
+{#        <h4>Необходимые документы</h4>#}
+{#        <thead class="thead-light">#}
+{#            <th>Услуга</th>#}
+{#            <th>Документы</th>#}
+{#        </thead>#}
+{#        <tbody>#}
+{#        <tr>#}
+{#            <td rowspan="4">При переводе в другой ВУЗ</td>#}
+{#        </tr>#}
+{#        <tr>#}
+{#            <td>Удостоверение личности услугополучателя</td>#}
+{#        </tr>#}
+{#        <tr>#}
+{#            <td>Академическая справка</td>#}
+{#        </tr>#}
+{#        <tr>#}
+{#            <td>Копия транскрипта</td>#}
+{#        </tr>#}
+{#        </tbody>#}
+{#    </table>#}
 <form class="p-2 my-2 border border-primary" method="post" enctype="multipart/form-data">
     <h4 class="text-center">Форма заявления</h4>
     {% csrf_token %}
@@ -80,14 +80,14 @@
                 {{ form.with_grant_preservation|as_crispy_field }}
             </div>
         </div>
-        <div class="form-row">
-            <div class="form-group col-sm">
-                {{ form.iin_attachment_front|as_crispy_field }}
-            </div>
-            <div class="form-group col-sm">
-                {{ form.iin_attachment_back|as_crispy_field }}
-            </div>
-        </div>
+{#        <div class="form-row">#}
+{#            <div class="form-group col-sm">#}
+{#                {{ form.iin_attachment_front|as_crispy_field }}#}
+{#            </div>#}
+{#            <div class="form-group col-sm">#}
+{#                {{ form.iin_attachment_back|as_crispy_field }}#}
+{#            </div>#}
+{#        </div>#}
         <div class="alert alert-danger">Фотографии или отсканированные изображения документов должны быть четкими, видны все данные документа!</div>
         {{ form.captcha }}
         <p class="text-muted">* - обязательные поля для заполнения</p>

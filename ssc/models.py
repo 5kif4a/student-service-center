@@ -1,6 +1,7 @@
 from django.db import models
 from django.utils.translation import gettext_lazy as _
 from hashid_field import HashidAutoField
+
 from ssc.utilities import *
 from ssc.validators import *
 
@@ -371,15 +372,11 @@ class Transfer(Person, Application):
 
     with_grant_preservation = models.BooleanField(default=False, verbose_name=_('с сохранением гранта'))
 
-    iin_attachment_front = models.ImageField(upload_to='transfer_attachments/',
-                                             verbose_name=_(
-                                                 'Прикрепление копии документа, удостоверяющего личность - передняя сторона'),
-                                             validators=[file_size_validator])
-
-    iin_attachment_back = models.ImageField(upload_to='transfer_attachments/',
-                                            verbose_name=_(
-                                                'Прикрепление копии документа, удостоверяющего личность - обратная сторона'),
-                                            validators=[file_size_validator])
+    # iin_attachment_front = models.ImageField(upload_to='transfer_attachments/', verbose_name=_( 'Прикрепление копии
+    # документа, удостоверяющего личность - передняя сторона'), validators=[file_size_validator])
+    #
+    # iin_attachment_back = models.ImageField(upload_to='transfer_attachments/', verbose_name=_( 'Прикрепление копии
+    # документа, удостоверяющего личность - обратная сторона'), validators=[file_size_validator])
 
     course = None
 
