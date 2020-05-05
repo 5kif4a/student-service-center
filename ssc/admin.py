@@ -319,7 +319,7 @@ class TransferAdmin(CustomAdmin):
     mail_template = 'mails/transfer.html'
     app = 'Ваше заявление подписано. Вы можете получить его в КарГТУ, 1 корпус, кабинет № 109.'
     list_per_page = 15
-    list_filter = ('date_of_application', 'faculty', 'foundation', 'status')
+    list_filter = ('date_of_application', 'faculty', 'foundation_in_kstu', 'foundation_in_transfer', 'status')
     list_display = ('last_name', 'first_name', 'patronymic', 'date_of_application', 'status', 'print')
     search_fields = ('last_name', 'first_name', 'patronymic', 'address', 'current_specialty__name',
                      'individual_identification_number', 'university', 'group')

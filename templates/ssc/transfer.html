@@ -75,9 +75,12 @@
 
         </div>
         <div class="form-row">
-            <div class="form-group col-sm-6">
-                {{ form.foundation|as_crispy_field }}
+            <div class="form-group col-sm">
+                {{ form.foundation_in_kstu|as_crispy_field }}
                 {{ form.with_grant_preservation|as_crispy_field }}
+            </div>
+            <div class="form-group col-sm">
+                {{ form.foundation_in_transfer|as_crispy_field }}
             </div>
         </div>
 {#        <div class="form-row">#}

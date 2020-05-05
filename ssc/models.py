@@ -383,8 +383,11 @@ class Transfer(Person, Application):
 
     faculty = models.CharField(max_length=200, choices=faculties, verbose_name=_('Факультет'))
 
-    foundation = models.CharField(max_length=200, choices=foundation_types, default='на платной основе',
-                                  verbose_name=_('Основа обучения'))
+    foundation_in_kstu = models.CharField(max_length=200, choices=foundation_types, default='на платной основе',
+                                          verbose_name=_('Основа обучения в КарГТУ'))
+
+    foundation_in_transfer = models.CharField(max_length=200, choices=foundation_types, default='на платной основе',
+                                              verbose_name=_('Основа обучения в ВУЗе перевода'))
 
     with_grant_preservation = models.BooleanField(default=False, verbose_name=_('с сохранением гранта'))
 
