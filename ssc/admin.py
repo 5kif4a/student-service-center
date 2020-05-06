@@ -72,6 +72,7 @@ class CustomAdmin(admin.ModelAdmin):
     change_form_template = "custom_admin/change_form.html"
     entity = None
     app = None
+    ready_mail = "mails/ready/ready.html"
 
     def id_card_front(self, obj):
         return format_html(f"""<img src="{obj.iin_attachment_front.url}" width="300px">""")
@@ -151,7 +152,7 @@ class CustomAdmin(admin.ModelAdmin):
                 ctx = {'name': obj.first_name,
                        'app': self.app}
                 to = (obj.email,)
-                send_email("mails/ready/ready.html", ctx, to)
+                send_email(self.ready_mail, ctx, to)
 
                 self.message_user(request, f"""Обработка заявления "{obj}" завершена. Письмо отправлено""")
 
@@ -259,6 +260,7 @@ class AbroadAdmin(CustomAdmin):
     """
     entity = 'abroad'
     mail_template = 'mails/abroad.html'
+    ready_mail = "mails/ready/abroad.html"
     # TODO: текст от международного отдела
     app = 'Ваши документы для участия в конкурсе на обучение за рубежом, в том числе в рамках академической ' \
           'мобильности приняты.'
