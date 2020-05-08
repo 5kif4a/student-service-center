@@ -161,6 +161,14 @@ class Reference(Person, Application):
     reason = models.CharField(max_length=100, choices=reference_reasons, default='в связи с отчислением',
                               verbose_name=_('Причина'))
 
+    course = models.IntegerField(verbose_name=_('Курс'),
+                                 blank=True, null=True,
+                                 validators=course_validator)
+
+    group = models.CharField(max_length=50,
+                             blank=True, null=True,
+                             verbose_name=_('Группа'))
+
     class Meta:
         verbose_name = _('заявление на выдачу справки, не завершившим высшее и послевуз. обр-е')
         verbose_name_plural = _('заявления на выдачу справки, не завершившим высшее и послевуз. обр-е')
@@ -349,7 +357,7 @@ class TransferKSTU(Person, Application):
     permission_to_transfer = models.FileField(verbose_name=_('Разрешение на перевод с предыдущего ВУЗа'),
                                               validators=[file_size_validator, file_ext_validator])
 
-    certificate = models.FileField(verbose_name=_('Копия сертификата ЕНТ'),
+    certificate = models.FileField(verbose_name=_('Копия сертификата ЕНТ/КТА'),
                                    validators=[file_size_validator, file_ext_validator])
 
     transcript = models.FileField(verbose_name=_('Копия транскрипта'),
