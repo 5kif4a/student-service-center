@@ -15,15 +15,15 @@ PATH_WKHTMLTOPDF = env.str('PATH_WKHTMLTOPDF')
 # Статусы разработки услуг
 # True - готово | False - в разработке
 statuses = {
-    'bachelor': False,
-    'postgraduate': False,
+    'bachelor': True,
+    'postgraduate': True,
     'abroad': True,
     'certificate': True,
     'hostel': True,
     'duplicate': True,
     'reference': True,
     'academic-leave': True,
-    'transfer-and-recovery': False
+    'transfer-and-recovery': True
 }
 
 # Опции
