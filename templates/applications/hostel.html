@@ -7,6 +7,9 @@
 <!--
  /* Font Definitions */
  @font-face
+	{font-family:"Cambria Math";
+	panose-1:2 4 5 3 5 4 6 3 2 4;}
+@font-face
 	{font-family:Cambria;
 	panose-1:2 4 5 3 5 4 6 3 2 4;}
 @font-face
@@ -59,7 +62,8 @@ p.MsoAcetate, li.MsoAcetate, div.MsoAcetate
 span.3
 	{mso-style-name:"Заголовок 3 Знак";
 	mso-style-link:"Заголовок 3";
-	font-family:"Times New Roman","serif";
+	font-family:"Cambria","serif";
+	color:#4F81BD;
 	font-weight:bold;}
 span.4
 	{mso-style-name:"Заголовок 4 Знак";
@@ -86,6 +90,34 @@ p.msopapdefault, li.msopapdefault, div.msopapdefault
 	line-height:115%;
 	font-size:12.0pt;
 	font-family:"Times New Roman","serif";}
+p.30, li.30, div.30
+	{mso-style-name:3;
+	margin-right:0cm;
+	margin-left:0cm;
+	font-size:12.0pt;
+	font-family:"Times New Roman","serif";}
+p.40, li.40, div.40
+	{mso-style-name:4;
+	margin-right:0cm;
+	margin-left:0cm;
+	font-size:12.0pt;
+	font-family:"Times New Roman","serif";}
+p.31, li.31, div.31
+	{mso-style-name:"Заголовок 3 Знак1";
+	margin-right:0cm;
+	margin-left:0cm;
+	font-size:12.0pt;
+	font-family:"Times New Roman","serif";
+	font-weight:bold;}
+p.41, li.41, div.41
+	{mso-style-name:"Заголовок 4 Знак1";
+	margin-right:0cm;
+	margin-left:0cm;
+	font-size:12.0pt;
+	font-family:"Cambria","serif";
+	color:#4F81BD;
+	font-weight:bold;
+	font-style:italic;}
 .MsoChpDefault
 	{font-size:10.0pt;}
 .MsoPapDefault
@@ -120,77 +152,102 @@ div.WordSection1
   margin-left:363.15pt;margin-bottom:.0001pt;text-indent:-155.9pt;line-height:
   normal'><span style='font-size:12.0pt;font-family:"Times New Roman","serif";
   color:black;letter-spacing:.1pt;background:white'>&nbsp;</span></p>
-  <p class=MsoNormal style='margin-top:0cm;margin-right:0cm;margin-bottom:0cm;
-  margin-left:292.25pt;margin-bottom:.0001pt;line-height:normal'><span
+  <p class=MsoNormal style='margin-top:0cm;margin-right:15.85pt;margin-bottom:
+  0cm;margin-left:285.15pt;margin-bottom:.0001pt;line-height:normal'><b><span
   style='font-size:16.0pt;font-family:"Times New Roman","serif";color:black;
-  letter-spacing:.1pt;background:white'><b>Ректору КарГТУ</span></p>
-  <p class=MsoNormal style='margin-top:0cm;margin-right:0cm;margin-bottom:0cm;
-  margin-left:292.25pt;margin-bottom:.0001pt;line-height:normal'><u><span
+  letter-spacing:.1pt;background:white'>Ректору КарГТУ</span></b></p>
+  <p class=MsoNormal style='margin-top:0cm;margin-right:15.85pt;margin-bottom:
+  0cm;margin-left:285.15pt;margin-bottom:.0001pt;line-height:normal'><b><u><span
   style='font-size:16.0pt;font-family:"Times New Roman","serif";color:black;
-  letter-spacing:.1pt;background:white'>{{ rector_name }}</b></span></u></p>
+  letter-spacing:.1pt;background:white'>{{ rector_name }}</span></u></b></p>
   <p class=MsoNormal style='margin-top:0cm;margin-right:0cm;margin-bottom:0cm;
-  margin-left:292.25pt;margin-bottom:.0001pt;line-height:normal'><span
+  margin-left:285.15pt;margin-bottom:.0001pt;line-height:normal'><span
   style='font-size:16.0pt;font-family:"Times New Roman","serif";color:black;
-  letter-spacing:.1pt;background:white'>__________________________________</span></p>
+  letter-spacing:.1pt;background:white'>от студента </span></p>
   <p class=MsoNormal style='margin-top:0cm;margin-right:0cm;margin-bottom:0cm;
-  margin-left:292.25pt;margin-bottom:.0001pt;line-height:normal'><span
-  style='font-size:16.0pt;font-family:"Times New Roman","serif";color:black;
-  letter-spacing:.1pt;background:white'>/Ф.И.О руководителя
-  вуза полностью/</span></p>
-  <p class=MsoNormal style='margin-top:0cm;margin-right:0cm;margin-bottom:0cm;
-  margin-left:292.25pt;margin-bottom:.0001pt;line-height:normal'><b><u><span
+  margin-left:285.15pt;margin-bottom:.0001pt;line-height:normal'><b><u><span
   lang=EN-US style='font-size:16.0pt;font-family:"Times New Roman","serif";
-  color:black;letter-spacing:.1pt;background:white'>{{ app.last_name }}</span><span
+  color:black;letter-spacing:.1pt;background:white'>{{ app.last_name }} {{ app.first_name }} {{ app.patronymic }}</span></u></b></p>
+  <p class=MsoNormal style='margin-top:0cm;margin-right:0cm;margin-bottom:0cm;
+  margin-left:285.15pt;margin-bottom:.0001pt;line-height:normal'><span
   lang=EN-US style='font-size:16.0pt;font-family:"Times New Roman","serif";
-  color:black;letter-spacing:.1pt;background:white'> {{ app.first_name }}
-  {{ app.patronymic }}</u></b></span></p>
-  <p class=MsoNormal style='margin-top:0cm;margin-right:0cm;margin-bottom:0cm;
-  margin-left:292.25pt;margin-bottom:.0001pt;line-height:normal'><span
+  color:black;letter-spacing:.1pt;background:white'>/</span><span
   style='font-size:16.0pt;font-family:"Times New Roman","serif";color:black;
-  letter-spacing:.1pt;background:white'>/Ф.И.О./</span></p>
-  <p class=MsoNormal style='margin-top:0cm;margin-right:0cm;margin-bottom:0cm;
-  margin-left:292.25pt;margin-bottom:.0001pt;line-height:normal'><span
+  letter-spacing:.1pt;background:white'>Ф</span><span lang=EN-US
   style='font-size:16.0pt;font-family:"Times New Roman","serif";color:black;
-  letter-spacing:.1pt;background:white'>от студента <u><b>{{ app.course }}</b></span></u><span style='font-size:
-  16.0pt;font-family:"Times New Roman","serif";color:black;letter-spacing:.1pt;
-  background:white'> курса</span></p>
-  <p class=MsoNormal style='margin-top:0cm;margin-right:0cm;margin-bottom:0cm;
-  margin-left:292.25pt;margin-bottom:.0001pt;line-height:normal'><span
-  style='font-size:16.0pt;font-family:"Times New Roman","serif";color:black;
-  letter-spacing:.1pt;background:white'>группы <u><b>{{ app.group }}</b></span></u></p>
-  <p class=MsoNormal style='margin-top:0cm;margin-right:0cm;margin-bottom:0cm;
-  margin-left:292.25pt;margin-bottom:.0001pt;line-height:normal'><span
-  style='font-size:16.0pt;font-family:"Times New Roman","serif";color:black;
-  letter-spacing:.1pt;background:white'>специальности <u><b> {{ app.specialty }}</b></span></u></p>
-  <p class=MsoNormal style='margin-top:0cm;margin-right:0cm;margin-bottom:0cm;
-  margin-left:292.25pt;margin-bottom:.0001pt;line-height:normal'><span
-  style='font-size:16.0pt;font-family:"Times New Roman","serif";color:black;
-  letter-spacing:.1pt;background:white'>факультет <u><b>{{ app.faculty }}</b>
-</span></u><span lang=EN-US
-  style='font-size:16.0pt;font-family:"Times New Roman","serif";color:black;
-  letter-spacing:.1pt;background:white'>&nbsp;</span></p>
-  <p class=MsoNormal align=center style='margin-top:0cm;margin-right:0cm;
-  margin-bottom:0cm;margin-left:221.0pt;margin-bottom:.0001pt;text-align:center;
-  line-height:normal'><span lang=EN-US style='font-size:16.0pt;font-family:
-  "Times New Roman","serif";color:black;letter-spacing:.1pt;background:white'>&nbsp;</span></p>
-  <p class=MsoNormal align=center style='margin-top:0cm;margin-right:0cm;
-  margin-bottom:0cm;margin-left:221.0pt;margin-bottom:.0001pt;text-align:center;
-  line-height:normal'><span lang=EN-US style='font-size:16.0pt;font-family:
-  "Times New Roman","serif";color:black;letter-spacing:.1pt;background:white'>&nbsp;</span></p>
-  <p class=MsoNormal align=center style='margin-top:0cm;margin-right:0cm;
-  margin-bottom:0cm;margin-left:221.0pt;margin-bottom:.0001pt;text-align:center;
-  line-height:normal'><span lang=EN-US style='font-size:16.0pt;font-family:
-  "Times New Roman","serif";color:black;letter-spacing:.1pt;background:white'>&nbsp;</span></p>
-  <p class=MsoNormal align=center style='margin-top:0cm;margin-right:0cm;
-  margin-bottom:0cm;margin-left:221.0pt;margin-bottom:.0001pt;text-align:center;
-  line-height:normal'><span lang=EN-US style='font-size:16.0pt;font-family:
-  "Times New Roman","serif";color:black;letter-spacing:.1pt;background:white'>&nbsp;</span></p>
-  <p class=MsoNormal align=center style='margin-bottom:0cm;margin-bottom:.0001pt;
-  text-align:center;line-height:normal'><span style='font-size:16.0pt;
+  letter-spacing:.1pt;background:white'>.</span><span style='font-size:16.0pt;
   font-family:"Times New Roman","serif";color:black;letter-spacing:.1pt;
-  background:white'>Заявление</span></p>
-  <p class=MsoNormal style='margin-bottom:0cm;margin-bottom:.0001pt;line-height:
-  normal'><span lang=EN-US style='font-size:16.0pt;font-family:"Times New Roman","serif";
+  background:white'>И</span><span lang=EN-US style='font-size:16.0pt;
+  font-family:"Times New Roman","serif";color:black;letter-spacing:.1pt;
+  background:white'>.</span><span style='font-size:16.0pt;font-family:"Times New Roman","serif";
+  color:black;letter-spacing:.1pt;background:white'>О</span><span lang=EN-US
+  style='font-size:16.0pt;font-family:"Times New Roman","serif";color:black;
+  letter-spacing:.1pt;background:white'>./</span></p>
+  <p class=MsoNormal style='margin-top:0cm;margin-right:0cm;margin-bottom:0cm;
+  margin-left:285.15pt;margin-bottom:.0001pt;line-height:normal'><b><u><span
+  lang=EN-US style='font-size:16.0pt;font-family:"Times New Roman","serif";
+  color:black;letter-spacing:.1pt;background:white'>{{ app.course }}</span></u></b><span
+  lang=EN-US style='font-size:16.0pt;font-family:"Times New Roman","serif";
+  color:black;letter-spacing:.1pt;background:white'> </span><span
+  style='font-size:16.0pt;font-family:"Times New Roman","serif";color:black;
+  letter-spacing:.1pt;background:white'>курса</span></p>
+  <p class=MsoNormal style='margin-top:0cm;margin-right:0cm;margin-bottom:0cm;
+  margin-left:285.15pt;margin-bottom:.0001pt;line-height:normal'><span
+  style='font-size:16.0pt;font-family:"Times New Roman","serif";color:black;
+  letter-spacing:.1pt;background:white'>группы</span><span style='font-size:
+  16.0pt;font-family:"Times New Roman","serif";color:black;letter-spacing:.1pt;
+  background:white'> <b><u><span lang=EN-US>{{ app.group }}</span></u></b></span></p>
+  <p class=MsoNormal style='margin-top:0cm;margin-right:0cm;margin-bottom:0cm;
+  margin-left:285.15pt;margin-bottom:.0001pt;line-height:normal'><span
+  style='font-size:16.0pt;font-family:"Times New Roman","serif";color:black;
+  letter-spacing:.1pt;background:white'>специальности</span><span
+  style='font-size:16.0pt;font-family:"Times New Roman","serif";color:black;
+  letter-spacing:.1pt;background:white'> <b><u><span lang=EN-US>{{ app.specialty }}</span></u></b></span></p>
+  <p class=MsoNormal style='margin-top:0cm;margin-right:0cm;margin-bottom:0cm;
+  margin-left:285.15pt;margin-bottom:.0001pt;line-height:normal'><span
+  style='font-size:16.0pt;font-family:"Times New Roman","serif";color:black;
+  letter-spacing:.1pt;background:white'>факультет</span><span style='font-size:
+  16.0pt;font-family:"Times New Roman","serif";color:black;letter-spacing:.1pt;
+  background:white'> <b><u><span lang=EN-US>{{ app.faculty }}</span></u></b><u><span
+  lang=EN-US> </span></u><span lang=EN-US>&nbsp;</span></span></p>
+  <p class=MsoNormal style='margin-top:0cm;margin-right:0cm;margin-bottom:0cm;
+  margin-left:285.15pt;margin-bottom:.0001pt;line-height:normal'><u><span
+  lang=EN-US style='font-size:16.0pt;font-family:"Times New Roman","serif";
+  color:black;letter-spacing:.1pt;background:white'>{{ app.phone_number }}</span></u></p>
+  <p class=MsoNormal style='margin-top:0cm;margin-right:0cm;margin-bottom:0cm;
+  margin-left:285.15pt;margin-bottom:.0001pt;line-height:normal'><u><span
+  style='font-size:16.0pt;font-family:"Times New Roman","serif";color:black;
+  letter-spacing:.1pt;background:white'>{{ app.email }}</span></u></p>
+  <p class=MsoNormal style='margin-top:0cm;margin-right:15.85pt;margin-bottom:
+  0cm;margin-left:285.15pt;margin-bottom:.0001pt;line-height:normal'><span
+  style='font-size:16.0pt;font-family:"Times New Roman","serif";color:black;
+  letter-spacing:.1pt;background:white'>/контактные данные
+  услугополучателя/&nbsp;</span></p>
+  <p class=MsoNormal style='margin-top:0cm;margin-right:15.85pt;margin-bottom:
+  0cm;margin-left:285.15pt;margin-bottom:.0001pt;line-height:normal'>&nbsp;</p>
+  <p class=MsoNormal align=center style='margin-top:0cm;margin-right:15.85pt;
+  margin-bottom:0cm;margin-left:221.0pt;margin-bottom:.0001pt;text-align:center;
+  line-height:normal'><span lang=EN-US style='font-size:16.0pt;font-family:
+  "Times New Roman","serif";color:black;letter-spacing:.1pt;background:white'>&nbsp;</span></p>
+  <p class=MsoNormal align=center style='margin-top:0cm;margin-right:15.85pt;
+  margin-bottom:0cm;margin-left:221.0pt;margin-bottom:.0001pt;text-align:center;
+  line-height:normal'><span lang=EN-US style='font-size:16.0pt;font-family:
+  "Times New Roman","serif";color:black;letter-spacing:.1pt;background:white'>&nbsp;</span></p>
+  <p class=MsoNormal align=center style='margin-top:0cm;margin-right:15.85pt;
+  margin-bottom:0cm;margin-left:221.0pt;margin-bottom:.0001pt;text-align:center;
+  line-height:normal'><span lang=EN-US style='font-size:16.0pt;font-family:
+  "Times New Roman","serif";color:black;letter-spacing:.1pt;background:white'>&nbsp;</span></p>
+  <p class=MsoNormal align=center style='margin-top:0cm;margin-right:15.85pt;
+  margin-bottom:0cm;margin-left:221.0pt;margin-bottom:.0001pt;text-align:center;
+  line-height:normal'><span lang=EN-US style='font-size:16.0pt;font-family:
+  "Times New Roman","serif";color:black;letter-spacing:.1pt;background:white'>&nbsp;</span></p>
+  <p class=MsoNormal align=center style='margin-top:0cm;margin-right:15.85pt;
+  margin-bottom:0cm;margin-left:0cm;margin-bottom:.0001pt;text-align:center;
+  line-height:normal'><span style='font-size:16.0pt;font-family:"Times New Roman","serif";
+  color:black;letter-spacing:.1pt;background:white'>Заявление</span></p>
+  <p class=MsoNormal style='margin-top:0cm;margin-right:15.85pt;margin-bottom:
+  0cm;margin-left:0cm;margin-bottom:.0001pt;line-height:normal'><span
+  lang=EN-US style='font-size:16.0pt;font-family:"Times New Roman","serif";
   color:black;letter-spacing:.1pt;background:white'>&nbsp;</span></p>
   <p class=MsoNormal style='margin-bottom:0cm;margin-bottom:.0001pt;text-indent:
   22.95pt;line-height:normal'><span style='font-size:16.0pt;font-family:"Times New Roman","serif";
@@ -202,9 +259,35 @@ div.WordSection1
   style='font-size:16.0pt;font-family:"Times New Roman","serif";color:black;
   letter-spacing:.1pt;background:white'> </span><span style='font-size:16.0pt;
   font-family:"Times New Roman","serif";color:black;letter-spacing:.1pt;
-  background:white'>прибытия</span><span lang=EN-US style='font-size:16.0pt;
-  font-family:"Times New Roman","serif";color:black;letter-spacing:.1pt;
-  background:white'> {{ app.place_of_arrival }} </span></p>
+  background:white'>прибытия</span><span style='font-size:16.0pt;font-family:
+  "Times New Roman","serif";color:black;letter-spacing:.1pt;background:white'> <u><span
+  lang=EN-US>{{ app.place_of_arrival }} </span></u></span></p>
+  <p class=MsoNormal style='margin-bottom:0cm;margin-bottom:.0001pt;text-indent:
+  22.95pt;line-height:normal'><span style='font-size:16.0pt;font-family:"Times New Roman","serif";
+  color:black;letter-spacing:.1pt;background:white'>Список прилагаемых
+  документов: </span></p>
+  <p class=MsoNormal style='margin-bottom:0cm;margin-bottom:.0001pt;text-indent:
+  22.95pt;line-height:normal'><span style='font-size:16.0pt;font-family:"Times New Roman","serif";
+  color:black;letter-spacing:.1pt;background:white'>– Копия документа,
+  удостоверяющего личность услугополучателя; </span></p>
+  <p class=MsoNormal style='margin-bottom:0cm;margin-bottom:.0001pt;text-indent:
+  22.95pt;line-height:normal'><span style='font-size:16.0pt;font-family:"Times New Roman","serif";
+  color:black;letter-spacing:.1pt;background:white'>– Копия свидетельства о
+  смерти обоих или единственного родителя/ справка из детского дома;</span></p>
+  <p class=MsoNormal style='margin-bottom:0cm;margin-bottom:.0001pt;text-indent:
+  22.95pt;line-height:normal'><span style='font-size:16.0pt;font-family:"Times New Roman","serif";
+  color:black;letter-spacing:.1pt;background:white'>– Копия удостоверения о
+  статусе оралмана;</span></p>
+  <p class=MsoNormal style='margin-bottom:0cm;margin-bottom:.0001pt;text-indent:
+  22.95pt;line-height:normal'><span style='font-size:16.0pt;font-family:"Times New Roman","serif";
+  color:black;letter-spacing:.1pt;background:white'>– Справка о наличии в семье
+  4-х и более детей;</span></p>
+  <p class=MsoNormal style='margin-bottom:0cm;margin-bottom:.0001pt;text-indent:
+  22.95pt;line-height:normal'><span style='font-size:16.0pt;font-family:"Times New Roman","serif";
+  color:black;letter-spacing:.1pt;background:white'>– Справка о подтверждении
+  инвалидности.</span></p>
+  <p class=MsoNormal style='margin-bottom:0cm;margin-bottom:.0001pt;text-indent:
+  22.95pt;line-height:normal'>&nbsp;</p>
   <p class=MsoNormal style='margin-bottom:0cm;margin-bottom:.0001pt;text-indent:
   22.95pt;line-height:normal'><span lang=EN-US style='font-size:16.0pt;
   font-family:"Times New Roman","serif";color:black;letter-spacing:.1pt;
@@ -214,29 +297,32 @@ div.WordSection1
   font-family:"Times New Roman","serif";color:black;letter-spacing:.1pt;
   background:white'>&nbsp;</span></p>
   <p class=MsoNormal style='margin-bottom:0cm;margin-bottom:.0001pt;text-indent:
-  22.95pt;line-height:normal'><span lang=EN-US style='font-size:16.0pt;
-  font-family:"Times New Roman","serif";color:black;letter-spacing:.1pt;
-  background:white'>&nbsp;</span></p>
-  <p class=MsoNormal style='margin-bottom:0cm;margin-bottom:.0001pt;line-height:
+  22.95pt;line-height:normal'><span style='font-size:16.0pt;font-family:"Times New Roman","serif";
+  color:black;letter-spacing:.1pt;background:white'>Согласен на использования сведений,
+  составляющих охраняемую законом тайну, содержащихся в информационных
+  системах.</span></p>
+  <p class=MsoNormal style='margin-top:0cm;margin-right:15.85pt;margin-bottom:
+  0cm;margin-left:0cm;margin-bottom:.0001pt;text-indent:22.95pt;line-height:
   normal'><span lang=EN-US style='font-size:16.0pt;font-family:"Times New Roman","serif";
-  color:black;letter-spacing:.1pt;background:white'>{{ app.date_of_application.date }}</span><span lang=EN-US style='font-size:12.0pt;
+  color:black;letter-spacing:.1pt;background:white'>&nbsp;</span></p>
+  <p class=MsoNormal style='margin-bottom:0cm;margin-bottom:.0001pt;line-height:
+  normal'><span style='font-size:16.0pt;font-family:"Times New Roman","serif";
+  color:black;letter-spacing:.1pt;background:white'>Дата</span><span
+  style='font-size:16.0pt;font-family:"Times New Roman","serif";color:black;
+  letter-spacing:.1pt;background:white'> <span lang=EN-US>{{ app.date_of_application.date }}</span></span></p>
+  <p class=MsoNormal style='margin-bottom:0cm;margin-bottom:.0001pt;text-indent:
+  30.05pt;line-height:normal'><span lang=EN-US style='font-size:14.0pt;
   font-family:"Times New Roman","serif";color:black;letter-spacing:.1pt;
   background:white'>&nbsp;</span></p>
   <p class=MsoNormal style='margin-bottom:0cm;margin-bottom:.0001pt;text-indent:
-  30.05pt;line-height:normal'><span lang=EN-US style='font-size:10.0pt'>&nbsp;</span></p>
-  <p class=MsoNormal style='margin-bottom:0cm;margin-bottom:.0001pt;text-indent:
-  30.05pt;line-height:normal'><span lang=EN-US style='font-size:12.0pt;
+  30.05pt;line-height:normal'><span lang=EN-US style='font-size:14.0pt;
   font-family:"Times New Roman","serif";color:black;letter-spacing:.1pt;
   background:white'>&nbsp;</span></p>
   <p class=MsoNormal style='margin-bottom:0cm;margin-bottom:.0001pt;text-indent:
-  30.05pt;line-height:normal'><span lang=EN-US style='font-size:12.0pt;
+  30.05pt;line-height:normal'><span lang=EN-US style='font-size:14.0pt;
   font-family:"Times New Roman","serif";color:black;letter-spacing:.1pt;
   background:white'>&nbsp;</span></p>
-  <p class=MsoNormal style='margin-bottom:0cm;margin-bottom:.0001pt;text-indent:
-  30.05pt;line-height:normal'><span lang=EN-US style='font-size:12.0pt;
-  font-family:"Times New Roman","serif";color:black;letter-spacing:.1pt;
-  background:white'>&nbsp;</span></p>
-   <p class=MsoNormal style='margin-bottom:0cm;margin-bottom:.0001pt'><span
+  <p class=MsoNormal style='margin-bottom:0cm;margin-bottom:.0001pt'><span
   style='font-size:12.0pt;line-height:115%;font-family:"Times New Roman","serif"'><img src="data:image/png;base64,{{ qr_code }}"></span></p>
   <p class=MsoNormal style='margin-bottom:0cm;margin-bottom:.0001pt;line-height:
   normal'><span style='font-size:14.0pt'>&nbsp;</span></p>
