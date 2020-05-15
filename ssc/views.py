@@ -10,6 +10,8 @@ from SSC_KSTU.settings import DEBUG
 from django.contrib.auth.decorators import login_required
 from django.core.files.storage import FileSystemStorage
 import json
+from django.shortcuts import get_object_or_404
+
 # Create your views here.
 
 # Текущий ректор
@@ -99,7 +101,7 @@ class AbroadView(TemplateView):
             context = {
                 'rector_name': rector_name,
                 'app': app,
-                'qr_code': generate_qr_code('http://www.kstu.kz/')
+                'qr_code': generate_qr_code('http://ssc.kstu.kz/check_order?order_type=abroad&id=' + obj_id)
             }
             return render_pdf('applications/abroad.html', context)
         else:
@@ -132,7 +134,7 @@ class HostelView(TemplateView):
             context = {
                 'rector_name': rector_name,
                 'app': app,
-                'qr_code': generate_qr_code('http://www.kstu.kz/')
+                'qr_code': generate_qr_code('http://ssc.kstu.kz/check_order?order_type=hostel&id=' + obj_id)
             }
             return render_pdf('applications/hostel.html', context)
         else:
@@ -190,7 +192,7 @@ class AcademicLeaveView(TemplateView):
             context = {
                 'rector_name': rector_name,
                 'app': app,
-                'qr_code': generate_qr_code('http://www.kstu.kz/')
+                'qr_code': generate_qr_code('http://ssc.kstu.kz//check_order?order_type=academic_leave&id=' + obj_id)
             }
             return render_pdf('applications/academic-leave.html', context)
         else:
@@ -216,7 +218,7 @@ class ReferenceView(TemplateView):
             context = {
                 'rector_name': rector_name,
                 'app': app,
-                'qr_code': generate_qr_code('http://www.kstu.kz/')
+                'qr_code': generate_qr_code('http://ssc.kstu.kz/check_order?order_type=reference&id=' + obj_id)
             }
             return render_pdf('applications/reference.html', context)
         else:
@@ -249,7 +251,7 @@ class TransferView(TemplateView):
             context = {
                 'rector_name': rector_name,
                 'app': app,
-                'qr_code': generate_qr_code('http://www.kstu.kz/')
+                'qr_code': generate_qr_code('http://ssc.kstu.kz/check_order?order_type=transfer&id=' + obj_id)
             }
             return render_pdf('applications/transfer.html', context)
         else:
@@ -275,7 +277,7 @@ class TransferKSTUView(TemplateView):
             context = {
                 'rector_name': rector_name,
                 'app': app,
-                'qr_code': generate_qr_code('http://www.kstu.kz/')
+                'qr_code': generate_qr_code('http://ssc.kstu.kz/check_order?order_type=transfer_kstu&id=' + obj_id)
             }
             return render_pdf('applications/transfer-kstu.html', context)
         else:
@@ -294,7 +296,6 @@ class RecoveryView(TemplateView):
     app_type = 'Восстановление в число обучающихся'
     app_ref = 'recovery'
 
-
     @login_required
     def render(self, obj_id):
         app = Recovery.objects.get(id=obj_id)
@@ -302,7 +303,7 @@ class RecoveryView(TemplateView):
             context = {
                 'rector_name': rector_name,
                 'app': app,
-                'qr_code': generate_qr_code('http://www.kstu.kz/')
+                'qr_code': generate_qr_code('http://ssc.kstu.kz/check_order?order_type=recovery&id=' + obj_id)
             }
             return render_pdf('applications/recovery.html', context)
         else:
@@ -344,4 +345,47 @@ def page_not_found(request, exception):
 
 def internal_server_error(request):
     return render(request, template_name='error_handlers/500.html', status=500)
+
+
+def check_order(request):
+    """
+    Проверка
+    заявления
+    """
+    template = 'ssc/verification.html'
+    model_dictionary = {'academic_leave': AcademicLeave,
+                        'hostel': Hostel,
+                        'reference': Reference,
+                        'abroad': Abroad,
+                        'transfer_kstu': TransferKSTU,
+                        'transfer': Transfer,
+                        'recovery': Recovery}
+
+    if request.method == 'GET':
+        order_type = request.GET.get('order_type')
+        order_id = request.GET.get('id')
+
+        if order_type is None or order_id is None:
+            return page_not_found(request, 'Не существует')
+
+        model = model_dictionary[order_type]
+        obj = get_object_or_404(model, id=order_id)
+
+        order_type = model._meta.verbose_name.title()
+
+        context = {'last_name': obj.last_name,
+                   'first_name': obj.first_name,
+                   'iin': obj.individual_identification_number,
+                   'email': obj.email,
+                   'address': obj.address,
+                   'phone_number': obj.phone_number,
+                   'faculty': obj.faculty,
+                   'date': obj.date_of_application,
+                   'type': order_type}
+
+        return render(request, template, context)
+
+    return page_not_found(request, 'Не существует')
+
+
 
