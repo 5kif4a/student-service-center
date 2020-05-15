@@ -1,13 +1,17 @@
-import os
+import io
+import logging
 import mimetypes
-from django.shortcuts import HttpResponse
-from django.core.mail import EmailMessage
-from django.template.loader import render_to_string
-from django.http import HttpResponse
+import os
+import zipfile
+from datetime import datetime
+
 import pdfkit
 import pyqrcode
+from django.core.mail import EmailMessage
+from django.http import HttpResponse
+from django.template.loader import render_to_string
+
 from SSC_KSTU.settings import env
-import logging
 
 # Путь к .exe файлу генерирующий PDF
 PATH_WKHTMLTOPDF = env.str('PATH_WKHTMLTOPDF')
@@ -88,6 +92,21 @@ def render_pdf(template, context):
     cfg = pdfkit.configuration(wkhtmltopdf=bytes(PATH_WKHTMLTOPDF, 'utf8'))
     pdf = pdfkit.from_string(html, False, configuration=cfg)
     response = HttpResponse(pdf, content_type='application/pdf')
+    response['Content-Disposition'] = 'filename="application.pdf"'
+    return response
+
+
+# сгенерировать архив с прикрепленными файлами
+def make_zip_response(filenames):
+    zip_io = io.BytesIO()
+    with zipfile.ZipFile(zip_io, mode='w', compression=zipfile.ZIP_DEFLATED) as zip_file:
+        for filename in filenames:
+            zip_file.write(filename, os.path.split(filename)[1])
+
+    zip_filename = f'{datetime.now().strftime("%m-%d-%Y - %H:%M:%S")}.zip'
+    response = HttpResponse(zip_io.getvalue(), content_type='application/x-zip-compressed')
+    response['Content-Disposition'] = f"attachment;filename*=UTF-8''{zip_filename}"
+    response['Content-Length'] = zip_io.tell()
     return response
 
 

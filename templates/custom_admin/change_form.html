@@ -10,7 +10,7 @@
 
 {% block submit_buttons_bottom %}
     <div class="submit-row">
-        {% block zipfile %} {% endblock %}
+        <input type="submit" value="Скачать архив с прикреплениями" name="_download_zip">
         <input type="button" value="Отправить на исправление заявления" data-toggle="modal" data-target="#exampleModal">
         <input type="submit" class="default" value="Завершить обработку заявления" name="_finish">
         <input type="submit" class="default" value="Подтвердить заявление" name="_verify">

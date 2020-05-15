@@ -1,7 +1,3 @@
-import datetime
-import io
-import zipfile
-
 from django.contrib import admin
 from django.utils.html import format_html
 
@@ -73,6 +69,7 @@ class CustomAdmin(admin.ModelAdmin):
     entity = None
     app = None
     ready_mail = "mails/ready/ready.html"
+    filenames = None
 
     def id_card_front(self, obj):
         return format_html(f"""<img src="{obj.iin_attachment_front.url}" width="300px">""")
@@ -139,22 +136,33 @@ class CustomAdmin(admin.ModelAdmin):
 
                 self.message_user(request, f"""{obj} подтверждено""")
 
-        # Завершение обработки заявления
-        if "_finish" in request.POST:
-            # Если завершено - выдаем сообщение, что заявление уже завершено
-            if obj.status == 'Завершено':
-                self.message_user(request, f"{obj} обработка завершена")
-            # Если не завершено - завершаем и отправляем письмо на почту
-            else:
-                obj.status = 'Завершено'
-                obj.save()
+        # скачать архив с прикреплениями
+        if "_download_zip" in request.POST:
+            filenames_dict = {
+                "reference": "[obj.iin_attachment_front.path, obj.iin_attachment_back.path]",
 
-                ctx = {'name': obj.first_name,
-                       'app': self.app}
-                to = (obj.email,)
-                send_email(self.ready_mail, ctx, to)
+                "academic-leave": "[obj.iin_attachment_front.path, obj.iin_attachment_back.path, obj.attachment.path]",
 
-                self.message_user(request, f"""Обработка заявления "{obj}" завершена. Письмо отправлено""")
+                "abroad": "[obj.passport.path, obj.recommendation_letter.path, obj.transcript.path, "
+                          "obj.certificate.path]",
+
+                "hostel": "[obj.iin_attachment_front.path, obj.iin_attachment_back.path, obj.attachment.path]",
+
+                "transfer": "[]",
+
+                "transfer-kstu": "[obj.iin_attachment_front.path, obj.iin_attachment_back.path, "
+                                 "obj.permission_to_transfer.path, obj.certificate.path, obj.transcript.path]",
+
+                "recovery": "[obj.iin_attachment_front.path, obj.iin_attachment_back.path, obj.attachment.path, "
+                            "obj.certificate.path] "
+            }
+
+            # UNSAFE CODE BEGIN
+            filenames_as_str = filenames_dict.get(self.entity)
+            filenames = eval(filenames_as_str)
+            # UNSAFE CODE END
+            response = make_zip_response(filenames)
+            return response
 
         return super().response_change(request, obj)
 
@@ -261,7 +269,6 @@ class AbroadAdmin(CustomAdmin):
     entity = 'abroad'
     mail_template = 'mails/abroad.html'
     ready_mail = "mails/ready/abroad.html"
-    # TODO: текст от международного отдела
     app = 'Ваши документы для участия в конкурсе на обучение за рубежом, в том числе в рамках академической ' \
           'мобильности приняты.'
     list_per_page = 15
@@ -340,6 +347,7 @@ class TransferKSTUAdmin(CustomAdmin):
           'главный корпус, кабинет № 309 б., ' \
           'для заключения договора. При себе иметь удостоверение личности. ' \
           'После подписания договора подойти в каб. № 109, 1 корпус.'
+
     list_per_page = 15
     list_filter = ('date_of_application', 'faculty', 'course', 'foundation', 'status')
     list_display = ('last_name', 'first_name', 'patronymic', 'date_of_application', 'status', 'print')
@@ -356,7 +364,6 @@ class RecoveryAdmin(CustomAdmin):
     """
     entity = 'recovery'
     mail_template = 'mails/recovery.html'
-    change_form_template = "custom_admin/change_form_recovery.html"
     app = 'Ваше заявление принято.'
     list_per_page = 15
     list_filter = ('date_of_application', 'faculty', 'course', 'status')
@@ -365,75 +372,6 @@ class RecoveryAdmin(CustomAdmin):
                      'individual_identification_number', 'university')
     autocomplete_fields = ('specialty',)
     readonly_fields = ('id_card_front', 'id_card_back')
-
-    def response_change(self, request, obj):
-        # Если заявление заполнено неправильно, отправляем письмо с уведомлением
-        if "_send_for_correction" in request.POST:
-            if obj.status != 'Отозвано на исправление':
-                note = request.POST.get('note')
-
-                obj.status = 'Отозвано на исправление'
-                obj.save()
-
-                ctx = {'name': obj.first_name,
-                       'note': note}
-                to = (obj.email,)
-                send_email('mails/revoke.html', ctx, to)
-                self.message_user(request, f"Письмо с уведомлением отправлено {obj}")
-            else:
-                self.message_user(request, f"Письмо с уведомлением уже отправлено {obj}")
-
-        # Потверждение заявления
-        if "_verify" in request.POST:
-            # Если подтвержден - выдаем сообщение, что заявление уже подтверждено
-            if obj.status == 'Подтверждено':
-                self.message_user(request, f"{obj} уже потвержден")
-            # Если не потверждено - подтверждаем и отправляем письмо на почту
-            else:
-                obj.status = 'Подтверждено'
-                obj.save()
-
-                # отправляем письмо после потверждения заявления
-                ctx = {'name': request.POST['first_name']}
-                to = (request.POST.get('email', ''),)
-
-                send_email(self.mail_template, ctx, to)
-
-                self.message_user(request, f"""{obj} подтверждено""")
-
-        # Завершение обработки заявления
-        if "_finish" in request.POST:
-            # Если завершено - выдаем сообщение, что заявление уже завершено
-            if obj.status is 'Завершено':
-                self.message_user(request, f"{obj} обработка завершена")
-            # Если не завершено - завершаем и отправляем письмо на почту
-            else:
-                obj.status = 'Завершено'
-                obj.save()
-
-                ctx = {'name': obj.first_name,
-                       'app': self.app}
-                to = (obj.email,)
-                send_email("mails/ready/ready.html", ctx, to)
-
-                self.message_user(request, f"""Обработка заявления "{obj}" завершена. Письмо отправлено""")
-        # скачать архив с прикреплениями
-        if "_download_zip" in request.POST:
-            filenames = [obj.iin_attachment_front.path, obj.iin_attachment_back.path, obj.attachment.path,
-                         obj.certificate.path]
-
-            zip_io = io.BytesIO()
-            with zipfile.ZipFile(zip_io, mode='w', compression=zipfile.ZIP_DEFLATED) as zip_file:
-                for filename in filenames:
-                    zip_file.write(filename, os.path.split(filename)[1])
-
-            zip_filename = f'{datetime.datetime.now().strftime("%m-%d-%Y - %H:%M:%S")}.zip'
-            response = HttpResponse(zip_io.getvalue(), content_type='application/x-zip-compressed')
-            response['Content-Disposition'] = f"attachment;filename*=UTF-8''{zip_filename}"
-            response['Content-Length'] = zip_io.tell()
-            return response
-
-        return super().response_change(request, obj)
 
 
 # Уведомления
