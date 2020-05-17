@@ -21,18 +21,28 @@
             <a class="btn btn-success btn-block" href="#"><i class="fas fa-file-excel"></i> Excel</a>
         </div>
     </div>
+    <h2 class="text-center">Всего студентов {{ students_count }}</h2>
     <div class="row mb-1">
         <div class="col-sm col-md">
+            <input type="hidden" id="faculties" name="faculties" value="{{ faculties }}">
+            <input type="hidden" id="students_by_faculties" name="students_by_faculties" value="{{ students_by_faculties }}">
+            <input type="hidden" id="students_count" name="students_count" value="{{ students_count }}">
             <canvas id="chart0"></canvas>
         </div>
         <div class="col-sm col-md">
+            <input type="hidden" id="students_by_form" name="students_by_form" value="{{ students_by_form }}">
             <canvas id="chart1"></canvas>
         </div>
     </div>
     <div class="row mt-1">
         <div class="col-sm col-md">
+            <input type="hidden" id="courses" name="courses" value="{{ courses }}">
+            <input type="hidden" id="students_by_courses" name="students_by_courses" value="{{ students_by_courses }}">
             <canvas id="chart2"></canvas>
         </div>
+
+    </div>
+    <div class = "row mb-1">
         <div class="col-sm col-md">
             <canvas id="chart3"></canvas>
         </div>
