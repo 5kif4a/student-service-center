@@ -1,8 +1,9 @@
-from django.urls import path, include
 from django.conf import settings
 from django.conf.urls import url
 from django.contrib.auth.decorators import login_required
+from django.urls import path
 from django.views.static import serve
+
 from . import views
 
 
@@ -45,6 +46,8 @@ transfer_and_recovery_urls = [path('transfer-and-recovery', views.transfer_and_r
 notifications_urls = [path('notifications', views.get_notifications),
                       path('mark_as_read/<obj_id>', views.mark_as_read)]
 
+check_order_urls = [path('check_order', views.check_order)]
+
 urlpatterns = [
                   path('', views.index),
                   url(r'^%s(?P<path>.*)$' % settings.MEDIA_URL[1:], protected_serve,
@@ -58,4 +61,5 @@ urlpatterns = [
               reference_urls + \
               academic_leave_urls + \
               transfer_and_recovery_urls + \
-              notifications_urls
+              notifications_urls + \
+              check_order_urls
