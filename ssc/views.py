@@ -6,7 +6,7 @@ from django.core import serializers
 from ssc.forms import *
 from ssc.models import *
 from ssc.utilities import *
-from SSC_KSTU.settings import DEBUG
+from SSC_KSTU.settings import DEBUG, BASE_URL
 from django.contrib.auth.decorators import login_required
 from django.core.files.storage import FileSystemStorage
 import json
@@ -101,7 +101,7 @@ class AbroadView(TemplateView):
             context = {
                 'rector_name': rector_name,
                 'app': app,
-                'qr_code': generate_qr_code('http://ssc.kstu.kz/check_order?order_type=abroad&id=' + obj_id)
+                'qr_code': generate_qr_code(f'{BASE_URL}/check_order?order_type=abroad&id={obj_id}')
             }
             return render_pdf('applications/abroad.html', context)
         else:
@@ -134,7 +134,7 @@ class HostelView(TemplateView):
             context = {
                 'rector_name': rector_name,
                 'app': app,
-                'qr_code': generate_qr_code('http://ssc.kstu.kz/check_order?order_type=hostel&id=' + obj_id)
+                'qr_code': generate_qr_code(f'{BASE_URL}/check_order?order_type=hostel&id={obj_id}')
             }
             return render_pdf('applications/hostel.html', context)
         else:
@@ -192,7 +192,7 @@ class AcademicLeaveView(TemplateView):
             context = {
                 'rector_name': rector_name,
                 'app': app,
-                'qr_code': generate_qr_code('http://ssc.kstu.kz//check_order?order_type=academic_leave&id=' + obj_id)
+                'qr_code': generate_qr_code(f'{BASE_URL}/check_order?order_type=academic_leave&id={obj_id}')
             }
             return render_pdf('applications/academic-leave.html', context)
         else:
@@ -218,7 +218,7 @@ class ReferenceView(TemplateView):
             context = {
                 'rector_name': rector_name,
                 'app': app,
-                'qr_code': generate_qr_code('http://ssc.kstu.kz/check_order?order_type=reference&id=' + obj_id)
+                'qr_code': generate_qr_code(f'{BASE_URL}/check_order?order_type=reference&id={obj_id}')
             }
             return render_pdf('applications/reference.html', context)
         else:
@@ -251,7 +251,7 @@ class TransferView(TemplateView):
             context = {
                 'rector_name': rector_name,
                 'app': app,
-                'qr_code': generate_qr_code('http://ssc.kstu.kz/check_order?order_type=transfer&id=' + obj_id)
+                'qr_code': generate_qr_code(f'{BASE_URL}/check_order?order_type=transfer&id={obj_id}')
             }
             return render_pdf('applications/transfer.html', context)
         else:
@@ -277,7 +277,7 @@ class TransferKSTUView(TemplateView):
             context = {
                 'rector_name': rector_name,
                 'app': app,
-                'qr_code': generate_qr_code('http://ssc.kstu.kz/check_order?order_type=transfer_kstu&id=' + obj_id)
+                'qr_code': generate_qr_code(f'{BASE_URL}/check_order?order_type=transfer_kstu&id={obj_id}')
             }
             return render_pdf('applications/transfer-kstu.html', context)
         else:
@@ -303,7 +303,7 @@ class RecoveryView(TemplateView):
             context = {
                 'rector_name': rector_name,
                 'app': app,
-                'qr_code': generate_qr_code('http://ssc.kstu.kz/check_order?order_type=recovery&id=' + obj_id)
+                'qr_code': generate_qr_code(f'{BASE_URL}/check_order?order_type=recovery&id={obj_id}')
             }
             return render_pdf('applications/recovery.html', context)
         else:
@@ -314,7 +314,6 @@ class RecoveryView(TemplateView):
 def get_notifications(request):
     """
     Получить все уведомления
-    :return:
     """
     notifications = Notification.objects.filter(is_showed=False).order_by('-date')
     notifications = serializers.serialize("json", notifications)
@@ -371,15 +370,12 @@ def check_order(request):
         model = model_dictionary[order_type]
         obj = get_object_or_404(model, id=order_id)
 
-        order_type = model._meta.verbose_name.title()
+        order_type = model._meta.verbose_name.capitalize()
 
         context = {'last_name': obj.last_name,
                    'first_name': obj.first_name,
-                   'iin': obj.individual_identification_number,
-                   'email': obj.email,
-                   'address': obj.address,
-                   'phone_number': obj.phone_number,
-                   'faculty': obj.faculty,
+                   'patronymic': obj.patronymic,
+                   'individual_identification_number': obj.individual_identification_number,
                    'date': obj.date_of_application,
                    'type': order_type}
 

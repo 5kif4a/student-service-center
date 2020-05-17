@@ -1,16 +1,18 @@
 {% extends "ssc/../base.html" %}
 {% load static %}
 {% block content %}
-<div class="container">
-    <div class="row">
-        <div class="col text-center">
-            <img src="{% static "img/500.png" %}" class="img-fluid" width="300" height="300">
-        </div>
-        <div class="col my-auto">
-            <h1>Упс...Что-то пошло не так</h1>
-            <a href="/">Вернуться на главную</a>
+    <div class="d-flex align-items-center vh-100">
+        <div class="container">
+            <div class="row">
+                <div class="col text-center">
+                    <img src="{% static "img/500.png" %}" class="img-fluid" width="300" height="300">
+                </div>
+                <div class="col my-auto text-center">
+                    <h1>Упс...Что-то пошло не так</h1>
+                    <a class="btn btn-primary" href="/">Вернуться на главную</a>
+                </div>
+            </div>
         </div>
     </div>
-</div>
 {% endblock %}
 
