@@ -446,7 +446,34 @@ def stats(request):
     Выгрузка по статистике
     """
     template = 'custom_admin/stats.html'
-    return render(request, template)
+    students_by_faculties = dict()
+    students_by_courses = dict()
+    students_by_form = {"очная": 0, "заочная": 0}
+
+    students = Student.objects.all()
+    for student in students:
+        if student.faculty in students_by_faculties.keys():
+            students_by_faculties[student.faculty] += 1
+        else:
+            students_by_faculties[student.faculty] = 1
+
+        if student.course in students_by_courses.keys():
+            students_by_courses[student.course] += 1
+        else:
+            students_by_courses[student.course] = 1
+
+        students_by_form[student.education_form] += 1
+
+    context = {
+        "faculties": list(students_by_faculties.keys()),
+        "students_by_faculties": list(students_by_faculties.values()),
+        "students_count": students.count(),
+        "students_by_form": list(students_by_form.values()),
+        "courses": list(students_by_courses.keys()),
+        "students_by_courses": list(students_by_courses.values())
+    }
+
+    return render(request, template, context)
 
 
 def page_not_found(request, exception):
