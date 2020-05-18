@@ -353,13 +353,37 @@ def stats(request):
 
         students_by_form[student.education_form] += 1
 
+    orders_by_faculties = dict()
+    orders_by_courses = dict()
+    orders_count = 0
+
+    for model in Abroad.objects.all(), Hostel.objects.all(), Recovery.objects.all(), Reference.objects.all(), \
+            AcademicLeave.objects.all(), TransferKSTU.objects.all(), Transfer.objects.all():
+        for order in model:
+            if order.faculty in orders_by_faculties.keys():
+                orders_by_faculties[order.faculty] += 1
+            else:
+                orders_by_faculties[order.faculty] = 1
+
+            if order.course in orders_by_courses.keys():
+                orders_by_courses[order.course] += 1
+            else:
+                orders_by_courses[order.course] = 1
+
+            orders_count += 1
+
     context = {
         "faculties": list(students_by_faculties.keys()),
         "students_by_faculties": list(students_by_faculties.values()),
         "students_count": students.count(),
         "students_by_form": list(students_by_form.values()),
         "courses": list(students_by_courses.keys()),
-        "students_by_courses": list(students_by_courses.values())
+        "students_by_courses": list(students_by_courses.values()),
+        "orders_faculties": list(orders_by_faculties.keys()),
+        "orders_by_faculties": list(orders_by_faculties.values()),
+        "orders_courses": list(orders_by_courses.values()),
+        "orders_by_courses": list(orders_by_courses.values()),
+        "orders_count": orders_count
     }
 
     return render(request, template, context)
@@ -409,6 +433,3 @@ def check_order(request):
         return render(request, template, context)
 
     return page_not_found(request, 'Не существует')
-
-
-

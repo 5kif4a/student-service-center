@@ -77,16 +77,23 @@ new Chart(document.getElementById("chart2"), {
     }
 });
 
+var orders_faculties = document.getElementById("orders_faculties").value.split("'").join("");
+orders_faculties = orders_faculties.replace("[", "");
+orders_faculties = orders_faculties.replace("]", "");
+
+var orders_by_faculties = document.getElementById("orders_by_faculties").value.split("'").join("");
+orders_by_faculties = orders_by_faculties.replace("[", "");
+orders_by_faculties = orders_by_faculties.replace("]", "");
 
 new Chart(document.getElementById("chart3"), {
     type: 'horizontalBar',
     data: {
-      labels: ["Africa", "Asia", "Europe", "Latin America", "North America"],
+      labels: orders_faculties.split(","),
       datasets: [
         {
-          label: "Population (millions)",
+          label: "Заявок",
           backgroundColor: ["#3e95cd", "#8e5ea2","#3cba9f","#e8c3b9","#c45850"],
-          data: [2478,5267,734,784,433]
+          data: orders_by_faculties.split(",")
         }
       ]
     },
@@ -94,7 +101,36 @@ new Chart(document.getElementById("chart3"), {
       legend: { display: false },
       title: {
         display: true,
-        text: 'Predicted world population (millions) in 2050'
+        text: 'Количество заявок по факультетам'
+      }
+    }
+});
+
+var orders_courses = document.getElementById("orders_courses").value.split("'").join("");
+orders_courses = orders_courses.replace("[", "");
+orders_courses = orders_courses.replace("]", "");
+
+var orders_by_courses = document.getElementById("orders_by_courses").value.split("'").join("");
+orders_by_courses = orders_by_courses.replace("[", "");
+orders_by_courses = orders_by_courses.replace("]", "");
+
+new Chart(document.getElementById("chart4"), {
+    type: 'horizontalBar',
+    data: {
+      labels: orders_courses.split(","),
+      datasets: [
+        {
+          label: "Заявок",
+          backgroundColor: ["#3e95cd", "#8e5ea2","#3cba9f","#e8c3b9","#c45850"],
+          data: orders_by_courses.split(",")
+        }
+      ]
+    },
+    options: {
+      legend: { display: false },
+      title: {
+        display: true,
+        text: 'Количество заявок по курсам'
       }
     }
 });
