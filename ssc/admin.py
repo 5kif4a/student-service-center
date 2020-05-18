@@ -162,6 +162,10 @@ class CustomAdmin(admin.ModelAdmin):
             filenames_as_str = filenames_dict.get(self.entity)
             filenames = eval(filenames_as_str)
             # UNSAFE CODE END
+            if self.entity == "transfer-kstu":
+                if obj.grant:
+                    filenames.append(obj.grant.path)
+
             response = make_zip_response(filenames)
             return response
 
