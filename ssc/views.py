@@ -11,6 +11,7 @@ from django.contrib.auth.decorators import login_required
 from django.core.files.storage import FileSystemStorage
 import json
 from django.shortcuts import get_object_or_404
+import xlsxwriter
 
 # Create your views here.
 
@@ -358,7 +359,7 @@ def stats(request):
     orders_count = 0
 
     for model in Abroad.objects.all(), Hostel.objects.all(), Recovery.objects.all(), Reference.objects.all(), \
-            AcademicLeave.objects.all(), TransferKSTU.objects.all(), Transfer.objects.all():
+                 AcademicLeave.objects.all(), TransferKSTU.objects.all(), Transfer.objects.all():
         for order in model:
             if order.faculty in orders_by_faculties.keys():
                 orders_by_faculties[order.faculty] += 1
