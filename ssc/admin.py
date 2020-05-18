@@ -69,6 +69,7 @@ class CustomAdmin(admin.ModelAdmin):
     entity = None
     app = None
     ready_mail = "mails/ready/ready.html"
+    service_name = None
     filenames = None
 
     def id_card_front(self, obj):
@@ -164,6 +165,26 @@ class CustomAdmin(admin.ModelAdmin):
             response = make_zip_response(filenames)
             return response
 
+        # Завершение обработки заявления
+        if "_finish" in request.POST:
+            # Если завершено - выдаем сообщение, что заявление уже завершено
+            if obj.status is 'Завершено':
+                self.message_user(request, f"{obj} обработка завершена")
+            # Если не завершено - завершаем и отправляем письмо на почту
+            else:
+                obj.status = 'Завершено'
+                obj.save()
+
+                ctx = {'name': obj.first_name,
+                       'app': self.app,
+                       'service_name': self.service_name
+                       }
+                to = (obj.email,)
+
+                send_email(self.ready_mail, ctx, to)
+
+                self.message_user(request, f"""Обработка заявления "{obj}" завершена. Письмо отправлено""")
+
         return super().response_change(request, obj)
 
 
@@ -174,6 +195,7 @@ class ReferenceAdmin(CustomAdmin):
     """
     entity = 'reference'
     mail_template = 'mails/reference.html'
+    service_name = "Выдача справки лицам, не завершившим высшее и послевузовское образование"
     app = 'Ваша справка готова. Вы можете получить ее в КарГТУ, 1 корпус, кабинет № 109.'
     list_per_page = 15
     list_filter = ('date_of_application', 'receipt_year', 'exclude_year', 'education_form', 'course', 'status')
@@ -291,6 +313,7 @@ class HostelAdmin(CustomAdmin):
     entity = 'hostel'
     mail_template = 'mails/hostel.html'
     app = 'Ваша справка готова. Вы можете получить ее в КарГТУ, 1 корпус, кабинет № 109.'
+    service_name = "Предоставление общежития обучающимся в высших учебных заведениях"
     list_per_page = 15
     list_filter = ('date_of_application', 'faculty', 'course', 'status')
     list_display = ('last_name', 'first_name', 'patronymic', 'specialty', 'date_of_application', 'status',
@@ -327,6 +350,7 @@ class TransferAdmin(CustomAdmin):
     entity = 'transfer'
     mail_template = 'mails/transfer.html'
     app = 'Ваше заявление подписано. Вы можете получить его в КарГТУ, 1 корпус, кабинет № 109.'
+    service_name = "Перевод в друой ВУЗ"
     list_per_page = 15
     list_filter = ('date_of_application', 'faculty', 'foundation_in_kstu', 'foundation_in_transfer', 'status')
     list_display = ('last_name', 'first_name', 'patronymic', 'date_of_application', 'status', 'print')
@@ -347,9 +371,10 @@ class TransferKSTUAdmin(CustomAdmin):
           'главный корпус, кабинет № 309 б., ' \
           'для заключения договора. При себе иметь удостоверение личности. ' \
           'После подписания договора подойти в каб. № 109, 1 корпус.'
-
+    service_name = "Перевод в КарГТУ"
     list_per_page = 15
-    list_filter = ('date_of_application', 'faculty', 'course', 'foundation', 'status')
+    list_filter = (
+    'date_of_application', 'faculty', 'course', 'foundation_on_previous_university', 'foundation_in_kstu', 'status')
     list_display = ('last_name', 'first_name', 'patronymic', 'date_of_application', 'status', 'print')
     search_fields = ('last_name', 'first_name', 'patronymic', 'address',
                      'specialty__name', 'individual_identification_number', 'university')
@@ -365,6 +390,7 @@ class RecoveryAdmin(CustomAdmin):
     entity = 'recovery'
     mail_template = 'mails/recovery.html'
     app = 'Ваше заявление принято.'
+    service_name = "Восстановление в число обучающихся"
     list_per_page = 15
     list_filter = ('date_of_application', 'faculty', 'course', 'status')
     list_display = ('last_name', 'first_name', 'patronymic', 'date_of_application', 'status', 'print')

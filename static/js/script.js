@@ -5,6 +5,7 @@ $('[name="phone_number"]').mask('+00000000000', {placeholder: '+7__________'});
 $('#id_specialty').chosen();
 $('#id_current_specialty').chosen();
 $('#id_specialty_on_previous_university').chosen();
+$('#id_transfer_specialty').chosen();
 
 // Проверка основы обучения
 const selectedOption = $("#id_foundation option:selected").val();

@@ -201,27 +201,27 @@ class Abroad(Person, Application):
 
     # semester = models.CharField(max_length=200, choices=semesters, verbose_name=_('Семестр'))
 
-    passport = models.FileField(upload_to='abroad/',
+    passport = models.FileField(upload_to='abroad_attachments/',
                                 verbose_name=_('Копия паспорта'),
                                 validators=[file_size_validator, file_ext_validator])
 
-    recommendation_letter = models.FileField(upload_to='abroad/',
+    recommendation_letter = models.FileField(upload_to='abroad_attachments/',
                                              verbose_name=_('Рекомендательное письмо'),
                                              validators=[file_size_validator, file_ext_validator])
 
-    transcript = models.FileField(upload_to='abroad/',
+    transcript = models.FileField(upload_to='abroad_attachments/',
                                   verbose_name=_('Копия транскрипта'),
                                   validators=[file_size_validator, file_ext_validator])
 
-    certificate = models.FileField(upload_to='abroad/',
+    certificate = models.FileField(upload_to='abroad_attachments/',
                                    verbose_name=_('Сертификат, подтверждающий знание иностранного языка'),
                                    validators=[file_size_validator, file_ext_validator])
 
     class Meta:
         verbose_name = _(
-            'заявление на участие в конкурсе на обучение за рубежом, в том числе академической мобильности')
+            'заявление на участие в конкурсе на обучение за рубежом в рамках академической мобильности')
         verbose_name_plural = _(
-            'заявления на участие в конкурсе на обучение за рубежом, в том числе академической мобильности')
+            'заявления на участие в конкурсе на обучение за рубежом в рамках академической мобильности')
 
     def __str__(self):
         return f'{self.last_name} {self.first_name} {self.patronymic}. ИИН: {self.individual_identification_number}'
@@ -314,7 +314,7 @@ class AcademicLeave(Person, Application):
                                                 'сторона'),
                                             validators=[file_size_validator])
 
-    attachment = models.FileField(upload_to='hostel/', verbose_name=_('Прикрепление'),
+    attachment = models.FileField(upload_to='academic_leave_attachments/', verbose_name=_('Прикрепление'),
                                   validators=[file_size_validator, file_ext_validator])
 
     reason = models.CharField(max_length=100, choices=academic_leave_reasons, default='состоянием здоровья',
@@ -343,10 +343,19 @@ class TransferKSTU(Person, Application):
                                                          verbose_name=_('Специальность обучения в предыдущем ВУЗе'),
                                                          related_name='specialty_on_previous_university')
 
+    transfer_specialty = models.ForeignKey(Specialty, on_delete=models.CASCADE,
+                                           verbose_name=_('Специальность перевода'),
+                                           related_name='transfer_specialty')
+
     faculty = models.CharField(max_length=200, choices=faculties, verbose_name=_('Факультет'))
 
-    foundation = models.CharField(max_length=200, choices=foundation_types, default='на платной основе',
-                                  verbose_name=_('Основа обучения'))
+    foundation_on_previous_university = models.CharField(max_length=200, choices=foundation_types,
+                                                         default='на платной основе',
+                                                         verbose_name=_('Основа обучения в предыдущем ВУЗе'))
+
+    foundation_in_kstu = models.CharField(max_length=200, choices=foundation_types,
+                                          default='на платной основе',
+                                          verbose_name=_('Основа обучения в КарГТУ'))
 
     iin_attachment_front = models.ImageField(upload_to='transfer_kstu_attachments/',
                                              verbose_name=_(
@@ -360,16 +369,20 @@ class TransferKSTU(Person, Application):
                                                 'сторона'),
                                             validators=[file_size_validator])
 
-    permission_to_transfer = models.FileField(verbose_name=_('Разрешение на перевод с предыдущего ВУЗа'),
+    permission_to_transfer = models.FileField(upload_to='transfer_kstu_attachments/',
+                                              verbose_name=_('Разрешение на перевод с предыдущего ВУЗа'),
                                               validators=[file_size_validator, file_ext_validator])
 
-    certificate = models.FileField(verbose_name=_('Копия сертификата ЕНТ/КТА'),
+    certificate = models.FileField(upload_to='transfer_kstu_attachments/',
+                                   verbose_name=_('Копия сертификата ЕНТ/КТА'),
                                    validators=[file_size_validator, file_ext_validator])
 
-    transcript = models.FileField(verbose_name=_('Копия транскрипта'),
+    transcript = models.FileField(upload_to='transfer_kstu_attachments/',
+                                  verbose_name=_('Копия транскрипта'),
                                   validators=[file_size_validator, file_ext_validator])
 
-    grant = models.FileField(blank=True, null=True, verbose_name=_('Свидетельство о образовательном гранте'))
+    grant = models.FileField(upload_to='transfer_kstu_attachments/',
+                             blank=True, null=True, verbose_name=_('Свидетельство о образовательном гранте'))
 
     group = None
     address = None
@@ -443,10 +456,12 @@ class Recovery(Person, Application):
                                                 'сторона'),
                                             validators=[file_size_validator])
 
-    attachment = models.FileField(verbose_name=_('Копия транскрипта/Академическая справка'),
+    attachment = models.FileField(upload_to='recovery_attachments/',
+                                  verbose_name=_('Копия транскрипта/Академическая справка'),
                                   validators=[file_size_validator, file_ext_validator])
 
-    certificate = models.FileField(verbose_name=_('Копия сертификата ЕНТ/КТА'),
+    certificate = models.FileField(upload_to='recovery_attachments/',
+                                   verbose_name=_('Копия сертификата ЕНТ/КТА'),
                                    validators=[file_size_validator, file_ext_validator])
 
     group = None
