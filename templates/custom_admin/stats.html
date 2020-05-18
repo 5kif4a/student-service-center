@@ -26,7 +26,7 @@
             </form>
         </div>
     </div>
-    <div class="container" id="content" style="height: 200px">
+    <div class="container" id="content">
         <h2 class="text-center">Всего студентов {{ students_count }}</h2>
         <div class="row mb-1 h-50">
             <div class="col-sm col-md">
@@ -40,11 +40,11 @@
                 <canvas id="chart1"></canvas>
             </div>
         </div>
-        <div class="row mb-1">
-            <div class="col-sm col-md">
+        <div class="row mb-1 h-50">
+            <div class="col-sm col-md" >
                 <input type="hidden" id="courses" name="courses" value="{{ courses }}">
                 <input type="hidden" id="students_by_courses" name="students_by_courses" value="{{ students_by_courses }}">
-                <canvas id="chart2"></canvas>
+                <canvas id="chart2" height="70px"></canvas>
             </div>
         </div>
         <br>

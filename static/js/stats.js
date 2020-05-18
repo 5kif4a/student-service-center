@@ -34,7 +34,8 @@ var ctx = document.getElementById('chart0');
     options: {
         title: {
             display: true,
-            text: 'Количество студентов по факультетам'
+            text: 'Количество студентов по факультетам',
+            responsive:false
         }
     }
 });
@@ -52,7 +53,8 @@ new Chart(document.getElementById("chart1"), {
     options: {
       title: {
         display: true,
-        text: 'Количество студентов по форме обучения'
+        text: 'Количество студентов по форме обучения',
+        responsive:false
       }
     }
 });
@@ -72,7 +74,8 @@ new Chart(document.getElementById("chart2"), {
     options: {
       title: {
         display: true,
-        text: 'Количество студентов по курсам'
+        text: 'Количество студентов по курсам',
+        responsive:false
       }
     }
 });
@@ -101,7 +104,8 @@ new Chart(document.getElementById("chart3"), {
       legend: { display: false },
       title: {
         display: true,
-        text: 'Количество заявок по факультетам'
+        text: 'Количество заявок по факультетам',
+        responsive:false
       }
     }
 });
@@ -130,20 +134,20 @@ new Chart(document.getElementById("chart4"), {
       legend: { display: false },
       title: {
         display: true,
-        text: 'Количество заявок по курсам'
+        text: 'Количество заявок по курсам',
+        responsive:false
       }
     }
 });
 
 function generate_pdf(){
-    alert("generate");
     const filename  = 'statistics.pdf';
 
 		html2canvas(document.querySelector('#content'),
-								{scale: 3}
+								{scale: 1}
 						 ).then(canvas => {
-			let pdf = new jsPDF('p', 'mm', 'a4');
-			pdf.addImage(canvas.toDataURL('image/png'), 'PNG', 0, 0, 211, 298);
+			let pdf = new jsPDF('p', 'mm', 'a3');
+			pdf.addImage(canvas.toDataURL('image/png'), 'PNG', 0, 0, 300, 410);
 			pdf.save(filename);
 		});
 }
