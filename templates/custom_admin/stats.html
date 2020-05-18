@@ -20,7 +20,10 @@
             <a class="btn btn-danger btn-block mb-2" href="#" onclick="generate_pdf(); return false;"><i class="fas fa-file-pdf"></i> PDF</a>
         </div>
         <div class="col-sm col-md">
-            <a class="btn btn-success btn-block" href="#"><i class="fas fa-file-excel"></i> Excel</a>
+            <form action="" method="post">
+                {% csrf_token %}
+                <button type="submit" class="btn btn-success btn-block" ><i class="fas fa-file-excel"></i> Excel</a>
+            </form>
         </div>
     </div>
     <div class="container" id="content" style="height: 200px">

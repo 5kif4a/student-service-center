@@ -335,6 +335,9 @@ def stats(request):
     """
     Выгрузка по статистике
     """
+
+
+
     template = 'custom_admin/stats.html'
     students_by_faculties = dict()
     students_by_courses = dict()
@@ -372,6 +375,70 @@ def stats(request):
                 orders_by_courses[order.course] = 1
 
             orders_count += 1
+
+    if request.method == "POST":
+        output = io.BytesIO()
+
+        workbook = xlsxwriter.Workbook(output)
+        worksheet = workbook.add_worksheet()
+        worksheet.set_column(0, 0, 25)
+
+        row_num = 0
+        col_num = 0
+        worksheet.write(row_num, col_num, "Всего студентов")
+        worksheet.write(row_num, col_num + 1, students.count())
+
+        row_num += 1
+        worksheet.write(row_num, col_num, "По факультетам")
+        for faculty, count in students_by_faculties.items():
+            row_num += 1
+            worksheet.write(row_num, col_num, faculty)
+            worksheet.write(row_num, col_num + 1, count)
+
+        row_num += 1
+        worksheet.write(row_num, col_num, "По форме обучения")
+        for form, count in students_by_form.items():
+            row_num += 1
+            worksheet.write(row_num, col_num, form)
+            worksheet.write(row_num, col_num + 1, count)
+
+        row_num += 1
+        worksheet.write(row_num, col_num, "По курсу")
+        for course, count in students_by_courses.items():
+            row_num += 1
+            worksheet.write(row_num, col_num, course)
+            worksheet.write(row_num, col_num + 1, count)
+
+        row_num += 2
+        worksheet.write(row_num, col_num, "Всего заявок")
+        worksheet.write(row_num, col_num + 1, orders_count)
+
+        row_num += 1
+        worksheet.write(row_num, col_num, "По факультетам")
+        for faculty, count in orders_by_faculties.items():
+            row_num += 1
+            worksheet.write(row_num, col_num, faculty)
+            worksheet.write(row_num, col_num + 1, count)
+
+        row_num += 1
+        worksheet.write(row_num, col_num, "По курсам")
+        for course, count in orders_by_courses.items():
+            row_num += 1
+            worksheet.write(row_num, col_num, course)
+            worksheet.write(row_num, col_num + 1, count)
+
+        print(orders_by_courses)
+        workbook.close()
+        output.seek(0)
+
+        filename = 'stats.xlsx'
+        response = HttpResponse(
+            output,
+            content_type='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+        )
+        response['Content-Disposition'] = 'attachment; filename=%s' % filename
+
+        return response
 
     context = {
         "faculties": list(students_by_faculties.keys()),
