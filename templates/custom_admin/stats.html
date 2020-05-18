@@ -42,9 +42,19 @@
         </div>
 
     </div>
+    <br>
+    <input type="hidden" id="orders_count" name="orders_count" value="{{ orders_count }}">
+    <h2 class="text-center">Всего заявок {{ orders_count }}</h2>
     <div class = "row mb-1">
+        <input type="hidden" id="orders_faculties" name="orders_faculties" value="{{ orders_faculties }}">
+        <input type="hidden" id="orders_by_faculties" name="orders_by_faculties" value="{{ orders_by_faculties }}">
         <div class="col-sm col-md">
             <canvas id="chart3"></canvas>
+        </div>
+        <input type="hidden" id="orders_courses" name="orders_courses" value="{{ orders_courses }}">
+        <input type="hidden" id="orders_by_courses" name="orders_by_courses" value="{{ orders_by_courses }}">
+        <div class="col-sm col-md">
+            <canvas id="chart4"></canvas>
         </div>
     </div>
 </div>
