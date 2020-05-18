@@ -38,7 +38,7 @@ file_ext_validator = FileExtensionValidator(
 def file_size_validator(value):
     filesize = value.size
 
-    if filesize > 2621440:
-        raise ValidationError("Максимальный размер файла, который можно загрузить, составляет 2 МБ.")
+    if filesize > 5242880:
+        raise ValidationError("Максимальный размер файла, который можно загрузить, составляет 5 МБ.")
     else:
         return value
