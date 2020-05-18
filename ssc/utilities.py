@@ -21,7 +21,7 @@ PATH_WKHTMLTOPDF = env.str('PATH_WKHTMLTOPDF')
 statuses = {
     'bachelor': True,
     'postgraduate': True,
-    'abroad': False,
+    'abroad': True,
     'certificate': True,
     'hostel': False,
     'duplicate': True,

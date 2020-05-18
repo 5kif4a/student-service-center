@@ -1,115 +1,137 @@
 {% extends "ssc/service_wrapper.html" %}
 {% load crispy_forms_tags %}
 {% block content %}
-<div class="container">
-{% block description %}
-<h3 class="text-center p-3">Предоставление академических отпусков обучающимся в организациях образования</h3>
-<div class="alert alert-info text-center"><h5>Статус услуги: {% if status %}Автоматизирована <i class="fas fa-cogs fa-lg"></i>{% else %}в процессе разработки <i class="fab fa-dev fa-lg"></i>{% endif %}</h5></div>
-<div class="container">
-    <div class="row text-break">
-        <div class="col m-2 border border-info">
-            <ul class="list-group list-group-flush">
-            <li class="list-group-item"><b>Государственный орган:</b> Министерство образования и науки РК</li>
-            <li class="list-group-item"><b>Получатели услуги:</b> Физические лица</li>
-            <li class="list-group-item"><b>Место предоставления услуги:</b>
-                <ul class="list-unstyled">
-                    <li><a href="https://egov.kz/cms/ru/articles/professional_education/2Fvusi_rk" target="_blank">Организации высшего и послевузовского образования</a></li>
-            </ul>
-            </li>
-            <li class="list-group-item"><b>Стоимость услуги:</b> Бесплатно</li>
-            <li class="list-group-item"><b>Сроки оказания услуги:</b> 3 рабочих дня</li>
-            <li class="list-group-item"><b>Полное наименование услуги:</b> Предоставление академических отпусков обучающимся в организациях образования</li>
-        </ul>
-        </div>
-    {% block form %}
-        <div class="col-md-9 mb-2">
-        <table class="table table-bordered table-hover table-sm">
-            <h4>Необходимые документы</h4>
-            <thead class="thead-light">
-                <th>Услуга</th>
-                <th>Документы</th>
-            </thead>
-            <tbody>
-            <tr>
-                <td>Для предоставления академического отпуска по болезни продолжительностью сроком от 6 до 12 месяцев</td>
-                <td>Заключения врачебно-консультативной комиссии при амбулаторно-поликлинической организации.</td>
-            </tr>
-            <tr>
-                <td>Для предоставления академического отпуска в случае болезни туберкулезом продолжительностью сроком не более 36 месяцев</td>
-                <td>Решения Централизованной врачебно-консультативной комиссии противотуберкулезной организации.</td>
-            </tr>
-            <tr>
-                <td>Для предоставления академического отпуска до достижения ребенком возраста трех лет</td>
-                <td>Документы (свидетельство) о рождении, усыновлении или удочерении ребенка</td>
-            </tr>
-            <tr>
-                <td>Для предоставления академического отпуска студентам-призывникам</td>
-                <td>Повестка о призыве на воинскую службу</td>
-            </tr>
-            </tbody>
-        </table>
-    <form class="p-2 border border-primary" method="post" enctype="multipart/form-data">
-        <h4 class="text-center">Форма заявления</h4>
-        {% csrf_token %}
-        <div class="form-group">
-            <div class="form-row">
-                <div class="form-group col-sm">
-                    {{ form.last_name|as_crispy_field }}
-                </div>
-                <div class="form-group col-sm">
-                    {{ form.first_name|as_crispy_field }}
-                </div>
-                <div class="form-group col-sm">
-                    {{ form.patronymic|as_crispy_field }}
-                </div>
-                <div class="form-group col-sm">
-                    {{ form.individual_identification_number|as_crispy_field }}
+    <div class="container">
+        {% block description %}
+            <h3 class="text-center p-3">Предоставление академических отпусков обучающимся в организациях
+                образования</h3>
+            <div class="alert alert-info text-center"><h5>Статус услуги: {% if status %}Автоматизирована
+                <i class="fas fa-cogs fa-lg"></i>{% else %}в процессе разработки
+                <i class="fab fa-dev fa-lg"></i>{% endif %}</h5></div>
+            <div class="container">
+                <div class="row text-break">
+                    <div class="col m-2 border border-info">
+                        <ul class="list-group list-group-flush">
+                            <li class="list-group-item"><b>Государственный орган:</b> Министерство образования и науки
+                                РК
+                            </li>
+                            <li class="list-group-item"><b>Получатели услуги:</b> Физические лица</li>
+                            <li class="list-group-item"><b>Место предоставления услуги:</b>
+                                <ul class="list-unstyled">
+                                    <li><a href="https://egov.kz/cms/ru/articles/professional_education/2Fvusi_rk"
+                                           target="_blank">Организации высшего и послевузовского образования</a></li>
+                                </ul>
+                            </li>
+                            <li class="list-group-item"><b>Стоимость услуги:</b> Бесплатно</li>
+                            <li class="list-group-item"><b>Сроки оказания услуги:</b> 3 рабочих дня</li>
+                            <li class="list-group-item"><b>Полное наименование услуги:</b> Предоставление академических
+                                отпусков обучающимся в организациях образования
+                            </li>
+                        </ul>
+                    </div>
+                    {% block form %}
+                        <div class="col-md-9 mb-2">
+                            <table class="table table-bordered table-hover table-sm">
+                                <h4>Необходимые документы</h4>
+                                <thead class="thead-light">
+                                <th>Услуга</th>
+                                <th>Документы</th>
+                                </thead>
+                                <tbody>
+                                <tr>
+                                    <td>Для предоставления академического отпуска по болезни продолжительностью сроком
+                                        от 6 до 12 месяцев
+                                    </td>
+                                    <td>Заключения врачебно-консультативной комиссии при амбулаторно-поликлинической
+                                        организации.
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>Для предоставления академического отпуска в случае болезни туберкулезом
+                                        продолжительностью сроком не более 36 месяцев
+                                    </td>
+                                    <td>Решения Централизованной врачебно-консультативной комиссии противотуберкулезной
+                                        организации.
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>Для предоставления академического отпуска до достижения ребенком возраста трех
+                                        лет
+                                    </td>
+                                    <td>Документы (свидетельство) о рождении, усыновлении или удочерении ребенка</td>
+                                </tr>
+                                <tr>
+                                    <td>Для предоставления академического отпуска студентам-призывникам</td>
+                                    <td>Повестка о призыве на воинскую службу</td>
+                                </tr>
+                                </tbody>
+                            </table>
+                            <form class="p-2 border border-primary" method="post" enctype="multipart/form-data">
+                                <h4 class="text-center">Форма заявления</h4>
+                                {% csrf_token %}
+                                <div class="form-group">
+                                    <div class="form-row">
+                                        <div class="form-group col-sm">
+                                            {{ form.last_name|as_crispy_field }}
+                                        </div>
+                                        <div class="form-group col-sm">
+                                            {{ form.first_name|as_crispy_field }}
+                                        </div>
+                                        <div class="form-group col-sm">
+                                            {{ form.patronymic|as_crispy_field }}
+                                        </div>
+                                        <div class="form-group col-sm">
+                                            {{ form.individual_identification_number|as_crispy_field }}
+                                        </div>
+                                    </div>
+                                    <div class="form-row align-items-end">
+                                        <div class="form-group col-sm">
+                                            {{ form.address|as_crispy_field }}
+                                        </div>
+                                        <div class="form-group col-sm">
+                                            {{ form.email|as_crispy_field }}
+                                        </div>
+                                        <div class="form-group col-sm">
+                                            {{ form.phone_number|as_crispy_field }}
+                                        </div>
+                                    </div>
+                                    <div class="form-row align-items-end">
+                                        <div class="form-group col-sm">
+                                            {{ form.specialty|as_crispy_field }}
+                                        </div>
+                                        <div class="form-group col-sm">
+                                            {{ form.faculty|as_crispy_field }}
+                                        </div>
+                                        <div class="form-group col-sm">
+                                            {{ form.reason|as_crispy_field }}
+                                        </div>
+                                    </div>
+                                    <div class="form-row">
+                                        <div class="form-group col-sm">
+                                            {{ form.iin_attachment_front|as_crispy_field }}
+                                        </div>
+                                        <div class="form-group col-sm">
+                                            {{ form.iin_attachment_back|as_crispy_field }}
+                                        </div>
+                                        <div class="form-group col-sm">
+                                            {{ form.attachment|as_crispy_field }}
+                                        </div>
+                                    </div>
+                                    <div class="alert alert-danger"><p>Фотографии или отсканированные изображения
+                                        документов должны быть четкими, видны все данные документа!</p>
+                                        <p class="mb-0">Максимальный размер файла прикрепления не должен превышать 5 мегабайт (5
+                                            МВ)</p>
+                                    </div>
+                                    {{ form.captcha }}
+                                    <p class="text-muted">* - обязательные поля для заполнения</p>
+                                    <button type="submit" class="btn btn-success mt-1">Отправить заявку</button>
+                                </div>
+                            </form>
+                        </div>
+                    {% endblock %}
                 </div>
             </div>
-            <div class="form-row align-items-end">
-                <div class="form-group col-sm">
-                    {{ form.address|as_crispy_field }}
-                </div>
-                <div class="form-group col-sm">
-                    {{ form.email|as_crispy_field }}
-                </div>
-                <div class="form-group col-sm">
-                    {{ form.phone_number|as_crispy_field }}
-                </div>
             </div>
-            <div class="form-row align-items-end">
-                <div class="form-group col-sm">
-                    {{ form.specialty|as_crispy_field }}
-                </div>
-                <div class="form-group col-sm">
-                    {{ form.faculty|as_crispy_field }}
-                </div>
-                <div class="form-group col-sm">
-                    {{ form.reason|as_crispy_field }}
-                </div>
-            </div>
-            <div class="form-row">
-                <div class="form-group col-sm">
-                    {{ form.iin_attachment_front|as_crispy_field }}
-                </div>
-                <div class="form-group col-sm">
-                    {{ form.iin_attachment_back|as_crispy_field }}
-                </div>
-                <div class="form-group col-sm">
-                    {{ form.attachment|as_crispy_field }}
-                </div>
-            </div>
-            <div class="alert alert-danger">Фотографии или отсканированные изображения документов должны быть четкими, видны все данные документа!</div>
-            {{ form.captcha }}
-            <p class="text-muted">* - обязательные поля для заполнения</p>
-            <button type="submit" class="btn btn-success mt-1">Отправить заявку</button>
-        </div>
-    </form>
+        {% endblock description %}
     </div>
-    {% endblock %}
-    </div>
-</div>
-</div>
-{% endblock description %}
-</div>
-{% endblock content%}
+{% endblock content %}
