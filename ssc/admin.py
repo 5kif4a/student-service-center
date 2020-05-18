@@ -374,11 +374,12 @@ class TransferKSTUAdmin(CustomAdmin):
     service_name = "Перевод в КарГТУ"
     list_per_page = 15
     list_filter = (
-    'date_of_application', 'faculty', 'course', 'foundation_on_previous_university', 'foundation_in_kstu', 'status')
+        'date_of_application', 'faculty', 'course', 'foundation_on_previous_university', 'foundation_in_kstu', 'status')
     list_display = ('last_name', 'first_name', 'patronymic', 'date_of_application', 'status', 'print')
     search_fields = ('last_name', 'first_name', 'patronymic', 'address',
-                     'specialty__name', 'individual_identification_number', 'university')
-    autocomplete_fields = ('specialty',)
+                     'specialty_on_previous_university__name', 'transfer_specialty__name',
+                     'individual_identification_number', 'university')
+    autocomplete_fields = ('specialty_on_previous_university', 'transfer_specialty')
     readonly_fields = ('id_card_front', 'id_card_back')
 
 

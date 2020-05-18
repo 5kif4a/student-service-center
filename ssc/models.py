@@ -386,6 +386,7 @@ class TransferKSTU(Person, Application):
 
     group = None
     address = None
+    specialty = None
 
     class Meta:
         verbose_name = _('заявление на перевод в КарГТУ')
