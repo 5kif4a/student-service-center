@@ -144,7 +144,7 @@ function generate_pdf(){
     const filename  = 'statistics.pdf';
 
 		html2canvas(document.querySelector('#content'),
-								{scale: 1}
+								{scale: 2}
 						 ).then(canvas => {
 			let pdf = new jsPDF('p', 'mm', 'a3');
 			pdf.addImage(canvas.toDataURL('image/png'), 'PNG', 0, 0, 300, 410);
