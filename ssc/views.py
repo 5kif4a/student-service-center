@@ -366,7 +366,7 @@ def stats(request):
     if "_first_date" in request.POST or "_last_date" in request.POST:
         first_date = datetime.strptime(request.POST['first_date_value'], "%Y-%m-%d")
 
-        last_date = timezone.datetime.strptime(request.POST['last_date_value'], "%Y-%m-%d")
+        last_date = datetime.datetime.strptime(request.POST['last_date_value'], "%Y-%m-%d")
 
     for model in Abroad.objects.filter(date_of_application__range=(first_date, last_date)), Hostel.objects.filter(
             date_of_application__range=(first_date, last_date)), \
@@ -377,7 +377,7 @@ def stats(request):
         date_of_application__range=(first_date, last_date)), \
                  Transfer.objects.filter(date_of_application__range=(first_date, last_date)):
         for order in model:
-            if(order.course == None):
+            if order.course == None:
                 order.course = "Не зависит от курса"
             if order.faculty in orders_by_faculties.keys():
                 orders_by_faculties[order.faculty] += 1
