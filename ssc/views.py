@@ -377,7 +377,7 @@ def stats(request):
         date_of_application__range=(first_date, last_date)), \
                  Transfer.objects.filter(date_of_application__range=(first_date, last_date)):
         for order in model:
-            if order.course == None:
+            if order.course is None:
                 order.course = "Не зависит от курса"
             if order.faculty in orders_by_faculties.keys():
                 orders_by_faculties[order.faculty] += 1
