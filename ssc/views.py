@@ -1,3 +1,4 @@
+import pytz
 from django.shortcuts import render, render_to_response, redirect
 from django.contrib.sites.shortcuts import get_current_site
 from django.views import View
@@ -12,6 +13,7 @@ from django.core.files.storage import FileSystemStorage
 import json
 from django.shortcuts import get_object_or_404
 import xlsxwriter
+from django.utils import timezone, dateformat
 
 # Create your views here.
 
@@ -335,9 +337,6 @@ def stats(request):
     """
     Выгрузка по статистике
     """
-
-
-
     template = 'custom_admin/stats.html'
     students_by_faculties = dict()
     students_by_courses = dict()
@@ -361,9 +360,25 @@ def stats(request):
     orders_by_courses = dict()
     orders_count = 0
 
-    for model in Abroad.objects.all(), Hostel.objects.all(), Recovery.objects.all(), Reference.objects.all(), \
-                 AcademicLeave.objects.all(), TransferKSTU.objects.all(), Transfer.objects.all():
+    first_date = datetime(2018, 1, 1)
+    last_date = datetime.now()
+
+    if "_first_date" in request.POST or "_last_date" in request.POST:
+        first_date = datetime.strptime(request.POST['first_date_value'], "%Y-%m-%d")
+
+        last_date = timezone.datetime.strptime(request.POST['last_date_value'], "%Y-%m-%d")
+
+    for model in Abroad.objects.filter(date_of_application__range=(first_date, last_date)), Hostel.objects.filter(
+            date_of_application__range=(first_date, last_date)), \
+                 Recovery.objects.filter(date_of_application__range=(first_date, last_date)), Reference.objects.filter(
+        date_of_application__range=(first_date, last_date)), \
+                 AcademicLeave.objects.filter(
+                     date_of_application__range=(first_date, last_date)), TransferKSTU.objects.filter(
+        date_of_application__range=(first_date, last_date)), \
+                 Transfer.objects.filter(date_of_application__range=(first_date, last_date)):
         for order in model:
+            if(order.course == None):
+                order.course = "Не зависит от курса"
             if order.faculty in orders_by_faculties.keys():
                 orders_by_faculties[order.faculty] += 1
             else:
@@ -376,7 +391,9 @@ def stats(request):
 
             orders_count += 1
 
-    if request.method == "POST":
+    print(orders_by_courses)
+
+    if "_download_excel" in request.POST:
         output = io.BytesIO()
 
         workbook = xlsxwriter.Workbook(output)
@@ -385,6 +402,13 @@ def stats(request):
 
         row_num = 0
         col_num = 0
+
+        worksheet.write(row_num, col_num, "Отчет за период")
+        row_num += 1
+        worksheet.write(row_num, col_num, dateformat.format(first_date, "d.m.Y"))
+        worksheet.write(row_num, col_num + 1, dateformat.format(last_date, "d.m.Y"))
+        row_num += 1
+
         worksheet.write(row_num, col_num, "Всего студентов")
         worksheet.write(row_num, col_num + 1, students.count())
 
@@ -427,7 +451,6 @@ def stats(request):
             worksheet.write(row_num, col_num, course)
             worksheet.write(row_num, col_num + 1, count)
 
-        print(orders_by_courses)
         workbook.close()
         output.seek(0)
 
@@ -449,9 +472,11 @@ def stats(request):
         "students_by_courses": list(students_by_courses.values()),
         "orders_faculties": list(orders_by_faculties.keys()),
         "orders_by_faculties": list(orders_by_faculties.values()),
-        "orders_courses": list(orders_by_courses.values()),
+        "orders_courses": list(orders_by_courses.keys()),
         "orders_by_courses": list(orders_by_courses.values()),
-        "orders_count": orders_count
+        "orders_count": orders_count,
+        "first_date": first_date,
+        "last_date": last_date
     }
 
     return render(request, template, context)
