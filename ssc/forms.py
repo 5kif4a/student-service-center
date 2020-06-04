@@ -94,6 +94,7 @@ class HostelForm(ModelForm):
     def __init__(self, *args, **kwargs):
         super(HostelForm, self).__init__(*args, **kwargs)
         self.fields['specialty'].label = 'Специальность'
+        self.fields['group'].required = False
         self.fields['status'].required = False
 
 
@@ -197,4 +198,27 @@ class RecoveryForm(ModelForm):
         super(RecoveryForm, self).__init__(*args, **kwargs)
         self.fields['specialty'].label = 'Специальность'
         self.fields['university'].label = 'Предыдущий ВУЗ'
+        self.fields['status'].required = False
+
+
+class HostelReferralForm(ModelForm):
+    """
+    Форма для заявление услуги - "Направление в общежития в высших учебных заведениях"
+    """
+    captcha = ReCaptchaField(
+        widget=ReCaptchaV3(
+            attrs={
+                'required_score': 0.85
+            }
+        )
+    )
+
+    class Meta:
+        model = HostelReferral
+        fields = "__all__"
+
+    def __init__(self, *args, **kwargs):
+        super(HostelReferral, self).__init__(*args, **kwargs)
+        self.fields['specialty'].label = 'Специальность'
+        self.fields['group'].required = False
         self.fields['status'].required = False

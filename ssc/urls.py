@@ -48,6 +48,8 @@ notifications_urls = [path('notifications', views.get_notifications),
 
 check_order_urls = [path('check_order', views.check_order)]
 
+hostel_referral_urls = [path('hostel_referral/report/<obj_id>', views.HostelReferralView.render)]
+
 urlpatterns = [
                   path('', views.index),
                   url(r'^%s(?P<path>.*)$' % settings.MEDIA_URL[1:], protected_serve,
@@ -62,4 +64,5 @@ urlpatterns = [
               academic_leave_urls + \
               transfer_and_recovery_urls + \
               notifications_urls + \
-              check_order_urls
+              check_order_urls + \
+              hostel_referral_urls

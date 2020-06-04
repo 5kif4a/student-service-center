@@ -77,6 +77,10 @@ hostels = [('Общежитие №1', 'Общежитие №1'),
 semesters = [('весеннего', 'весеннего'),
              ('осеннего', 'осеннего')]
 
+room_types = [('Мужская', 'Мужская'),
+              ('Женская', 'Женская'),
+              ('Пустая', 'Пустая')]
+
 # Логирование
 logger = logging.getLogger('SSC_KSTU')
 logger.setLevel(logging.INFO)
@@ -89,8 +93,8 @@ logger.addHandler(fh)
 # генерация заявления в PDF формате
 def render_pdf(template, context):
     html = render_to_string(template, context=context)
-    cfg = pdfkit.configuration(wkhtmltopdf=bytes(PATH_WKHTMLTOPDF, 'utf8'))
-    pdf = pdfkit.from_string(html, False, configuration=cfg)
+    #cfg = pdfkit.configuration(wkhtmltopdf=bytes(PATH_WKHTMLTOPDF, 'utf8'))
+    pdf = pdfkit.from_string(html, False)
     response = HttpResponse(pdf, content_type='application/pdf')
     response['Content-Disposition'] = 'filename="application.pdf"'
     return response
