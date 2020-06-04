@@ -510,3 +510,62 @@ class Notification(models.Model):
 
     def __str__(self):
         return f'Уведомление: {self.application_type}'
+
+
+class HostelRoom(models.Model):
+    """
+    Комната в общежитии
+    """
+    id = HashidAutoField(primary_key=True, min_length=16)
+
+    number = models.IntegerField(max_length=10, verbose_name=_('Номер комнаты'))
+
+    hostel = models.CharField(max_length=200, choices=hostels, verbose_name=_('Общежитие'))
+
+    all_space = models.IntegerField(max_length=10, verbose_name=_('Всего мест'))
+
+    free_space = models.IntegerField(max_length=10, verbose_name=_('Свободных мест'))
+
+    room_type = models.CharField(max_length=200, choices=room_types, verbose_name=_('Вид комнаты'))
+
+    class Meta:
+        verbose_name = _('Комната в общежитии')
+        verbose_name_plural = _('Комнаты в общежитии')
+
+
+class HostelReferral(Person, Application):
+    """
+    Направление в общежитие
+    """
+    id = HashidAutoField(primary_key=True, min_length=16)
+
+    #number = models.IntegerField(max_length=10, verbose_name=_('Номер направления'))
+
+    faculty = models.CharField(max_length=200, choices=faculties, verbose_name=_('Факультет'))
+
+    hostel = models.CharField(max_length=200, choices=hostels, verbose_name=_('Общежитие'))
+
+    iin_attachment_front = models.ImageField(upload_to='referral_attachments/',
+                                             verbose_name=_(
+                                                 'Прикрепление копии документа, удостоверяющего личность - передняя '
+                                                 'сторона'),
+                                             validators=[file_size_validator])
+
+    iin_attachment_back = models.ImageField(upload_to='referral_attachments/',
+                                            verbose_name=_(
+                                                'Прикрепление копии документа, удостоверяющего личность - обратная '
+                                                'сторона'),
+                                            validators=[file_size_validator])
+
+    attachment = models.FileField(upload_to='referral_attachments/', blank=True, null=True, verbose_name=_('Прикрепление'),
+                                  validators=[file_size_validator, file_ext_validator])
+
+
+    class Meta:
+        verbose_name = _('Направление в общежитие')
+        verbose_name_plural = _('Направления в общежитие')
+
+    def __str__(self):
+        return f'{self.last_name} {self.first_name} {self.patronymic}. ИИН: {self.individual_identification_number}'
+
+HostelReferral._meta.get_field('date_of_application').verbose_name = 'Дата приема заявления'

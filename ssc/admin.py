@@ -327,6 +327,26 @@ class HostelAdmin(CustomAdmin):
     autocomplete_fields = ('specialty',)
     readonly_fields = ('id_card_front', 'id_card_back')
 
+    def response_change(self, request, obj):
+        if "_finish" in request.POST:
+            # Если завершено - выдаем сообщение, что заявление уже завершено
+            if obj.status is 'Завершено':
+                self.message_user(request, f"{obj} обработка завершена")
+            # Если не завершено - завершаем и отправляем письмо на почту
+            else:
+                obj.status = 'Завершено'
+                obj.save()
+
+                ctx = {'name': obj.first_name}
+                to = (obj.email,)
+
+                uploaded_file = request.FILES['scanned_file']
+                send_email_with_attachment("mails/ready/academic-leave.html", ctx, to, uploaded_file)
+
+                self.message_user(request, f"""Обработка заявления "{obj}" завершена. Письмо отправлено""")
+
+        return super().response_change(request, obj)
+
 
 # @admin.register(Duplicate)
 # class DuplicateAdmin(CustomAdmin):
@@ -469,3 +489,53 @@ class NotificationAdmin(admin.ModelAdmin):
 
     link.short_description = "Заявление"
     mark_as_read.short_description = "Отметить как прочитанное"
+
+
+@admin.register(HostelRoom)
+class HostelRoomAdmin(admin.ModelAdmin):
+    """
+    Админ.панель для списка свободных мест
+    """
+    list_display = get_model_fields(HostelRoom)
+    list_per_page = 15
+    list_filter = ('hostel', 'free_space', 'room_type')
+    search_fields = ('number', 'hostel', 'free_space', 'room_type')
+
+
+@admin.register(HostelReferral)
+class HostelReferralAdmin(CustomAdmin):
+    """
+    Админ.панель для направления в общежитие
+    """
+    entity = 'hostel_referral'
+    mail_template = 'mails/hostel_referral.html'
+    app = 'Ваша справка готова. Вы можете получить ее в КарГТУ, 1 корпус, кабинет № 109.'
+    service_name = "Предоставление общежития обучающимся в высших учебных заведениях"
+    list_per_page = 15
+    list_filter = ('date_of_application', 'faculty', 'course', 'status')
+    list_display = ('last_name', 'first_name', 'patronymic', 'specialty', 'date_of_application', 'status',
+                    'print')
+    search_fields = ('last_name', 'first_name', 'patronymic', 'address', 'specialty__name',
+                     'individual_identification_number')
+    autocomplete_fields = ('specialty',)
+    readonly_fields = ('id_card_front', 'id_card_back')
+
+    def response_change(self, request, obj):
+        if "_finish" in request.POST:
+            # Если завершено - выдаем сообщение, что заявление уже завершено
+            if obj.status is 'Завершено':
+                self.message_user(request, f"{obj} обработка завершена")
+            # Если не завершено - завершаем и отправляем письмо на почту
+            else:
+                obj.status = 'Завершено'
+                obj.save()
+
+                ctx = {'name': obj.first_name}
+                to = (obj.email,)
+
+                uploaded_file = request.FILES['scanned_file']
+                send_email_with_attachment("mails/ready/hostel_referral.html", ctx, to, uploaded_file)
+
+                self.message_user(request, f"""Обработка заявления "{obj}" завершена. Письмо отправлено""")
+
+        return super().response_change(request, obj)
