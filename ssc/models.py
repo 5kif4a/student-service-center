@@ -560,6 +560,10 @@ class HostelReferral(Person, Application):
     attachment = models.FileField(upload_to='referral_attachments/', blank=True, null=True, verbose_name=_('Прикрепление'),
                                   validators=[file_size_validator, file_ext_validator])
 
+    status = models.CharField(max_length=50, choices=hostel_statuses, default='Не рассмотрено',
+                              verbose_name=_('Статус'))
+
+
 
     class Meta:
         verbose_name = _('Направление в общежитие')
