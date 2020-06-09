@@ -37,14 +37,14 @@ ALLOWED_HOSTS = ['*']
 BASE_URL = env.str("BASE_URL")
 
 # Sentry SDK
-"""sentry_sdk.init(
+sentry_sdk.init(
     dsn=env.str("DSN"),
     integrations=[DjangoIntegration()],
 
     # If you wish to associate users to errors (assuming you are using
     # django.contrib.auth) you may enable sending PII data.
     send_default_pii=True
-)"""
+)
 
 # Application definition
 
