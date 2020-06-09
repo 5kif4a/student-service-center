@@ -539,7 +539,7 @@ class HostelReferral(Person, Application):
     """
     id = HashidAutoField(primary_key=True, min_length=16)
 
-    #number = models.IntegerField(max_length=10, verbose_name=_('Номер направления'))
+    # number = models.IntegerField(max_length=10, verbose_name=_('Номер направления'))
 
     faculty = models.CharField(max_length=200, choices=faculties, verbose_name=_('Факультет'))
 
@@ -557,13 +557,14 @@ class HostelReferral(Person, Application):
                                                 'сторона'),
                                             validators=[file_size_validator])
 
-    attachment = models.FileField(upload_to='referral_attachments/', blank=True, null=True, verbose_name=_('Прикрепление'),
+    attachment = models.FileField(upload_to='referral_attachments/', blank=True, null=True,
+                                  verbose_name=_('Прикрепление'),
                                   validators=[file_size_validator, file_ext_validator])
 
     status = models.CharField(max_length=50, choices=hostel_statuses, default='Не рассмотрено',
                               verbose_name=_('Статус'))
 
-
+    group = models.CharField(max_length=50, blank=True, verbose_name=_('Группа'))
 
     class Meta:
         verbose_name = _('Направление в общежитие')
@@ -571,5 +572,6 @@ class HostelReferral(Person, Application):
 
     def __str__(self):
         return f'{self.last_name} {self.first_name} {self.patronymic}. ИИН: {self.individual_identification_number}'
+
 
 HostelReferral._meta.get_field('date_of_application').verbose_name = 'Дата приема заявления'

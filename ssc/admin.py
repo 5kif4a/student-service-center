@@ -330,10 +330,20 @@ class HostelAdmin(CustomAdmin):
     def response_change(self, request, obj):
         if "_finish" in request.POST:
             # Если завершено - выдаем сообщение, что заявление уже завершено
-            if obj.status is 'Завершено':
+            if obj.status == 'Завершено':
                 self.message_user(request, f"{obj} обработка завершена")
             # Если не завершено - завершаем и отправляем письмо на почту
             else:
+
+                referral = HostelReferral(last_name=obj.last_name, first_name=obj.first_name, patronymic=obj.patronymic,
+                                          individual_identification_number=obj.individual_identification_number,
+                                          email=obj.email, address=obj.address, phone_number=obj.phone_number, course=obj.course,
+                                          group=obj.group, date_of_application=datetime.now(), faculty=obj.faculty,
+                                          hostel=obj.hostel, iin_attachment_front=obj.iin_attachment_front,
+                                          iin_attachment_back=obj.iin_attachment_back, attachment=obj.attachment,
+                                          specialty_id=obj.specialty_id)
+                referral.save(True)
+
                 obj.status = 'Завершено'
                 obj.save()
 
