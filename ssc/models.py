@@ -255,6 +255,8 @@ class Hostel(Person, Application):
     attachment = models.FileField(upload_to='hostel/', blank=True, null=True, verbose_name=_('Прикрепление'),
                                   validators=[file_size_validator, file_ext_validator])
 
+    group = models.CharField(max_length=50, blank=True, verbose_name=_('Группа'))
+
     class Meta:
         verbose_name = _('заявление на предоставление общежития в ВУЗах')
         verbose_name_plural = _('заявления на предоставление общежития в ВУЗах')
@@ -525,8 +527,6 @@ class HostelRoom(models.Model):
     all_space = models.IntegerField(max_length=10, verbose_name=_('Всего мест'))
 
     free_space = models.IntegerField(max_length=10, verbose_name=_('Свободных мест'))
-
-    room_type = models.CharField(max_length=200, choices=room_types, verbose_name=_('Вид комнаты'))
 
     class Meta:
         verbose_name = _('Комната в общежитии')

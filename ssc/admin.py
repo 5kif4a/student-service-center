@@ -350,8 +350,9 @@ class HostelAdmin(CustomAdmin):
                 ctx = {'name': obj.first_name}
                 to = (obj.email,)
 
-                uploaded_file = request.FILES['scanned_file']
-                send_email_with_attachment("mails/ready/academic-leave.html", ctx, to, uploaded_file)
+                #uploaded_file = request.FILES['scanned_file']
+                #send_email_with_attachment("mails/ready/academic-leave.html", ctx, to, uploaded_file)
+                send_email("mails/ready/academic-leave.html", ctx, to)
 
                 self.message_user(request, f"""Обработка заявления "{obj}" завершена. Письмо отправлено""")
 
@@ -508,8 +509,8 @@ class HostelRoomAdmin(admin.ModelAdmin):
     """
     list_display = get_model_fields(HostelRoom)
     list_per_page = 15
-    list_filter = ('hostel', 'free_space', 'room_type')
-    search_fields = ('number', 'hostel', 'free_space', 'room_type')
+    list_filter = ('hostel', 'free_space')
+    search_fields = ('number', 'hostel', 'free_space')
 
 
 @admin.register(HostelReferral)
