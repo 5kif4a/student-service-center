@@ -23,7 +23,7 @@ statuses = {
     'postgraduate': True,
     'abroad': True,
     'certificate': True,
-    'hostel': False,
+    'hostel': True,
     'duplicate': True,
     'reference': True,
     'academic-leave': True,
@@ -101,7 +101,7 @@ logger.addHandler(fh)
 # генерация заявления в PDF формате
 def render_pdf(template, context):
     html = render_to_string(template, context=context)
-    #cfg = pdfkit.configuration(wkhtmltopdf=bytes(PATH_WKHTMLTOPDF, 'utf8'))
+    # cfg = pdfkit.configuration(wkhtmltopdf=bytes(PATH_WKHTMLTOPDF, 'utf8'))
     pdf = pdfkit.from_string(html, False)
     response = HttpResponse(pdf, content_type='application/pdf')
     response['Content-Disposition'] = 'filename="application.pdf"'

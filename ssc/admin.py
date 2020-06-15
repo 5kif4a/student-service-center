@@ -1,4 +1,5 @@
 from django.contrib import admin
+from django.db.models import Max
 from django.utils.html import format_html
 
 from SSC_KSTU.settings import BASE_URL, DEBUG
@@ -155,8 +156,17 @@ class CustomAdmin(admin.ModelAdmin):
                                  "obj.permission_to_transfer.path, obj.certificate.path, obj.transcript.path]",
 
                 "recovery": "[obj.iin_attachment_front.path, obj.iin_attachment_back.path, obj.attachment.path, "
-                            "obj.certificate.path] "
+                            "obj.certificate.path] ",
+
+                "hostel_referral": "[obj.iin_attachment_front.path, obj.iin_attachment_back.path, obj.attachment.path]"
             }
+
+            if not obj.attachment:
+                filenames_dict["hostel"] = "[obj.iin_attachment_front.path, obj.iin_attachment_back.path]"
+                filenames_dict["academic-leave"] = "[obj.iin_attachment_front.path, obj.iin_attachment_back.path]"
+                filenames_dict["hostel_referral"] = "[obj.iin_attachment_front.path, obj.iin_attachment_back.path]"
+                filenames_dict["recovery"] = "[obj.iin_attachment_front.path, obj.iin_attachment_back.path, " \
+                                             "obj.certificate.path] "
 
             # UNSAFE CODE BEGIN
             filenames_as_str = filenames_dict.get(self.entity)
@@ -538,6 +548,7 @@ class HostelReferralAdmin(CustomAdmin):
     """
     entity = 'hostel_referral'
     mail_template = 'mails/hostel_referral.html'
+    change_form_template = "custom_admin/hostel_referral.html"
     app = 'Ваше направление в общежитие готово.'
     service_name = "Предоставление общежития обучающимся в высших учебных заведениях"
     list_per_page = 15
@@ -547,23 +558,70 @@ class HostelReferralAdmin(CustomAdmin):
     search_fields = ('last_name', 'first_name', 'patronymic', 'address', 'specialty__name',
                      'individual_identification_number')
     autocomplete_fields = ('specialty',)
-    readonly_fields = ('id_card_front', 'id_card_back')
+    readonly_fields = ('id_card_front', 'id_card_back', 'number')
 
     def response_change(self, request, obj):
-        if "_finish" in request.POST:
+
+        # Если в предоставлении общежития отказано отправляем уведомление
+        if "_refuse" in request.POST:
+            if obj.status != 'Отказано':
+                note = request.POST.get('note')
+
+                obj.status = 'Отказано'
+                obj.save()
+
+                ctx = {'name': obj.first_name,
+                       'note': note}
+                to = (obj.email,)
+                send_email('mails/hostel_refuse.html', ctx, to)
+                self.message_user(request, f"Письмо с уведомлением отправлено {obj}")
+            else:
+                self.message_user(request, f"Письмо с уведомлением уже отправлено {obj}")
+
+        # Потверждение заявления
+        if "_verify" in request.POST:
+            # Если подтвержден - выдаем сообщение, что заявление уже подтверждено
+            if obj.status == 'Подтверждено':
+                self.message_user(request, f"{obj} уже потвержден")
+            # Если не потверждено - подтверждаем и отправляем письмо на почту
+            else:
+                obj.status = 'Подтверждено'
+
+                try:
+                    referral_number = HostelReferral.objects.all().aggregate(Max('number'))
+                    referral_number = referral_number['number__max'] + 1
+                except:
+                    referral_number = 10001
+
+                obj.number = referral_number
+                obj.save()
+
+                obj.room.free_space -= 1
+                obj.room.save()
+
+                # отправляем письмо после потверждения заявления
+                ctx = {'name': request.POST['first_name']}
+                to = (request.POST.get('email', ''),)
+
+                #uploaded_file = request.FILES['scanned_file']
+                #send_email_with_attachment("mails/ready/hostel_referral.html", ctx, to, uploaded_file)
+                send_email("mails/hostel_referral.html", ctx, to)
+
+                self.message_user(request, f"""{obj} подтверждено""")
+
+        if "_populate" in request.POST:
             # Если завершено - выдаем сообщение, что заявление уже завершено
-            if obj.status is 'Завершено':
+            if obj.status is 'Заселен':
                 self.message_user(request, f"{obj} обработка завершена")
             # Если не завершено - завершаем и отправляем письмо на почту
             else:
-                obj.status = 'Завершено'
+                obj.status = 'Заселен'
                 obj.save()
 
                 ctx = {'name': obj.first_name}
                 to = (obj.email,)
 
-                uploaded_file = request.FILES['scanned_file']
-                send_email_with_attachment("mails/ready/hostel_referral.html", ctx, to, uploaded_file)
+                send_email("mails/ready/hostel_referral.html", ctx, to)
 
                 self.message_user(request, f"""Обработка заявления "{obj}" завершена. Письмо отправлено""")
 
@@ -587,3 +645,5 @@ class HostelReferralAdmin(CustomAdmin):
                     """
 
         return format_html(button)
+
+    print.short_description = "Печать"
