@@ -1,4 +1,5 @@
 from django.db import models
+from django.db.models import Q
 from django.utils.translation import gettext_lazy as _
 from hashid_field import HashidAutoField
 
@@ -236,6 +237,8 @@ class Hostel(Person, Application):
 
     faculty = models.CharField(max_length=200, choices=faculties, verbose_name=_('Факультет'))
 
+    group = models.CharField(max_length=50, blank=True, verbose_name=_('Группа'))
+
     place_of_arrival = models.CharField(max_length=200, verbose_name=_('Место прибытия'))
 
     hostel = models.CharField(max_length=200, choices=hostels, verbose_name=_('Общежитие'))
@@ -254,8 +257,6 @@ class Hostel(Person, Application):
 
     attachment = models.FileField(upload_to='hostel/', blank=True, null=True, verbose_name=_('Прикрепление'),
                                   validators=[file_size_validator, file_ext_validator])
-
-    group = models.CharField(max_length=50, blank=True, verbose_name=_('Группа'))
 
     class Meta:
         verbose_name = _('заявление на предоставление общежития в ВУЗах')
@@ -532,6 +533,9 @@ class HostelRoom(models.Model):
         verbose_name = _('Комната в общежитии')
         verbose_name_plural = _('Комнаты в общежитии')
 
+    def __str__(self):
+        return "Комната " + str(self.number) + "\n" + self.hostel
+
 
 class HostelReferral(Person, Application):
     """
@@ -539,7 +543,7 @@ class HostelReferral(Person, Application):
     """
     id = HashidAutoField(primary_key=True, min_length=16)
 
-    # number = models.IntegerField(max_length=10, verbose_name=_('Номер направления'))
+    #number = models.IntegerField(max_length=10, blank=True, verbose_name=_('Номер направления'))
 
     faculty = models.CharField(max_length=200, choices=faculties, verbose_name=_('Факультет'))
 
@@ -565,6 +569,9 @@ class HostelReferral(Person, Application):
                               verbose_name=_('Статус'))
 
     group = models.CharField(max_length=50, blank=True, verbose_name=_('Группа'))
+
+    room = models.ForeignKey(HostelRoom, on_delete=models.CASCADE, blank=True, verbose_name=_('Номер комнаты'),
+                             null=True, limit_choices_to=Q(free_space__gt=0))
 
     class Meta:
         verbose_name = _('Направление в общежитие')

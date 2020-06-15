@@ -328,21 +328,39 @@ class HostelAdmin(CustomAdmin):
     readonly_fields = ('id_card_front', 'id_card_back')
 
     def response_change(self, request, obj):
+        if "_verify" in request.POST:
+            # Если подтвержден - выдаем сообщение, что заявление уже подтверждено
+            if obj.status == 'Подтверждено':
+                self.message_user(request, f"{obj} уже потвержден")
+            # Если не потверждено - подтверждаем и отправляем письмо на почту
+            else:
+                referral = HostelReferral(last_name=obj.last_name, first_name=obj.first_name, patronymic=obj.patronymic,
+                                          individual_identification_number=obj.individual_identification_number,
+                                          email=obj.email, address=obj.address, phone_number=obj.phone_number,
+                                          course=obj.course,
+                                          group=obj.group, date_of_application=datetime.now(), faculty=obj.faculty,
+                                          hostel=obj.hostel, iin_attachment_front=obj.iin_attachment_front,
+                                          iin_attachment_back=obj.iin_attachment_back, attachment=obj.attachment,
+                                          specialty_id=obj.specialty_id)
+                referral.save(True)
+
+                obj.status = 'Подтверждено'
+                obj.save()
+
+                # отправляем письмо после потверждения заявления
+                ctx = {'name': request.POST['first_name']}
+                to = (request.POST.get('email', ''),)
+
+                send_email(self.mail_template, ctx, to)
+
+                self.message_user(request, f"""{obj} подтверждено""")
+
         if "_finish" in request.POST:
             # Если завершено - выдаем сообщение, что заявление уже завершено
             if obj.status == 'Завершено':
                 self.message_user(request, f"{obj} обработка завершена")
             # Если не завершено - завершаем и отправляем письмо на почту
             else:
-
-                referral = HostelReferral(last_name=obj.last_name, first_name=obj.first_name, patronymic=obj.patronymic,
-                                          individual_identification_number=obj.individual_identification_number,
-                                          email=obj.email, address=obj.address, phone_number=obj.phone_number, course=obj.course,
-                                          group=obj.group, date_of_application=datetime.now(), faculty=obj.faculty,
-                                          hostel=obj.hostel, iin_attachment_front=obj.iin_attachment_front,
-                                          iin_attachment_back=obj.iin_attachment_back, attachment=obj.attachment,
-                                          specialty_id=obj.specialty_id)
-                referral.save(True)
 
                 obj.status = 'Завершено'
                 obj.save()
@@ -507,7 +525,7 @@ class HostelRoomAdmin(admin.ModelAdmin):
     """
     Админ.панель для списка свободных мест
     """
-    list_display = get_model_fields(HostelRoom)
+    list_display = ('number', 'hostel', 'all_space', 'free_space')
     list_per_page = 15
     list_filter = ('hostel', 'free_space')
     search_fields = ('number', 'hostel', 'free_space')
@@ -520,7 +538,7 @@ class HostelReferralAdmin(CustomAdmin):
     """
     entity = 'hostel_referral'
     mail_template = 'mails/hostel_referral.html'
-    app = 'Ваша справка готова. Вы можете получить ее в КарГТУ, 1 корпус, кабинет № 109.'
+    app = 'Ваше направление в общежитие готово.'
     service_name = "Предоставление общежития обучающимся в высших учебных заведениях"
     list_per_page = 15
     list_filter = ('date_of_application', 'faculty', 'course', 'status')
@@ -550,3 +568,22 @@ class HostelReferralAdmin(CustomAdmin):
                 self.message_user(request, f"""Обработка заявления "{obj}" завершена. Письмо отправлено""")
 
         return super().response_change(request, obj)
+
+    def print(self, obj):
+        url = f'/{self.entity}/report/{obj.id}'
+        if obj.status in ('Подтверждено', 'Заселен', 'Выселен'):
+            button = f"""
+                     <input type="button" class="button" value="Печать" onclick="window.open('{url}', '_blank')">
+                     """
+        else:
+            # TODO - refactor this HTML code
+            button = f"""
+                    <input type="button" 
+                    class="button" 
+                    style="cursor: not-allowed; background-color: #DC3545" 
+                    value="Печать"
+                    onclick="window.open('{url}', '_blank')" 
+                    disabled>
+                    """
+
+        return format_html(button)

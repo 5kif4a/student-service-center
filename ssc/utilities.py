@@ -39,10 +39,12 @@ application_statuses = [('Не проверено', 'Не проверено'), 
                         ('Подтверждено', 'Подтверждено'), ('Завершено', 'Завершено')]
 
 # Статусы для модели HostelReferral
-hostel_statuses = [('Заселен', 'Заселен'),
-                   ('Отказ', 'Отказ'),
+hostel_statuses = [('Не рассмотрено', 'Не рассмотрено'),
+                   ('Подтверждено', 'Подтверждено'),
+                   ('Отказано', 'Отказано'),
+                   ('Заселен', 'Заселен'),
                    ('Выселен', 'Выселен'),
-                   ('Не рассмотрено', 'Не рассмотрено')]
+                   ]
 
 # Причины
 reference_reasons = [('В связи с отчислением', 'В связи с отчислением'),
@@ -99,7 +101,7 @@ logger.addHandler(fh)
 # генерация заявления в PDF формате
 def render_pdf(template, context):
     html = render_to_string(template, context=context)
-    cfg = pdfkit.configuration(wkhtmltopdf=bytes(PATH_WKHTMLTOPDF, 'utf8'))
+    #cfg = pdfkit.configuration(wkhtmltopdf=bytes(PATH_WKHTMLTOPDF, 'utf8'))
     pdf = pdfkit.from_string(html, False)
     response = HttpResponse(pdf, content_type='application/pdf')
     response['Content-Disposition'] = 'filename="application.pdf"'

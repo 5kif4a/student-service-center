@@ -218,7 +218,7 @@ class HostelReferralForm(ModelForm):
         fields = "__all__"
 
     def __init__(self, *args, **kwargs):
-        super(HostelReferral, self).__init__(*args, **kwargs)
+        super(HostelReferralForm, self).__init__(*args, **kwargs)
         self.fields['specialty'].label = 'Специальность'
         self.fields['group'].required = False
         self.fields['status'].required = False
