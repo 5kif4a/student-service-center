@@ -134,7 +134,7 @@ class Student(models.Model):
 class Reference(Person, Application):
     """
     Модель(таблица) для заявления по услуге - "Выдача справки лицам, не завершившим высшее и послевузовское образование"
-    Государственная услуга
+    Услуга переименована в "Заявка на транскрипт обучавшихся в КарГТУ"
     """
 
     id = HashidAutoField(primary_key=True, min_length=16)
@@ -146,17 +146,17 @@ class Reference(Person, Application):
 
     exclude_year = models.IntegerField(verbose_name=_('Год отчисления'), validators=education_years_validator)
 
-    iin_attachment_front = models.ImageField(upload_to='reference_attachments/',
-                                             verbose_name=_(
-                                                 'Прикрепление копии документа, удостоверяющего личность - передняя '
-                                                 'сторона'),
-                                             validators=[file_size_validator])
-
-    iin_attachment_back = models.ImageField(upload_to='reference_attachments/',
-                                            verbose_name=_(
-                                                'Прикрепление копии документа, удостоверяющего личность - обратная '
-                                                'сторона'),
-                                            validators=[file_size_validator])
+    # iin_attachment_front = models.ImageField(upload_to='reference_attachments/',
+    #                                          verbose_name=_(
+    #                                              'Прикрепление копии документа, удостоверяющего личность - передняя '
+    #                                              'сторона'),
+    #                                          validators=[file_size_validator])
+    #
+    # iin_attachment_back = models.ImageField(upload_to='reference_attachments/',
+    #                                         verbose_name=_(
+    #                                             'Прикрепление копии документа, удостоверяющего личность - обратная '
+    #                                             'сторона'),
+    #                                         validators=[file_size_validator])
 
     reason = models.CharField(max_length=100, choices=reference_reasons, default='в связи с отчислением',
                               verbose_name=_('Причина'))
@@ -165,13 +165,15 @@ class Reference(Person, Application):
                                  blank=True, null=True,
                                  validators=course_validator)
 
-    group = models.CharField(max_length=50,
-                             blank=True, null=True,
-                             verbose_name=_('Группа'))
+    # group = models.CharField(max_length=50,
+    #                          blank=True, null=True,
+    #                          verbose_name=_('Группа'))
+    group = None
+    address = None
 
     class Meta:
-        verbose_name = _('заявление на выдачу справки, не завершившим высшее и послевуз. обр-е')
-        verbose_name_plural = _('заявления на выдачу справки, не завершившим высшее и послевуз. обр-е')
+        verbose_name = _('заявки на транскрипт обучавшихся в КарГТУ')
+        verbose_name_plural = _('заявки на транскрипт обучавшихся в КарГТУ')
 
     def __str__(self):
         return f'{self.last_name} {self.first_name} {self.patronymic}. ИИН: {self.individual_identification_number}'

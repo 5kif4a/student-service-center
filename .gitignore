@@ -18,3 +18,4 @@ lib
 backup/
 new apps/
 *.whl
+/static_prod

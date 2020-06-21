@@ -3,7 +3,7 @@
 {% block content %}
     <div class="container">
         {% block description %}
-            <h3 class="text-center p-3">Выдача справки лицам, не завершившим высшее и послевузовское образование</h3>
+            <h3 class="text-center p-3">Заявка на транскрипт обучавшихся в КарГТУ</h3>
             <div class="alert alert-info text-center"><h5>Статус услуги: {% if status %}Автоматизирована
                 <i class="fas fa-cogs fa-lg"></i>{% else %}в процессе разработки <i class="fab fa-dev fa-lg"></i>
                 </i>{% endif %}</h5></div>
@@ -30,21 +30,6 @@
                     </div>
                     {% block form %}
                         <div class="col-md-9 mb-2 mt-2">
-                            <table class="table table-bordered table-hover table-sm">
-                                <h4>Необходимые документы</h4>
-                                <thead class="thead-light">
-                                <th>Услуга</th>
-                                <th>Документы</th>
-                                </thead>
-                                <tbody>
-                                <tr>
-                                    <td>Для получения справки лицам, не завершившим высшее и послевузовское
-                                        образование
-                                    </td>
-                                    <td>Удостоверение личности услугополучателя</td>
-                                </tr>
-                                </tbody>
-                            </table>
                             <form class="p-2 border border-primary" method="post" enctype="multipart/form-data">
                                 <h4 class="text-center">Форма заявления</h4>
                                 {% csrf_token %}
@@ -64,9 +49,9 @@
                                         </div>
                                     </div>
                                     <div class="form-row align-items-end">
-                                        <div class="form-group col-sm">
-                                            {{ form.address|as_crispy_field }}
-                                        </div>
+{#                                        <div class="form-group col-sm">#}
+{#                                            {{ form.address|as_crispy_field }}#}
+{#                                        </div>#}
                                         <div class="form-group col-sm">
                                             {{ form.email|as_crispy_field }}
                                         </div>
@@ -78,9 +63,9 @@
                                         <div class="form-group col-sm">
                                             {{ form.course|as_crispy_field }}
                                         </div>
-                                        <div class="form-group col-sm">
-                                            {{ form.group|as_crispy_field }}
-                                        </div>
+{#                                        <div class="form-group col-sm">#}
+{#                                            {{ form.group|as_crispy_field }}#}
+{#                                        </div>#}
                                         <div class="form-group col-sm">
                                             {{ form.specialty|as_crispy_field }}
                                         </div>
@@ -99,19 +84,19 @@
                                             {{ form.reason|as_crispy_field }}
                                         </div>
                                     </div>
-                                    <div class="form-row">
-                                        <div class="form-group col-sm">
-                                            {{ form.iin_attachment_front|as_crispy_field }}
-                                        </div>
-                                        <div class="form-group col-sm">
-                                            {{ form.iin_attachment_back|as_crispy_field }}
-                                        </div>
-                                    </div>
-                                    <div class="alert alert-danger"><p>Фотографии или отсканированные изображения
-                                        документов должны быть четкими, видны все данные документа!</p>
-                                        <p class="mb-0">Максимальный размер файла прикрепления не должен превышать 5 мегабайт (5
-                                            МВ)</p>
-                                    </div>
+{#                                    <div class="form-row">#}
+{#                                        <div class="form-group col-sm">#}
+{#                                            {{ form.iin_attachment_front|as_crispy_field }}#}
+{#                                        </div>#}
+{#                                        <div class="form-group col-sm">#}
+{#                                            {{ form.iin_attachment_back|as_crispy_field }}#}
+{#                                        </div>#}
+{#                                    </div>#}
+{#                                    <div class="alert alert-danger"><p>Фотографии или отсканированные изображения#}
+{#                                        документов должны быть четкими, видны все данные документа!</p>#}
+{#                                        <p class="mb-0">Максимальный размер файла прикрепления не должен превышать 5 мегабайт (5#}
+{#                                            МВ)</p>#}
+{#                                    </div>#}
                                     {{ form.captcha }}
                                     <p class="text-muted">* - обязательные поля для заполнения</p>
                                     <button type="submit" class="btn btn-success mt-1">Отправить заявку</button>

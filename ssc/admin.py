@@ -140,7 +140,7 @@ class CustomAdmin(admin.ModelAdmin):
         # скачать архив с прикреплениями
         if "_download_zip" in request.POST:
             filenames_dict = {
-                "reference": "[obj.iin_attachment_front.path, obj.iin_attachment_back.path]",
+                "reference": "[]",
 
                 "academic-leave": "[obj.iin_attachment_front.path, obj.iin_attachment_back.path, obj.attachment.path]",
 
@@ -200,7 +200,7 @@ class ReferenceAdmin(CustomAdmin):
     entity = 'reference'
     mail_template = 'mails/reference.html'
     service_name = "Выдача справки лицам, не завершившим высшее и послевузовское образование"
-    app = 'Ваша справка готова. Вы можете получить ее в КарГТУ, 1 корпус, кабинет № 109.'
+    app = 'Ваша транскрипт готов. Вы можете получить ее в КарГТУ, 1 корпус, кабинет № 109.'
     list_per_page = 15
     list_filter = ('date_of_application', 'receipt_year', 'exclude_year', 'education_form', 'course', 'status')
     list_display = ('last_name', 'first_name', 'patronymic', 'specialty', 'date_of_application', 'status',
@@ -208,8 +208,6 @@ class ReferenceAdmin(CustomAdmin):
     search_fields = ('last_name', 'first_name', 'patronymic', 'address', 'specialty__name',
                      'individual_identification_number')
     autocomplete_fields = ('specialty',)
-
-    readonly_fields = ('id_card_front', 'id_card_back')
 
 
 @admin.register(AcademicLeave)
@@ -371,6 +369,7 @@ class TransferKSTUAdmin(CustomAdmin):
     """
     entity = 'transfer-kstu'
     mail_template = 'mails/transfer-kstu.html'
+    ready_mail = 'mails/ready/transfer-kstu.html'
     app = 'Ваше заявление принято. Вам необходимо в течение 1 дня подойти в КарГТУ, ' \
           'главный корпус, кабинет № 309 б., ' \
           'для заключения договора. При себе иметь удостоверение личности. ' \
@@ -394,6 +393,7 @@ class RecoveryAdmin(CustomAdmin):
     """
     entity = 'recovery'
     mail_template = 'mails/recovery.html'
+    ready_mail = 'mails/ready/recovery.html'
     app = 'Ваше заявление принято.'
     service_name = "Восстановление в число обучающихся"
     list_per_page = 15
