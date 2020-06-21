@@ -70,9 +70,8 @@ py manage.py createsuperuser
 пароль
 email
 ```
-Административная панель: 127.0.0.1:8000/admin\
-Запуск сервера Django
+- Запуск сервера Django
 ```
 py manage.py runserver 8000
 ```
-
+- Административная панель: 127.0.0.1:8000/admin
