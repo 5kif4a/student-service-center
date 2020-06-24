@@ -199,8 +199,8 @@ class ReferenceAdmin(CustomAdmin):
     """
     entity = 'reference'
     mail_template = 'mails/reference.html'
-    service_name = "Выдача справки лицам, не завершившим высшее и послевузовское образование"
-    app = 'Ваша транскрипт готов. Вы можете получить ее в КарГТУ, 1 корпус, кабинет № 109.'
+    service_name = "Выдача транскрипта"
+    app = 'Ваш транскрипт готов. Вы можете получить его в КарГТУ, 1 корпус, кабинет № 109.'
     list_per_page = 15
     list_filter = ('date_of_application', 'receipt_year', 'exclude_year', 'education_form', 'course', 'status')
     list_display = ('last_name', 'first_name', 'patronymic', 'specialty', 'date_of_application', 'status',
