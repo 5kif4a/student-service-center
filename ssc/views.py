@@ -332,9 +332,14 @@ class HostelReferralView(TemplateView):
             except:
                 rector_name_local = 'Ибатов Марат Кенесович'
 
+            hostel_address = 'пр. Н. Назарбаев 56/2'
+            if app.hostel == 'Общежитие №1':
+                hostel_address = 'ул. Терешкова 40'
+
             context = {
                 'rector_name': rector_name_local,
                 'app': app,
+                'address': hostel_address,
                 'qr_code': generate_qr_code(f'{BASE_URL}/check_order?order_type=hostel_referral&id={obj_id}')
             }
             return render_pdf('applications/hostel_referral.html', context)

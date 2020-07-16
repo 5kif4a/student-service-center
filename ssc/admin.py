@@ -615,6 +615,10 @@ class HostelReferralAdmin(CustomAdmin):
                 self.message_user(request, f"{obj} обработка завершена")
             # Если не завершено - завершаем и отправляем письмо на почту
             else:
+                if obj.status != 'Подтверждено':
+                    obj.room.free_space -= 1
+                    obj.room.save()
+
                 obj.status = 'Заселен'
                 obj.save()
 
@@ -622,6 +626,27 @@ class HostelReferralAdmin(CustomAdmin):
                 to = (obj.email,)
 
                 send_email("mails/ready/hostel_referral.html", ctx, to)
+
+                self.message_user(request, f"""Обработка заявления "{obj}" завершена. Письмо отправлено""")
+
+        if "_evict" in request.POST:
+            # Если завершено - выдаем сообщение, что заявление уже завершено
+            if obj.status is 'Заселен':
+                self.message_user(request, f"{obj} обработка завершена")
+            # Если не завершено - завершаем и отправляем письмо на почту
+            else:
+                obj.status = 'Выселен'
+                obj.save()
+
+                ctx = {'name': obj.first_name}
+                to = (obj.email,)
+
+                obj.room.free_space += 1
+                obj.room.save()
+
+                obj.room = None
+
+                send_email("mails/ready/hostel_referral_evict.html", ctx, to)
 
                 self.message_user(request, f"""Обработка заявления "{obj}" завершена. Письмо отправлено""")
 
