@@ -636,15 +636,14 @@ class HostelReferralAdmin(CustomAdmin):
             # Если не завершено - завершаем и отправляем письмо на почту
             else:
                 obj.status = 'Выселен'
-                obj.save()
-
-                ctx = {'name': obj.first_name}
-                to = (obj.email,)
-
                 obj.room.free_space += 1
                 obj.room.save()
 
                 obj.room = None
+                obj.save()
+
+                ctx = {'name': obj.first_name}
+                to = (obj.email,)
 
                 send_email("mails/ready/hostel_referral_evict.html", ctx, to)
 
