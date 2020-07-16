@@ -101,8 +101,8 @@ logger.addHandler(fh)
 # генерация заявления в PDF формате
 def render_pdf(template, context):
     html = render_to_string(template, context=context)
-    # cfg = pdfkit.configuration(wkhtmltopdf=bytes(PATH_WKHTMLTOPDF, 'utf8'))
-    pdf = pdfkit.from_string(html, False)
+    cfg = pdfkit.configuration(wkhtmltopdf=bytes(PATH_WKHTMLTOPDF, 'utf8'))
+    pdf = pdfkit.from_string(html, False, configuration=cfg)
     response = HttpResponse(pdf, content_type='application/pdf')
     response['Content-Disposition'] = 'filename="application.pdf"'
     return response
