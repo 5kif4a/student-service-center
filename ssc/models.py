@@ -1,4 +1,5 @@
 from django.db import models
+from django.db.models import Q
 from django.utils.translation import gettext_lazy as _
 from hashid_field import HashidAutoField
 
@@ -237,6 +238,8 @@ class Hostel(Person, Application):
     id = HashidAutoField(primary_key=True, min_length=16)
 
     faculty = models.CharField(max_length=200, choices=faculties, verbose_name=_('Факультет'))
+
+    group = models.CharField(max_length=50, blank=True, verbose_name=_('Группа'))
 
     place_of_arrival = models.CharField(max_length=200, verbose_name=_('Место прибытия'))
 
@@ -512,3 +515,72 @@ class Notification(models.Model):
 
     def __str__(self):
         return f'Уведомление: {self.application_type}'
+
+
+class HostelRoom(models.Model):
+    """
+    Комната в общежитии
+    """
+    id = HashidAutoField(primary_key=True, min_length=16)
+
+    number = models.IntegerField(max_length=10, verbose_name=_('Номер комнаты'))
+
+    hostel = models.CharField(max_length=200, choices=hostels, verbose_name=_('Общежитие'))
+
+    all_space = models.IntegerField(max_length=10, verbose_name=_('Всего мест'))
+
+    free_space = models.IntegerField(max_length=10, verbose_name=_('Свободных мест'))
+
+    class Meta:
+        verbose_name = _('Комната в общежитии')
+        verbose_name_plural = _('Комнаты в общежитии')
+
+    def __str__(self):
+        return "Комната " + str(self.number) + "\n" + self.hostel
+
+
+class HostelReferral(Person, Application):
+    """
+    Направление в общежитие
+    """
+    id = HashidAutoField(primary_key=True, min_length=16)
+
+    number = models.IntegerField(max_length=10, blank=True, verbose_name=_('Номер направления'), null=True)
+
+    faculty = models.CharField(max_length=200, choices=faculties, verbose_name=_('Факультет'))
+
+    hostel = models.CharField(max_length=200, choices=hostels, verbose_name=_('Общежитие'))
+
+    iin_attachment_front = models.ImageField(upload_to='referral_attachments/',
+                                             verbose_name=_(
+                                                 'Прикрепление копии документа, удостоверяющего личность - передняя '
+                                                 'сторона'),
+                                             validators=[file_size_validator])
+
+    iin_attachment_back = models.ImageField(upload_to='referral_attachments/',
+                                            verbose_name=_(
+                                                'Прикрепление копии документа, удостоверяющего личность - обратная '
+                                                'сторона'),
+                                            validators=[file_size_validator])
+
+    attachment = models.FileField(upload_to='referral_attachments/', blank=True, null=True,
+                                  verbose_name=_('Прикрепление'),
+                                  validators=[file_size_validator, file_ext_validator])
+
+    status = models.CharField(max_length=50, choices=hostel_statuses, default='Не рассмотрено',
+                              verbose_name=_('Статус'))
+
+    group = models.CharField(max_length=50, blank=True, verbose_name=_('Группа'))
+
+    room = models.ForeignKey(HostelRoom, on_delete=models.CASCADE, blank=True, verbose_name=_('Номер комнаты'),
+                             null=True, limit_choices_to=Q(free_space__gt=0))
+
+    class Meta:
+        verbose_name = _('Направление в общежитие')
+        verbose_name_plural = _('Направления в общежитие')
+
+    def __str__(self):
+        return f'{self.last_name} {self.first_name} {self.patronymic}. ИИН: {self.individual_identification_number}'
+
+
+HostelReferral._meta.get_field('date_of_application').verbose_name = 'Дата приема заявления'

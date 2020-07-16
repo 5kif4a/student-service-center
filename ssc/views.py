@@ -310,6 +310,43 @@ class RecoveryView(TemplateView):
             return HttpResponse('<center><h1>Заявление не потверждено!</h1></center>')
 
 
+class HostelReferralView(TemplateView):
+    """
+    Представления для подачи заявления по услуге
+    "Направление в общежитие в учебных заведениях"
+    Государственная услуга
+    """
+    form_class = HostelReferralForm
+    template_name = 'ssc/hostel_referral.html'
+    context = {}
+    app_type = 'Направление'
+    app_ref = 'hostel_referral'
+
+    @login_required
+    def render(self, obj_id):
+        app = HostelReferral.objects.get(id=obj_id)
+        if app.status not in ('Не проверено', 'Отозвано на исправление'):
+
+            try:
+                rector_name_local = Rector.objects.filter(status=True)[0].name
+            except:
+                rector_name_local = 'Ибатов Марат Кенесович'
+
+            hostel_address = 'пр. Н. Назарбаев 56/2'
+            if app.hostel == 'Общежитие №1':
+                hostel_address = 'ул. Терешкова 40'
+
+            context = {
+                'rector_name': rector_name_local,
+                'app': app,
+                'address': hostel_address,
+                'qr_code': generate_qr_code(f'{BASE_URL}/check_order?order_type=hostel_referral&id={obj_id}')
+            }
+            return render_pdf('applications/hostel_referral.html', context)
+        else:
+            return HttpResponse('<center><h1>Заявление не потверждено!</h1></center>')
+
+
 @login_required
 def get_notifications(request):
     """
@@ -358,7 +395,8 @@ def check_order(request):
                         'abroad': Abroad,
                         'transfer_kstu': TransferKSTU,
                         'transfer': Transfer,
-                        'recovery': Recovery}
+                        'recovery': Recovery,
+                        'hostel_referral': HostelReferral}
 
     if request.method == 'GET':
         order_type = request.GET.get('order_type')
@@ -382,6 +420,3 @@ def check_order(request):
         return render(request, template, context)
 
     return page_not_found(request, 'Не существует')
-
-
-

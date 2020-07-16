@@ -1,4 +1,5 @@
 from django.contrib import admin
+from django.db.models import Max
 from django.utils.html import format_html
 
 from SSC_KSTU.settings import BASE_URL, DEBUG
@@ -155,8 +156,17 @@ class CustomAdmin(admin.ModelAdmin):
                                  "obj.permission_to_transfer.path, obj.certificate.path, obj.transcript.path]",
 
                 "recovery": "[obj.iin_attachment_front.path, obj.iin_attachment_back.path, obj.attachment.path, "
-                            "obj.certificate.path] "
+                            "obj.certificate.path] ",
+
+                "hostel_referral": "[obj.iin_attachment_front.path, obj.iin_attachment_back.path, obj.attachment.path]"
             }
+
+            if not obj.attachment:
+                filenames_dict["hostel"] = "[obj.iin_attachment_front.path, obj.iin_attachment_back.path]"
+                filenames_dict["academic-leave"] = "[obj.iin_attachment_front.path, obj.iin_attachment_back.path]"
+                filenames_dict["hostel_referral"] = "[obj.iin_attachment_front.path, obj.iin_attachment_back.path]"
+                filenames_dict["recovery"] = "[obj.iin_attachment_front.path, obj.iin_attachment_back.path, " \
+                                             "obj.certificate.path] "
 
             # UNSAFE CODE BEGIN
             filenames_as_str = filenames_dict.get(self.entity)
@@ -325,6 +335,55 @@ class HostelAdmin(CustomAdmin):
     autocomplete_fields = ('specialty',)
     readonly_fields = ('id_card_front', 'id_card_back')
 
+    def response_change(self, request, obj):
+        if "_verify" in request.POST:
+            # Если подтвержден - выдаем сообщение, что заявление уже подтверждено
+            if obj.status == 'Подтверждено':
+                self.message_user(request, f"{obj} уже потвержден")
+            # Если не потверждено - подтверждаем и отправляем письмо на почту
+            else:
+                referral = HostelReferral(last_name=obj.last_name, first_name=obj.first_name, patronymic=obj.patronymic,
+                                          individual_identification_number=obj.individual_identification_number,
+                                          email=obj.email, address=obj.address, phone_number=obj.phone_number,
+                                          course=obj.course,
+                                          group=obj.group, date_of_application=datetime.now(), faculty=obj.faculty,
+                                          hostel=obj.hostel, iin_attachment_front=obj.iin_attachment_front,
+                                          iin_attachment_back=obj.iin_attachment_back, attachment=obj.attachment,
+                                          specialty_id=obj.specialty_id)
+                referral.save(True)
+
+                obj.status = 'Подтверждено'
+                obj.save()
+
+                # отправляем письмо после потверждения заявления
+                ctx = {'name': request.POST['first_name']}
+                to = (request.POST.get('email', ''),)
+
+                send_email(self.mail_template, ctx, to)
+
+                self.message_user(request, f"""{obj} подтверждено""")
+
+        if "_finish" in request.POST:
+            # Если завершено - выдаем сообщение, что заявление уже завершено
+            if obj.status == 'Завершено':
+                self.message_user(request, f"{obj} обработка завершена")
+            # Если не завершено - завершаем и отправляем письмо на почту
+            else:
+
+                obj.status = 'Завершено'
+                obj.save()
+
+                ctx = {'name': obj.first_name}
+                to = (obj.email,)
+
+                #uploaded_file = request.FILES['scanned_file']
+                #send_email_with_attachment("mails/ready/academic-leave.html", ctx, to, uploaded_file)
+                send_email("mails/ready/academic-leave.html", ctx, to)
+
+                self.message_user(request, f"""Обработка заявления "{obj}" завершена. Письмо отправлено""")
+
+        return super().response_change(request, obj)
+
 
 # @admin.register(Duplicate)
 # class DuplicateAdmin(CustomAdmin):
@@ -469,3 +528,146 @@ class NotificationAdmin(admin.ModelAdmin):
 
     link.short_description = "Заявление"
     mark_as_read.short_description = "Отметить как прочитанное"
+
+
+@admin.register(HostelRoom)
+class HostelRoomAdmin(admin.ModelAdmin):
+    """
+    Админ.панель для списка свободных мест
+    """
+    list_display = ('number', 'hostel', 'all_space', 'free_space')
+    list_per_page = 15
+    list_filter = ('hostel', 'free_space')
+    search_fields = ('number', 'hostel', 'free_space')
+
+
+@admin.register(HostelReferral)
+class HostelReferralAdmin(CustomAdmin):
+    """
+    Админ.панель для направления в общежитие
+    """
+    entity = 'hostel_referral'
+    mail_template = 'mails/hostel_referral.html'
+    change_form_template = "custom_admin/hostel_referral.html"
+    app = 'Ваше направление в общежитие готово.'
+    service_name = "Предоставление общежития обучающимся в высших учебных заведениях"
+    list_per_page = 15
+    list_filter = ('date_of_application', 'faculty', 'course', 'status')
+    list_display = ('last_name', 'first_name', 'patronymic', 'specialty', 'date_of_application', 'status',
+                    'print')
+    search_fields = ('last_name', 'first_name', 'patronymic', 'address', 'specialty__name',
+                     'individual_identification_number')
+    autocomplete_fields = ('specialty',)
+    readonly_fields = ('id_card_front', 'id_card_back', 'number')
+
+    def response_change(self, request, obj):
+
+        # Если в предоставлении общежития отказано отправляем уведомление
+        if "_refuse" in request.POST:
+            if obj.status != 'Отказано':
+                note = request.POST.get('note')
+
+                obj.status = 'Отказано'
+                obj.save()
+
+                ctx = {'name': obj.first_name,
+                       'note': note}
+                to = (obj.email,)
+                send_email('mails/hostel_refuse.html', ctx, to)
+                self.message_user(request, f"Письмо с уведомлением отправлено {obj}")
+            else:
+                self.message_user(request, f"Письмо с уведомлением уже отправлено {obj}")
+
+        # Потверждение заявления
+        if "_verify" in request.POST:
+            # Если подтвержден - выдаем сообщение, что заявление уже подтверждено
+            if obj.status == 'Подтверждено':
+                self.message_user(request, f"{obj} уже потвержден")
+            # Если не потверждено - подтверждаем и отправляем письмо на почту
+            else:
+                obj.status = 'Подтверждено'
+
+                try:
+                    referral_number = HostelReferral.objects.all().aggregate(Max('number'))
+                    referral_number = referral_number['number__max'] + 1
+                except:
+                    referral_number = 10001
+
+                obj.number = referral_number
+                obj.save()
+
+                obj.room.free_space -= 1
+                obj.room.save()
+
+                # отправляем письмо после потверждения заявления
+                ctx = {'name': request.POST['first_name']}
+                to = (request.POST.get('email', ''),)
+
+                #uploaded_file = request.FILES['scanned_file']
+                #send_email_with_attachment("mails/ready/hostel_referral.html", ctx, to, uploaded_file)
+                send_email("mails/hostel_referral.html", ctx, to)
+
+                self.message_user(request, f"""{obj} подтверждено""")
+
+        if "_populate" in request.POST:
+            # Если завершено - выдаем сообщение, что заявление уже завершено
+            if obj.status is 'Заселен':
+                self.message_user(request, f"{obj} обработка завершена")
+            # Если не завершено - завершаем и отправляем письмо на почту
+            else:
+                if obj.status != 'Подтверждено':
+                    obj.room.free_space -= 1
+                    obj.room.save()
+
+                obj.status = 'Заселен'
+                obj.save()
+
+                ctx = {'name': obj.first_name}
+                to = (obj.email,)
+
+                send_email("mails/ready/hostel_referral.html", ctx, to)
+
+                self.message_user(request, f"""Обработка заявления "{obj}" завершена. Письмо отправлено""")
+
+        if "_evict" in request.POST:
+            # Если завершено - выдаем сообщение, что заявление уже завершено
+            if obj.status is 'Заселен':
+                self.message_user(request, f"{obj} обработка завершена")
+            # Если не завершено - завершаем и отправляем письмо на почту
+            else:
+                obj.status = 'Выселен'
+                obj.room.free_space += 1
+                obj.room.save()
+
+                obj.room = None
+                obj.save()
+
+                ctx = {'name': obj.first_name}
+                to = (obj.email,)
+
+                send_email("mails/ready/hostel_referral_evict.html", ctx, to)
+
+                self.message_user(request, f"""Обработка заявления "{obj}" завершена. Письмо отправлено""")
+
+        return super().response_change(request, obj)
+
+    def print(self, obj):
+        url = f'/{self.entity}/report/{obj.id}'
+        if obj.status in ('Подтверждено', 'Заселен', 'Выселен'):
+            button = f"""
+                     <input type="button" class="button" value="Печать" onclick="window.open('{url}', '_blank')">
+                     """
+        else:
+            # TODO - refactor this HTML code
+            button = f"""
+                    <input type="button" 
+                    class="button" 
+                    style="cursor: not-allowed; background-color: #DC3545" 
+                    value="Печать"
+                    onclick="window.open('{url}', '_blank')" 
+                    disabled>
+                    """
+
+        return format_html(button)
+
+    print.short_description = "Печать"
