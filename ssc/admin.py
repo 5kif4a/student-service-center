@@ -324,7 +324,7 @@ class HostelAdmin(CustomAdmin):
     """
     entity = 'hostel'
     mail_template = 'mails/hostel.html'
-    app = 'Ваша справка готова. Вы можете получить ее в КарГТУ, 1 корпус, кабинет № 109.'
+    app = 'Ваше заявление принято в работу.'
     service_name = "Предоставление общежития обучающимся в высших учебных заведениях"
     list_per_page = 15
     list_filter = ('date_of_application', 'faculty', 'course', 'status')
@@ -378,7 +378,7 @@ class HostelAdmin(CustomAdmin):
 
                 #uploaded_file = request.FILES['scanned_file']
                 #send_email_with_attachment("mails/ready/academic-leave.html", ctx, to, uploaded_file)
-                send_email("mails/ready/academic-leave.html", ctx, to)
+                #send_email("mails/ready/academic-leave.html", ctx, to)
 
                 self.message_user(request, f"""Обработка заявления "{obj}" завершена. Письмо отправлено""")
 
