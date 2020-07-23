@@ -158,7 +158,7 @@ class CustomAdmin(admin.ModelAdmin):
                 "recovery": "[obj.iin_attachment_front.path, obj.iin_attachment_back.path, obj.attachment.path, "
                             "obj.certificate.path] ",
 
-                "hostel_referral": "[obj.iin_attachment_front.path, obj.iin_attachment_back.path]"
+                "hostel_referral": "[obj.iin_attachment_front.path, obj.iin_attachment_back.path, obj.attachmentProperty.path]"
             }
 
             if obj.__class__ is Hostel or obj.__class__ is HostelReferral:
