@@ -148,7 +148,7 @@ class CustomAdmin(admin.ModelAdmin):
                 "abroad": "[obj.passport.path, obj.recommendation_letter.path, obj.transcript.path, "
                           "obj.certificate.path]",
 
-                "hostel": "[obj.iin_attachment_front.path, obj.iin_attachment_back.path, obj.attachment.path]",
+                "hostel": "[obj.iin_attachment_front.path, obj.iin_attachment_back.path, obj.attachmentProperty.path]",
 
                 "transfer": "[]",
 
@@ -158,15 +158,32 @@ class CustomAdmin(admin.ModelAdmin):
                 "recovery": "[obj.iin_attachment_front.path, obj.iin_attachment_back.path, obj.attachment.path, "
                             "obj.certificate.path] ",
 
-                "hostel_referral": "[obj.iin_attachment_front.path, obj.iin_attachment_back.path, obj.attachment.path]"
+                "hostel_referral": "[obj.iin_attachment_front.path, obj.iin_attachment_back.path]"
             }
 
-            if not obj.attachment:
-                filenames_dict["hostel"] = "[obj.iin_attachment_front.path, obj.iin_attachment_back.path]"
-                filenames_dict["academic-leave"] = "[obj.iin_attachment_front.path, obj.iin_attachment_back.path]"
-                filenames_dict["hostel_referral"] = "[obj.iin_attachment_front.path, obj.iin_attachment_back.path]"
-                filenames_dict["recovery"] = "[obj.iin_attachment_front.path, obj.iin_attachment_back.path, " \
-                                             "obj.certificate.path] "
+            if obj.__class__ is Hostel or obj.__class__ is HostelReferral:
+                if obj.attachmentDeath:
+                    filenames_dict["hostel"] = filenames_dict["hostel"][0:-1] + ",obj.attachmentDeath.path]"
+                    filenames_dict["hostel_referral"] = filenames_dict["hostel_referral"][0:-1] + \
+                                                        ", obj.attachmentDeath.path]"
+                if obj.attachmentLarge:
+                    filenames_dict["hostel"] = filenames_dict["hostel"][0:-1] + ",obj.attachmentLarge.path]"
+                    filenames_dict["hostel_referral"] = filenames_dict["hostel_referral"][0:-1] + \
+                                                        ", obj.attachmentLarge.path]"
+                if obj.attachmentDisabled:
+                    filenames_dict["hostel"] = filenames_dict["hostel"][0:-1] + ",obj.attachmentDisabled.path]"
+                    filenames_dict["hostel_referral"] = filenames_dict["hostel_referral"][0:-1] + \
+                                                        ", obj.attachmentDisabled.path]"
+                if obj.attachmentKandas:
+                    filenames_dict["hostel"] = filenames_dict["hostel"][0:-1] + ",obj.attachmentKandas.path]"
+                    filenames_dict["hostel_referral"] = filenames_dict["hostel_referral"][0:-1] + \
+                                                        ", obj.attachmentKandas.path]"
+
+            if obj.__class__ is AcademicLeave or obj.__class__ is Recovery:
+                if not obj.attachment:
+                    filenames_dict["academic-leave"] = "[obj.iin_attachment_front.path, obj.iin_attachment_back.path]"
+                    filenames_dict["recovery"] = "[obj.iin_attachment_front.path, obj.iin_attachment_back.path, " \
+                                                 "obj.certificate.path] "
 
             # UNSAFE CODE BEGIN
             filenames_as_str = filenames_dict.get(self.entity)
@@ -348,8 +365,12 @@ class HostelAdmin(CustomAdmin):
                                           course=obj.course,
                                           group=obj.group, date_of_application=datetime.now(), faculty=obj.faculty,
                                           hostel=obj.hostel, iin_attachment_front=obj.iin_attachment_front,
-                                          iin_attachment_back=obj.iin_attachment_back, attachment=obj.attachment,
-                                          specialty_id=obj.specialty_id)
+                                          iin_attachment_back=obj.iin_attachment_back,
+                                          attachmentProperty=obj.attachmentProperty,
+                                          attachmentDeath=obj.attachmentDeath,
+                                          attachmentLarge=obj.attachmentLarge,
+                                          attachmentDisabled=obj.attachmentDisabled,
+                                          attachmentKandas=obj.attachmentKandas, specialty_id=obj.specialty_id)
                 referral.save(True)
 
                 obj.status = 'Подтверждено'
@@ -376,9 +397,9 @@ class HostelAdmin(CustomAdmin):
                 ctx = {'name': obj.first_name}
                 to = (obj.email,)
 
-                #uploaded_file = request.FILES['scanned_file']
-                #send_email_with_attachment("mails/ready/academic-leave.html", ctx, to, uploaded_file)
-                #send_email("mails/ready/academic-leave.html", ctx, to)
+                # uploaded_file = request.FILES['scanned_file']
+                # send_email_with_attachment("mails/ready/academic-leave.html", ctx, to, uploaded_file)
+                # send_email("mails/ready/academic-leave.html", ctx, to)
 
                 self.message_user(request, f"""Обработка заявления "{obj}" завершена. Письмо отправлено""")
 
@@ -552,13 +573,13 @@ class HostelReferralAdmin(CustomAdmin):
     app = 'Ваше направление в общежитие готово.'
     service_name = "Предоставление общежития обучающимся в высших учебных заведениях"
     list_per_page = 15
-    list_filter = ('date_of_application', 'faculty', 'course', 'status')
-    list_display = ('last_name', 'first_name', 'patronymic', 'specialty', 'date_of_application', 'status',
-                    'print')
+    list_filter = ('date_of_application', 'hostel', 'faculty', 'course', 'status')
+    list_display = ('last_name', 'first_name', 'patronymic', 'individual_identification_number', 'faculty', 'date_of_application', 'status',
+                    'room', 'print')
     search_fields = ('last_name', 'first_name', 'patronymic', 'address', 'specialty__name',
                      'individual_identification_number')
     autocomplete_fields = ('specialty',)
-    readonly_fields = ('id_card_front', 'id_card_back', 'number')
+    readonly_fields = ('id_card_front', 'id_card_back', 'number', 'appearance')
 
     def response_change(self, request, obj):
 
@@ -566,6 +587,11 @@ class HostelReferralAdmin(CustomAdmin):
         if "_refuse" in request.POST:
             if obj.status != 'Отказано':
                 note = request.POST.get('note')
+
+                if obj.status == 'Подтверждено':
+                    obj.room.free_space += 1
+                    obj.room.save()
+                    obj.room = None
 
                 obj.status = 'Отказано'
                 obj.save()
@@ -587,6 +613,8 @@ class HostelReferralAdmin(CustomAdmin):
             else:
                 obj.status = 'Подтверждено'
 
+                appearance = request.POST.get('datetime')
+
                 try:
                     referral_number = HostelReferral.objects.all().aggregate(Max('number'))
                     referral_number = referral_number['number__max'] + 1
@@ -594,17 +622,20 @@ class HostelReferralAdmin(CustomAdmin):
                     referral_number = 10001
 
                 obj.number = referral_number
+
+                obj.appearance = appearance
                 obj.save()
 
                 obj.room.free_space -= 1
                 obj.room.save()
 
                 # отправляем письмо после потверждения заявления
-                ctx = {'name': request.POST['first_name']}
+                ctx = {'name': request.POST['first_name'],
+                       'referral_url': f'{BASE_URL}/{self.entity}/report/{obj.id}'}
                 to = (request.POST.get('email', ''),)
 
-                #uploaded_file = request.FILES['scanned_file']
-                #send_email_with_attachment("mails/ready/hostel_referral.html", ctx, to, uploaded_file)
+                # uploaded_file = request.FILES['scanned_file']
+                # send_email_with_attachment("mails/ready/hostel_referral.html", ctx, to, uploaded_file)
                 send_email("mails/hostel_referral.html", ctx, to)
 
                 self.message_user(request, f"""{obj} подтверждено""")
@@ -622,7 +653,8 @@ class HostelReferralAdmin(CustomAdmin):
                 obj.status = 'Заселен'
                 obj.save()
 
-                ctx = {'name': obj.first_name}
+                ctx = {'name': obj.first_name,
+                       'room': obj.room}
                 to = (obj.email,)
 
                 send_email("mails/ready/hostel_referral.html", ctx, to)
@@ -635,6 +667,9 @@ class HostelReferralAdmin(CustomAdmin):
                 self.message_user(request, f"{obj} обработка завершена")
             # Если не завершено - завершаем и отправляем письмо на почту
             else:
+                note = request.POST.get('evict-note')
+                print(note)
+
                 obj.status = 'Выселен'
                 obj.room.free_space += 1
                 obj.room.save()
@@ -642,7 +677,8 @@ class HostelReferralAdmin(CustomAdmin):
                 obj.room = None
                 obj.save()
 
-                ctx = {'name': obj.first_name}
+                ctx = {'name': obj.first_name,
+                       'note': note}
                 to = (obj.email,)
 
                 send_email("mails/ready/hostel_referral_evict.html", ctx, to)
@@ -664,6 +700,27 @@ class HostelReferralAdmin(CustomAdmin):
                     class="button" 
                     style="cursor: not-allowed; background-color: #DC3545" 
                     value="Печать"
+                    onclick="window.open('{url}', '_blank')" 
+                    disabled>
+                    """
+
+        return format_html(button)
+
+    def populate_evict(self, obj):
+        url = f'/admin/ssc/hostelreferral/{obj.id}/change/'
+        if obj.status == 'Подтверждено':
+            button = f"""
+                        <input type="button" class="button" value="Заселить" 
+                        onclick="document.body.innerHTML += '<form id=postPopulate action={url} method=post><input type=hidden name=_populate value=_populate></form>';
+document.getElementById('postPopulate').submit();">
+                     """
+        else:
+            # TODO - refactor this HTML code
+            button = f"""
+                    <input type="button" 
+                    class="button" 
+                    style="cursor: not-allowed; background-color: #DC3545" 
+                    value=""
                     onclick="window.open('{url}', '_blank')" 
                     disabled>
                     """

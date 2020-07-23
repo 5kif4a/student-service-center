@@ -34,7 +34,7 @@
                         <div class="row mb-2">
                             <div class="col-lg mt-2">
                                 <a class="btn btn-info btn-block"
-                                   href="https://egov.kz/cms/ru/services/professional_education/pass207_mon"
+                                   href="https://egov.kz"
                                    target="_blank">Получение услуги на Egov</a>
                             </div>
                         </div>
@@ -42,11 +42,13 @@
                             <ol>
                                 <li>Заявление.</li>
                                 <li>Копия документа, удостоверяющего личность услугополучателя.</li>
+                                <li>Справка об отсутствии (наличии) недвижимого имущества.</li>
                                 <li>Копия свидетельства о смерти обоих или единственного родителя либо справка из
                                     детского дома.
                                 </li>
                                 <li>Справка о наличии в семье 4-х и более детей.</li>
                                 <li>Справка о подтверждении инвалидности.</li>
+                                <li>Документ о статусе "кандас".</li>
                             </ol>
                         </li>
                         {% block form %}
@@ -111,7 +113,27 @@
                                     </div>
                                     <div class="form-row">
                                         <div class="form-group col-sm">
-                                            {{ form.attachment|as_crispy_field }}
+                                            {{ form.attachmentProperty|as_crispy_field }}
+                                        </div>
+                                    </div>
+                                    <div class="form-row">
+                                        <div class="form-group col-sm">
+                                            {{ form.attachmentDeath|as_crispy_field }}
+                                        </div>
+                                    </div>
+                                    <div class="form-row">
+                                        <div class="form-group col-sm">
+                                            {{ form.attachmentLarge|as_crispy_field }}
+                                        </div>
+                                    </div>
+                                    <div class="form-row">
+                                        <div class="form-group col-sm">
+                                            {{ form.attachmentDisabled|as_crispy_field }}
+                                        </div>
+                                    </div>
+                                    <div class="form-row">
+                                        <div class="form-group col-sm">
+                                            {{ form.attachmentKandas|as_crispy_field }}
                                         </div>
                                     </div>
                                     <div class="alert alert-danger"><p>Фотографии или отсканированные изображения
