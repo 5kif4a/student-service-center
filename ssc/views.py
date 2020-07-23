@@ -131,10 +131,32 @@ class HostelView(TemplateView):
     def render(self, obj_id):
         app = Hostel.objects.get(id=obj_id)
         if app.status not in ('Не проверено', 'Отозвано на исправление'):
+
+            death = False
+            large = False
+            disabled = False
+            kandas = False
+
+            if app.attachmentDeath:
+                death = True
+
+            if app.attachmentLarge:
+                large = True
+
+            if app.attachmentDisabled:
+                disabled = True
+
+            if app.attachmentKandas:
+                kandas = True
+
             context = {
                 'rector_name': rector_name,
                 'app': app,
-                'qr_code': generate_qr_code(f'{BASE_URL}/check_order?order_type=hostel&id={obj_id}')
+                'qr_code': generate_qr_code(f'{BASE_URL}/check_order?order_type=hostel&id={obj_id}'),
+                'death': death,
+                'large': large,
+                'disabled': disabled,
+                'kandas': kandas
             }
             return render_pdf('applications/hostel.html', context)
         else:
@@ -333,7 +355,7 @@ class HostelReferralView(TemplateView):
                 rector_name_local = 'Ибатов Марат Кенесович'
 
             hostel_address = 'пр. Н. Назарбаев 56/2'
-            if app.hostel == 'Общежитие №1':
+            if app.hostel == 'Общежитие №3':
                 hostel_address = 'ул. Терешкова 40'
 
             context = {
