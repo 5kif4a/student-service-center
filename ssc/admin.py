@@ -362,9 +362,9 @@ class HostelAdmin(CustomAdmin):
                 referral = HostelReferral(last_name=obj.last_name, first_name=obj.first_name, patronymic=obj.patronymic,
                                           individual_identification_number=obj.individual_identification_number,
                                           email=obj.email, address=obj.address, phone_number=obj.phone_number,
-                                          course=obj.course,
+                                          course=obj.course, is_serpin=obj.is_serpin,
                                           group=obj.group, date_of_application=datetime.now(), faculty=obj.faculty,
-                                          hostel=obj.hostel, iin_attachment_front=obj.iin_attachment_front,
+                                          iin_attachment_front=obj.iin_attachment_front,
                                           iin_attachment_back=obj.iin_attachment_back,
                                           attachmentProperty=obj.attachmentProperty,
                                           attachmentDeath=obj.attachmentDeath,
@@ -575,7 +575,7 @@ class HostelReferralAdmin(CustomAdmin):
     list_per_page = 15
     list_filter = ('date_of_application', 'hostel', 'faculty', 'course', 'status')
     list_display = ('last_name', 'first_name', 'patronymic', 'individual_identification_number', 'faculty', 'date_of_application', 'status',
-                    'room', 'print')
+                    'room', 'print', 'populate_evict')
     search_fields = ('last_name', 'first_name', 'patronymic', 'address', 'specialty__name',
                      'individual_identification_number')
     autocomplete_fields = ('specialty',)
@@ -727,4 +727,4 @@ document.getElementById('postPopulate').submit();">
 
         return format_html(button)
 
-    print.short_description = "Печать"
+    populate_evict.short_description = "Заселить/Выселить"

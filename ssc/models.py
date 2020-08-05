@@ -243,7 +243,9 @@ class Hostel(Person, Application):
 
     place_of_arrival = models.CharField(max_length=200, verbose_name=_('Место прибытия'))
 
-    hostel = models.CharField(max_length=200, choices=hostels, verbose_name=_('Общежитие'))
+    # hostel = models.CharField(max_length=200, choices=hostels, verbose_name=_('Общежитие'))
+
+    is_serpin = models.BooleanField(verbose_name="Участник программы \"Серпiн-2050\"")
 
     iin_attachment_front = models.ImageField(upload_to='hostel_attachments/',
                                              verbose_name=_(
@@ -261,18 +263,21 @@ class Hostel(Person, Application):
                                           verbose_name=_('Справка об отсутствии (наличии) недвижимого имущества'),
                                           validators=[file_size_validator, file_ext_validator])
 
-    attachmentDeath = models.FileField(upload_to='hostel/', blank=True, null=True, verbose_name=_('Свидетельство о смерти обоих или единственного родителя либо справка из детского дома'),
-                                  validators=[file_size_validator, file_ext_validator])
-
-
-    attachmentLarge = models.FileField(upload_to='hostel/', blank=True, null=True, verbose_name=_('Справка о наличии в семье 4-х и более детей'),
+    attachmentDeath = models.FileField(upload_to='hostel/', blank=True, null=True, verbose_name=_(
+        'Свидетельство о смерти обоих или единственного родителя либо справка из детского дома'),
                                        validators=[file_size_validator, file_ext_validator])
 
-    attachmentDisabled = models.FileField(upload_to='hostel/', blank=True, null=True, verbose_name=_('Справка о подтверждении инвалидности'),
+    attachmentLarge = models.FileField(upload_to='hostel/', blank=True, null=True,
+                                       verbose_name=_('Справка о наличии в семье 4-х и более детей'),
                                        validators=[file_size_validator, file_ext_validator])
 
-    attachmentKandas = models.FileField(upload_to='hostel/', blank=True, null=True,verbose_name=_('Документ о статусе "кандас"'),
+    attachmentDisabled = models.FileField(upload_to='hostel/', blank=True, null=True,
+                                          verbose_name=_('Справка о подтверждении инвалидности'),
                                           validators=[file_size_validator, file_ext_validator])
+
+    attachmentKandas = models.FileField(upload_to='hostel/', blank=True, null=True,
+                                        verbose_name=_('Документ о статусе "кандас"'),
+                                        validators=[file_size_validator, file_ext_validator])
 
     class Meta:
         verbose_name = _('заявление на предоставление общежития в ВУЗах')
@@ -561,11 +566,16 @@ class HostelReferral(Person, Application):
 
     number = models.IntegerField(max_length=10, blank=True, verbose_name=_('Номер направления'), null=True)
 
-    appearance = models.DateTimeField(max_length=10, blank=True, verbose_name=_('Время явки'), null=True)
+    appearance = models.DateField(max_length=10, blank=True, verbose_name=_('Время явки'), null=True)
 
     faculty = models.CharField(max_length=200, choices=faculties, verbose_name=_('Факультет'))
 
+    is_serpin = models.BooleanField(verbose_name="Участник программы \"Серпiн-2050\"")
+
     hostel = models.CharField(max_length=200, choices=hostels, verbose_name=_('Общежитие'))
+
+    room = models.ForeignKey(HostelRoom, on_delete=models.CASCADE, blank=True, verbose_name=_('Номер комнаты'),
+                             null=True, limit_choices_to=Q(free_space__gt=0) & Q(hostel=hostel))
 
     iin_attachment_front = models.ImageField(upload_to='referral_attachments/',
                                              verbose_name=_(
@@ -603,9 +613,6 @@ class HostelReferral(Person, Application):
                               verbose_name=_('Статус'))
 
     group = models.CharField(max_length=50, blank=True, verbose_name=_('Группа'))
-
-    room = models.ForeignKey(HostelRoom, on_delete=models.CASCADE, blank=True, verbose_name=_('Номер комнаты'),
-                             null=True)#, limit_choices_to=Q(free_space__gt=0))
 
     class Meta:
         verbose_name = _('Направление в общежитие')
