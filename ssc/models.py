@@ -259,23 +259,23 @@ class Hostel(Person, Application):
                                                 'сторона'),
                                             validators=[file_size_validator])
 
-    attachmentProperty = models.FileField(upload_to='hostel/',
+    attachmentProperty = models.FileField(upload_to='hostel_attachments/',
                                           verbose_name=_('Справка об отсутствии (наличии) недвижимого имущества'),
                                           validators=[file_size_validator, file_ext_validator])
 
-    attachmentDeath = models.FileField(upload_to='hostel/', blank=True, null=True, verbose_name=_(
+    attachmentDeath = models.FileField(upload_to='hostel_attachments/', blank=True, null=True, verbose_name=_(
         'Свидетельство о смерти обоих или единственного родителя либо справка из детского дома'),
                                        validators=[file_size_validator, file_ext_validator])
 
-    attachmentLarge = models.FileField(upload_to='hostel/', blank=True, null=True,
+    attachmentLarge = models.FileField(upload_to='hostel_attachments/', blank=True, null=True,
                                        verbose_name=_('Справка о наличии в семье 4-х и более детей'),
                                        validators=[file_size_validator, file_ext_validator])
 
-    attachmentDisabled = models.FileField(upload_to='hostel/', blank=True, null=True,
+    attachmentDisabled = models.FileField(upload_to='hostel_attachments/', blank=True, null=True,
                                           verbose_name=_('Справка о подтверждении инвалидности'),
                                           validators=[file_size_validator, file_ext_validator])
 
-    attachmentKandas = models.FileField(upload_to='hostel/', blank=True, null=True,
+    attachmentKandas = models.FileField(upload_to='hostel_attachments/', blank=True, null=True,
                                         verbose_name=_('Документ о статусе "кандас"'),
                                         validators=[file_size_validator, file_ext_validator])
 
@@ -575,7 +575,7 @@ class HostelReferral(Person, Application):
     hostel = models.CharField(max_length=200, choices=hostels, verbose_name=_('Общежитие'))
 
     room = models.ForeignKey(HostelRoom, on_delete=models.CASCADE, blank=True, verbose_name=_('Номер комнаты'),
-                             null=True, limit_choices_to=Q(free_space__gt=0) & Q(hostel=hostel))
+                             null=True)
 
     iin_attachment_front = models.ImageField(upload_to='referral_attachments/',
                                              verbose_name=_(

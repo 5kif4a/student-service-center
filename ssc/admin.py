@@ -573,9 +573,11 @@ class HostelReferralAdmin(CustomAdmin):
     app = 'Ваше направление в общежитие готово.'
     service_name = "Предоставление общежития обучающимся в высших учебных заведениях"
     list_per_page = 15
-    list_filter = ('date_of_application', 'hostel', 'faculty', 'course', 'status')
-    list_display = ('last_name', 'first_name', 'patronymic', 'individual_identification_number', 'faculty', 'date_of_application', 'status',
-                    'room', 'print', 'populate_evict')
+    list_filter = ('date_of_application', 'is_serpin', 'hostel', 'faculty', 'course', 'status')
+    list_display = (
+    'last_name', 'first_name', 'patronymic', 'individual_identification_number', 'faculty', 'date_of_application',
+    'status',
+    'room', 'print')
     search_fields = ('last_name', 'first_name', 'patronymic', 'address', 'specialty__name',
                      'individual_identification_number')
     autocomplete_fields = ('specialty',)
@@ -706,6 +708,8 @@ class HostelReferralAdmin(CustomAdmin):
 
         return format_html(button)
 
+    print.short_description = "Печать"
+
     def populate_evict(self, obj):
         url = f'/admin/ssc/hostelreferral/{obj.id}/change/'
         if obj.status == 'Подтверждено':
@@ -728,3 +732,20 @@ document.getElementById('postPopulate').submit();">
         return format_html(button)
 
     populate_evict.short_description = "Заселить/Выселить"
+
+    obj_formfield = None
+
+    def get_form(self, request, obj=None, **kwargs):
+        if obj:
+            self.obj_formfield = obj
+            print(kwargs)
+        return super().get_form(request, obj, **kwargs)
+
+    def formfield_for_foreignkey(self, db_field, request, **kwargs):
+        if db_field.name == "room":
+            hostel = self.obj_formfield.hostel
+            if self.obj_formfield.room:
+                kwargs["queryset"] = HostelRoom.objects.filter(id=self.obj_formfield.room.id)
+            else:
+                kwargs["queryset"] = HostelRoom.objects.filter(free_space__gt=0).filter(hostel=hostel)
+        return super().formfield_for_foreignkey(db_field, request, **kwargs)
