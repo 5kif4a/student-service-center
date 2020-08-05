@@ -362,9 +362,9 @@ class HostelAdmin(CustomAdmin):
                 referral = HostelReferral(last_name=obj.last_name, first_name=obj.first_name, patronymic=obj.patronymic,
                                           individual_identification_number=obj.individual_identification_number,
                                           email=obj.email, address=obj.address, phone_number=obj.phone_number,
-                                          course=obj.course,
+                                          course=obj.course, is_serpin=obj.is_serpin,
                                           group=obj.group, date_of_application=datetime.now(), faculty=obj.faculty,
-                                          hostel=obj.hostel, iin_attachment_front=obj.iin_attachment_front,
+                                          iin_attachment_front=obj.iin_attachment_front,
                                           iin_attachment_back=obj.iin_attachment_back,
                                           attachmentProperty=obj.attachmentProperty,
                                           attachmentDeath=obj.attachmentDeath,
@@ -573,9 +573,11 @@ class HostelReferralAdmin(CustomAdmin):
     app = 'Ваше направление в общежитие готово.'
     service_name = "Предоставление общежития обучающимся в высших учебных заведениях"
     list_per_page = 15
-    list_filter = ('date_of_application', 'hostel', 'faculty', 'course', 'status')
-    list_display = ('last_name', 'first_name', 'patronymic', 'individual_identification_number', 'faculty', 'date_of_application', 'status',
-                    'room', 'print')
+    list_filter = ('date_of_application', 'is_serpin', 'hostel', 'faculty', 'course', 'status')
+    list_display = (
+    'last_name', 'first_name', 'patronymic', 'individual_identification_number', 'faculty', 'date_of_application',
+    'status',
+    'room', 'print')
     search_fields = ('last_name', 'first_name', 'patronymic', 'address', 'specialty__name',
                      'individual_identification_number')
     autocomplete_fields = ('specialty',)
@@ -706,6 +708,8 @@ class HostelReferralAdmin(CustomAdmin):
 
         return format_html(button)
 
+    print.short_description = "Печать"
+
     def populate_evict(self, obj):
         url = f'/admin/ssc/hostelreferral/{obj.id}/change/'
         if obj.status == 'Подтверждено':
@@ -727,4 +731,21 @@ document.getElementById('postPopulate').submit();">
 
         return format_html(button)
 
-    print.short_description = "Печать"
+    populate_evict.short_description = "Заселить/Выселить"
+
+    obj_formfield = None
+
+    def get_form(self, request, obj=None, **kwargs):
+        if obj:
+            self.obj_formfield = obj
+            print(kwargs)
+        return super().get_form(request, obj, **kwargs)
+
+    def formfield_for_foreignkey(self, db_field, request, **kwargs):
+        if db_field.name == "room":
+            hostel = self.obj_formfield.hostel
+            if self.obj_formfield.room:
+                kwargs["queryset"] = HostelRoom.objects.filter(id=self.obj_formfield.room.id)
+            else:
+                kwargs["queryset"] = HostelRoom.objects.filter(free_space__gt=0).filter(hostel=hostel)
+        return super().formfield_for_foreignkey(db_field, request, **kwargs)
