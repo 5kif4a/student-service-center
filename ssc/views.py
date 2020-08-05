@@ -349,17 +349,11 @@ class HostelReferralView(TemplateView):
         app = HostelReferral.objects.get(id=obj_id)
         if app.status not in ('Не проверено', 'Отозвано на исправление'):
 
-            try:
-                rector_name_local = Rector.objects.filter(status=True)[0].name
-            except:
-                rector_name_local = 'Ибатов Марат Кенесович'
-
-            hostel_address = 'пр. Н. Назарбаев 56/2'
+            hostel_address = 'Пр. Н. Назарбаева 56/2'
             if app.hostel == 'Общежитие №3':
-                hostel_address = 'ул. Терешкова 40'
+                hostel_address = 'Ул. Терешкова 40'
 
             context = {
-                'rector_name': rector_name_local,
                 'app': app,
                 'address': hostel_address,
                 'qr_code': generate_qr_code(f'{BASE_URL}/check_order?order_type=hostel_referral&id={obj_id}')
