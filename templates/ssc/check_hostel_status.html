@@ -1,0 +1,14 @@
+{% extends "ssc/../base.html" %}
+{% load static %}
+{% block content %}
+    <div class="d-flex align-items-center vh-100">
+        <div class="container text-center">
+            <h3>Услуга: Предоставление общежития студентам</h3>
+            <p class="h4">ФИО услугополучателя: {{ first_name }} {{ last_name }} {{ patronymic }}</p>
+            <p class="h4">ИИН услугополучателя: {{ individual_identification_number }}</p>
+            <p class="h4">Дата подачи заявления: {{ date }}</p>
+            <p class="h4">Статус работы: {{ status }}</p>
+            <a class="btn btn-primary" href="/">Вернуться на главную</a>
+        </div>
+    </div>
+{% endblock %}
