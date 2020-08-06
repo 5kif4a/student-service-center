@@ -199,7 +199,7 @@ class CustomAdmin(admin.ModelAdmin):
         # Завершение обработки заявления
         if "_finish" in request.POST:
             # Если завершено - выдаем сообщение, что заявление уже завершено
-            if obj.status is 'Завершено':
+            if obj.status == 'Завершено':
                 self.message_user(request, f"{obj} обработка завершена")
             # Если не завершено - завершаем и отправляем письмо на почту
             else:
@@ -294,7 +294,7 @@ class AcademicLeaveAdmin(CustomAdmin):
         # Завершение обработки заявления
         if "_finish" in request.POST:
             # Если завершено - выдаем сообщение, что заявление уже завершено
-            if obj.status is 'Завершено':
+            if obj.status == 'Завершено':
                 self.message_user(request, f"{obj} обработка завершена")
             # Если не завершено - завершаем и отправляем письмо на почту
             else:
@@ -573,7 +573,7 @@ class HostelReferralAdmin(CustomAdmin):
     app = 'Ваше направление в общежитие готово.'
     service_name = "Предоставление общежития обучающимся в высших учебных заведениях"
     list_per_page = 15
-    list_filter = ('date_of_application', 'is_serpin', 'hostel', 'faculty', 'course', 'status')
+    list_filter = ('date_of_application', 'is_serpin', 'room__hostel', 'faculty', 'course', 'status')
     list_display = (
     'last_name', 'first_name', 'patronymic', 'individual_identification_number', 'faculty', 'date_of_application',
     'status',
@@ -644,7 +644,7 @@ class HostelReferralAdmin(CustomAdmin):
 
         if "_populate" in request.POST:
             # Если завершено - выдаем сообщение, что заявление уже завершено
-            if obj.status is 'Заселен':
+            if obj.status == 'Заселен':
                 self.message_user(request, f"{obj} обработка завершена")
             # Если не завершено - завершаем и отправляем письмо на почту
             else:
@@ -665,7 +665,7 @@ class HostelReferralAdmin(CustomAdmin):
 
         if "_evict" in request.POST:
             # Если завершено - выдаем сообщение, что заявление уже завершено
-            if obj.status is 'Заселен':
+            if obj.status == 'Заселен':
                 self.message_user(request, f"{obj} обработка завершена")
             # Если не завершено - завершаем и отправляем письмо на почту
             else:
@@ -738,14 +738,12 @@ document.getElementById('postPopulate').submit();">
     def get_form(self, request, obj=None, **kwargs):
         if obj:
             self.obj_formfield = obj
-            print(kwargs)
         return super().get_form(request, obj, **kwargs)
 
     def formfield_for_foreignkey(self, db_field, request, **kwargs):
         if db_field.name == "room":
-            hostel = self.obj_formfield.hostel
             if self.obj_formfield.room:
                 kwargs["queryset"] = HostelRoom.objects.filter(id=self.obj_formfield.room.id)
             else:
-                kwargs["queryset"] = HostelRoom.objects.filter(free_space__gt=0).filter(hostel=hostel)
+                kwargs["queryset"] = HostelRoom.objects.filter(free_space__gt=0)
         return super().formfield_for_foreignkey(db_field, request, **kwargs)
