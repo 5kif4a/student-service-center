@@ -1,7 +1,8 @@
+from django.contrib import messages
 from django.shortcuts import render, render_to_response, redirect
 from django.contrib.sites.shortcuts import get_current_site
 from django.views import View
-from django.http import JsonResponse
+from django.http import JsonResponse, HttpResponseRedirect
 from django.core import serializers
 from ssc.forms import *
 from ssc.models import *
@@ -436,3 +437,47 @@ def check_order(request):
         return render(request, template, context)
 
     return page_not_found(request, 'Не существует')
+
+
+def check_hostel(request):
+    """
+    Проверка
+    заявления на общежитие
+    """
+    template_form = 'ssc/check_hostel_form.html'
+    template_result = 'ssc/check_hostel_status.html'
+
+    if request.method == 'POST':
+        order_id = request.POST.get('order_id')
+        try:
+            order = Hostel.objects.get(id=order_id)
+
+            status = ""
+            if order.status == 'Не проверено':
+                status = "Проверка"
+            elif order.status == 'Отозвано на исправление':
+                status = "Отозвано на исправление"
+            else:
+                print(status)
+                referral = HostelReferral.objects.get(individual_identification_number=order.individual_identification_number)
+
+                if referral.status == 'Не рассмотрено':
+                    status = 'Ожидает решения'
+                else:
+                    status = referral.status
+                    print(referral)
+
+            context = {'last_name': order.last_name,
+             'first_name': order.first_name,
+             'patronymic': order.patronymic,
+             'individual_identification_number': order.individual_identification_number,
+             'date': order.date_of_application,
+             'status': status}
+
+            return render(request, template_result, context)
+
+        except Hostel.DoesNotExist:
+            messages.info(request, 'Заявка не найдена! Проверьте правильность кода!')
+            return HttpResponseRedirect('/check_hostel')
+    else:
+        return render(request, template_form)

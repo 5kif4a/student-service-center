@@ -572,8 +572,6 @@ class HostelReferral(Person, Application):
 
     is_serpin = models.BooleanField(verbose_name="Участник программы \"Серпiн-2050\"")
 
-    #hostel = models.CharField(max_length=200, choices=hostels, verbose_name=_('Общежитие'))
-
     room = models.ForeignKey(HostelRoom, on_delete=models.CASCADE, blank=True, verbose_name=_('Номер комнаты'),
                              null=True)
 

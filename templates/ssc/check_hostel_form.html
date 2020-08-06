@@ -1,0 +1,29 @@
+{% extends "ssc/../base.html" %}
+{% load static %}
+{% block content %}
+    <div class="d-flex align-items-center vh-100">
+        <div class="container text-center">
+            <h4>Проверить статус заявления на общежитие</h4>
+            <br>
+            <form class="form-inline justify-content-center" method="post" action="">
+                {% csrf_token %}
+                <div class="form-group">
+                    <label for="order_id_input" class="sr-only">Код заяки из письма</label>
+                    <input type="text" class="form-control form-control-lg" id="order_id_input" name="order_id" placeholder="Код заяки из письма" required>
+                </div>
+                <button type="submit" class="btn btn-primary mb-2">Проверить</button>
+            </form>
+
+            {% if messages %}
+            {% for message in messages %}
+            <br>
+            <p {% if message.tags %} class=""{% endif %}>{{ message }}</p>
+            {% endfor %}
+            {% endif %}
+
+            <br><br>
+            <a class="btn btn-primary" href="/">Вернуться на главную</a>
+        </div>
+    </div>
+
+{% endblock %}
