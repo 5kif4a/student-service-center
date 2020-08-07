@@ -8,8 +8,8 @@
             <form class="form-inline justify-content-center" method="post" action="">
                 {% csrf_token %}
                 <div class="form-group">
-                    <label for="order_id_input" class="sr-only">Код заяки из письма</label>
-                    <input type="text" class="form-control form-control-lg" id="order_id_input" name="order_id" placeholder="Код заяки из письма" required>
+                    <label for="order_id_input" class="sr-only">ИИН услугополучателя</label>
+                    <input type="text" class="form-control form-control-lg" id="order_id_input" name="order_id" placeholder="ИИН услугополучателя" required>
                 </div>
                 <button type="submit" class="btn btn-primary mb-2">Проверить</button>
             </form>

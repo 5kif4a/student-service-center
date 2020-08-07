@@ -241,7 +241,7 @@ class Hostel(Person, Application):
 
     group = models.CharField(max_length=50, blank=True, verbose_name=_('Группа'))
 
-    place_of_arrival = models.CharField(max_length=200, verbose_name=_('Место прибытия'))
+    place_of_arrival = models.CharField(max_length=200, verbose_name=_('Место прибытия (адрес)'))
 
     # hostel = models.CharField(max_length=200, choices=hostels, verbose_name=_('Общежитие'))
 

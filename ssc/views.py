@@ -448,9 +448,9 @@ def check_hostel(request):
     template_result = 'ssc/check_hostel_status.html'
 
     if request.method == 'POST':
-        order_id = request.POST.get('order_id')
+        individual_identification_number = request.POST.get('individual_identification_number')
         try:
-            order = Hostel.objects.get(id=order_id)
+            order = Hostel.objects.get(individual_identification_number=individual_identification_number)
 
             status = ""
             if order.status == 'Не проверено':
@@ -458,8 +458,7 @@ def check_hostel(request):
             elif order.status == 'Отозвано на исправление':
                 status = "Отозвано на исправление"
             else:
-                print(status)
-                referral = HostelReferral.objects.get(individual_identification_number=order.individual_identification_number)
+                referral = HostelReferral.objects.get(individual_identification_number=individual_identification_number)
 
                 if referral.status == 'Не рассмотрено':
                     status = 'Ожидает решения'
@@ -477,7 +476,7 @@ def check_hostel(request):
             return render(request, template_result, context)
 
         except Hostel.DoesNotExist:
-            messages.info(request, 'Заявка не найдена! Проверьте правильность кода!')
+            messages.info(request, 'Заявка не найдена! Проверьте правильность ввода ИИН!')
             return HttpResponseRedirect('/check_hostel')
     else:
         return render(request, template_form)
