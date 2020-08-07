@@ -351,7 +351,7 @@ class HostelReferralView(TemplateView):
         if app.status not in ('Не проверено', 'Отозвано на исправление'):
 
             hostel_address = 'пр. Н. Назарбаева 56/2'
-            if app.hostel == 'Общежитие №3':
+            if app.room.hostel == 'Общежитие №3':
                 hostel_address = 'ул. Терешкова 40'
 
             context = {
