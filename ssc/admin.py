@@ -633,7 +633,7 @@ class HostelReferralAdmin(CustomAdmin):
 
                 # отправляем письмо после потверждения заявления
                 ctx = {'name': request.POST['first_name'],
-                       'referral_url': f'https://{BASE_URL}/hostel_referral/report/{obj.id}'}
+                       'referral_url': f'/{self.entity}/report/{obj.id}'}
                 to = (request.POST.get('email', ''),)
 
                 # uploaded_file = request.FILES['scanned_file']
