@@ -345,7 +345,6 @@ class HostelReferralView(TemplateView):
     app_type = 'Направление'
     app_ref = 'hostel_referral'
 
-    @login_required
     def render(self, obj_id):
         app = HostelReferral.objects.get(id=obj_id)
         if app.status not in ('Не проверено', 'Отозвано на исправление'):
