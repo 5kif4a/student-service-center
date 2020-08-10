@@ -448,7 +448,7 @@ def check_hostel(request):
     template_result = 'ssc/check_hostel_status.html'
 
     if request.method == 'POST':
-        individual_identification_number = request.POST.get('individual_identification_number')
+        individual_identification_number = request.POST.get('iin')
         try:
             order = Hostel.objects.get(individual_identification_number=individual_identification_number)
 

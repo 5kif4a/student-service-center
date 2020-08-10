@@ -237,6 +237,8 @@ class Hostel(Person, Application):
     """
     id = HashidAutoField(primary_key=True, min_length=16)
 
+    individual_identification_number = models.CharField(max_length=12, verbose_name=_('ИИН'), validators=iin_validator, unique=True)
+
     faculty = models.CharField(max_length=200, choices=faculties, verbose_name=_('Факультет'))
 
     group = models.CharField(max_length=50, blank=True, verbose_name=_('Группа'))
@@ -563,6 +565,9 @@ class HostelReferral(Person, Application):
     Направление в общежитие
     """
     id = HashidAutoField(primary_key=True, min_length=16)
+
+    individual_identification_number = models.CharField(max_length=12, verbose_name=_('ИИН'), validators=iin_validator,
+                                                        unique=True)
 
     number = models.IntegerField(max_length=10, blank=True, verbose_name=_('Номер направления'), null=True)
 
