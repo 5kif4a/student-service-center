@@ -552,6 +552,8 @@ class HostelRoom(models.Model):
 
     free_space = models.IntegerField(max_length=10, verbose_name=_('Свободных мест'))
 
+    sex = models.CharField(max_length=15, verbose_name=_('Пол комнаты'), choices=room_types, default='Неопределено')
+
     class Meta:
         verbose_name = _('Комната в общежитии')
         verbose_name_plural = _('Комнаты в общежитии')

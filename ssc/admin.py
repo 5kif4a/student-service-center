@@ -556,10 +556,10 @@ class HostelRoomAdmin(admin.ModelAdmin):
     """
     Админ.панель для списка свободных мест
     """
-    list_display = ('number', 'hostel', 'all_space', 'free_space')
+    list_display = ('number', 'hostel', 'sex', 'all_space', 'free_space')
     list_per_page = 15
-    list_filter = ('hostel', 'free_space')
-    search_fields = ('number', 'hostel', 'free_space')
+    list_filter = ('hostel', 'free_space', 'sex')
+    search_fields = ('number', 'hostel', 'free_space', 'sex')
 
 
 @admin.register(HostelReferral)
@@ -633,7 +633,7 @@ class HostelReferralAdmin(CustomAdmin):
 
                 # отправляем письмо после потверждения заявления
                 ctx = {'name': request.POST['first_name'],
-                       'referral_url': f'/{self.entity}/report/{obj.id}'}
+                       'referral_url': f'https://{BASE_URL}/{self.entity}/report/{obj.id}'}
                 to = (request.POST.get('email', ''),)
 
                 # uploaded_file = request.FILES['scanned_file']
