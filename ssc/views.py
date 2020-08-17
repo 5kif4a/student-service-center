@@ -495,7 +495,7 @@ def hostel_space(request):
     free_space_by_sex = dict()
 
     for room in HostelRoom.objects.all():
-        if room in all_space.keys():
+        if room.hostel in all_space.keys():
             all_space[room.hostel] += room.all_space
             free_space[room.hostel] += room.free_space
         else:
