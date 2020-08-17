@@ -361,7 +361,7 @@ class HostelAdmin(CustomAdmin):
             else:
                 referral = HostelReferral(last_name=obj.last_name, first_name=obj.first_name, patronymic=obj.patronymic,
                                           individual_identification_number=obj.individual_identification_number,
-                                          email=obj.email, address=obj.address, phone_number=obj.phone_number,
+                                          email=obj.email, phone_number=obj.phone_number,
                                           course=obj.course, is_serpin=obj.is_serpin,
                                           group=obj.group, date_of_application=datetime.now(), faculty=obj.faculty,
                                           iin_attachment_front=obj.iin_attachment_front,
@@ -575,9 +575,9 @@ class HostelReferralAdmin(CustomAdmin):
     list_per_page = 15
     list_filter = ('date_of_application', 'is_serpin', 'room__hostel', 'faculty', 'course', 'status')
     list_display = (
-    'last_name', 'first_name', 'patronymic', 'individual_identification_number', 'faculty', 'date_of_application',
-    'status',
-    'room', 'print')
+        'last_name', 'first_name', 'patronymic', 'individual_identification_number', 'faculty', 'date_of_application',
+        'status',
+        'room', 'print')
     search_fields = ('last_name', 'first_name', 'patronymic', 'address', 'specialty__name',
                      'individual_identification_number')
     autocomplete_fields = ('specialty',)
@@ -590,7 +590,7 @@ class HostelReferralAdmin(CustomAdmin):
             if obj.status != 'Отказано':
                 note = request.POST.get('note')
 
-                if obj.status == 'Подтверждено':
+                if obj.status == 'Одобрено':
                     obj.room.free_space += 1
                     obj.room.save()
                     obj.room = None
@@ -607,13 +607,13 @@ class HostelReferralAdmin(CustomAdmin):
                 self.message_user(request, f"Письмо с уведомлением уже отправлено {obj}")
 
         # Потверждение заявления
-        if "_verify" in request.POST:
+        if "_approve" in request.POST:
             # Если подтвержден - выдаем сообщение, что заявление уже подтверждено
-            if obj.status == 'Подтверждено':
+            if obj.status == 'Одобрено':
                 self.message_user(request, f"{obj} уже потвержден")
             # Если не потверждено - подтверждаем и отправляем письмо на почту
             else:
-                obj.status = 'Подтверждено'
+                obj.status = 'Одобрено'
 
                 appearance = request.POST.get('datetime')
 
@@ -626,10 +626,10 @@ class HostelReferralAdmin(CustomAdmin):
                 obj.number = referral_number
 
                 obj.appearance = appearance
-                obj.save()
 
                 obj.room.free_space -= 1
                 obj.room.save()
+                obj.save()
 
                 # отправляем письмо после потверждения заявления
                 ctx = {'name': request.POST['first_name'],
@@ -648,7 +648,7 @@ class HostelReferralAdmin(CustomAdmin):
                 self.message_user(request, f"{obj} обработка завершена")
             # Если не завершено - завершаем и отправляем письмо на почту
             else:
-                if obj.status != 'Подтверждено':
+                if obj.status != 'Одобрено':
                     obj.room.free_space -= 1
                     obj.room.save()
 
@@ -691,7 +691,7 @@ class HostelReferralAdmin(CustomAdmin):
 
     def print(self, obj):
         url = f'/{self.entity}/report/{obj.id}'
-        if obj.status in ('Подтверждено', 'Заселен', 'Выселен'):
+        if obj.status in ('Одобрено', 'Заселен', 'Выселен'):
             button = f"""
                      <input type="button" class="button" value="Печать" onclick="window.open('{url}', '_blank')">
                      """
@@ -712,7 +712,7 @@ class HostelReferralAdmin(CustomAdmin):
 
     def populate_evict(self, obj):
         url = f'/admin/ssc/hostelreferral/{obj.id}/change/'
-        if obj.status == 'Подтверждено':
+        if obj.status == 'Одобрено':
             button = f"""
                         <input type="button" class="button" value="Заселить" 
                         onclick="document.body.innerHTML += '<form id=postPopulate action={url} method=post><input type=hidden name=_populate value=_populate></form>';
