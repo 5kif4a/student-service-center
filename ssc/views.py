@@ -1,3 +1,4 @@
+import xlsxwriter
 from django.contrib import messages
 from django.shortcuts import render, render_to_response, redirect
 from django.contrib.sites.shortcuts import get_current_site
@@ -463,14 +464,14 @@ def check_hostel(request):
                     status = 'Ожидает решения'
                 else:
                     status = referral.status
-                    print(referral)
+                    print(referral.status)
 
             context = {'last_name': order.last_name,
-             'first_name': order.first_name,
-             'patronymic': order.patronymic,
-             'individual_identification_number': order.individual_identification_number,
-             'date': order.date_of_application,
-             'status': status}
+                       'first_name': order.first_name,
+                       'patronymic': order.patronymic,
+                       'individual_identification_number': order.individual_identification_number,
+                       'date': order.date_of_application,
+                       'status': status}
 
             return render(request, template_result, context)
 
@@ -479,3 +480,74 @@ def check_hostel(request):
             return HttpResponseRedirect('/check_hostel')
     else:
         return render(request, template_form)
+
+
+def hostel_space(request):
+    """
+    Проверка
+    мест в общежитии
+    """
+
+    all_space = dict()
+    free_space = dict()
+
+    all_space_by_sex = dict()
+    free_space_by_sex = dict()
+
+    for room in HostelRoom.objects.all():
+        if room in all_space.keys():
+            all_space[room.hostel] += room.all_space
+            free_space[room.hostel] += room.free_space
+        else:
+            all_space[room.hostel] = room.all_space
+            free_space[room.hostel] = room.free_space
+
+        if room.sex in all_space_by_sex:
+            all_space_by_sex[room.sex] += room.all_space
+            free_space_by_sex[room.sex] += room.free_space
+        else:
+            all_space_by_sex[room.sex] = room.all_space
+            free_space_by_sex[room.sex] = room.free_space
+
+    output = io.BytesIO()
+
+    workbook = xlsxwriter.Workbook(output)
+    worksheet = workbook.add_worksheet()
+    worksheet.set_column("A:A", 50)
+    worksheet.set_column("B:C", 15)
+    workbook.formats[0].set_font_size(14)
+    workbook.formats[0].set_font_name("Times New Roman")
+
+    worksheet.write(0, 0, "Отчет по местам в общежитии")
+    worksheet.write(1, 0, "Общежитие")
+    worksheet.write(1, 1, "Всего мест")
+    worksheet.write(1, 2, "Свободно")
+
+    row_num = 2
+
+    for hostel in all_space:
+        worksheet.write(row_num, 0, hostel)
+        worksheet.write(row_num, 1, all_space[hostel])
+        worksheet.write(row_num, 2, free_space[hostel])
+        row_num += 1
+
+    worksheet.write(row_num, 0, "Из них")
+    row_num += 1
+
+    for sex in all_space_by_sex:
+        worksheet.write(row_num, 0, sex)
+        worksheet.write(row_num, 1, all_space_by_sex[sex])
+        worksheet.write(row_num, 2, free_space_by_sex[sex])
+        row_num += 1
+
+    workbook.close()
+    output.seek(0)
+
+    filename = 'hostel_space.xlsx'
+    response = HttpResponse(
+        output,
+        content_type='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+    )
+    response['Content-Disposition'] = 'attachment; filename=%s' % filename
+
+    return response

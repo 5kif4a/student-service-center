@@ -281,6 +281,8 @@ class Hostel(Person, Application):
                                         verbose_name=_('Документ о статусе "кандас"'),
                                         validators=[file_size_validator, file_ext_validator])
 
+    address = None
+
     class Meta:
         verbose_name = _('заявление на предоставление общежития в ВУЗах')
         verbose_name_plural = _('заявления на предоставление общежития в ВУЗах')
@@ -559,7 +561,7 @@ class HostelRoom(models.Model):
         verbose_name_plural = _('Комнаты в общежитии')
 
     def __str__(self):
-        return "Комната " + str(self.number) + "\n" + self.hostel
+        return "Комната " + str(self.number) + "\n" + self.hostel + "\n" + self.sex
 
 
 class HostelReferral(Person, Application):
@@ -618,6 +620,8 @@ class HostelReferral(Person, Application):
                               verbose_name=_('Статус'))
 
     group = models.CharField(max_length=50, blank=True, verbose_name=_('Группа'))
+
+    address = None
 
     class Meta:
         verbose_name = _('Направление в общежитие')
