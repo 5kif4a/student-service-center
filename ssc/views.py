@@ -129,6 +129,48 @@ class HostelView(TemplateView):
     app_type = 'Общежитие'
     app_ref = 'hostel'
 
+    def get(self, request):
+        form = self.form_class()
+        if request.GET.__contains__('lang'):
+            if request.GET.__getitem__('lang') == 'kz':
+                self.template_name = "ssc/hostel_kz.html"
+                form.localize()
+
+        self.context['form'] = form
+        return render(request, self.template_name, self.context)
+
+    def post(self, request):
+        form = self.form_class(request.POST, request.FILES)
+
+        if request.GET.__contains__('lang'):
+            if request.GET.__getitem__('lang') == 'kz':
+                self.template_name = "ssc/hostel_kz.html"
+                form.localize()
+
+        self.context['form'] = form
+
+        files = request.FILES
+        fs = FileSystemStorage()
+
+        if form.is_valid():
+            for _, file in files.items():
+                fs.save(file.name, file)
+            data = form.save()
+
+            # создаем уведомление
+            base_url = get_current_site(request)
+            url_for_app = f'{base_url}/admin/ssc/{self.app_ref}/{data.id}/change/'
+
+            n = Notification(application_type=self.app_type, url_for_application=url_for_app)
+            n.save()
+
+            return render(request, 'ssc/complete.html')
+
+        if DEBUG:
+            print(form.errors)
+
+        return render(request, self.template_name, self.context)
+
     @login_required
     def render(self, obj_id):
         app = Hostel.objects.get(id=obj_id)
@@ -354,9 +396,14 @@ class HostelReferralView(TemplateView):
             if app.room.hostel == 'Общежитие №3':
                 hostel_address = 'ул. Терешкова 40'
 
+            hostel = app.room.hostel
+            room = "Комната " + str(app.room.number)
+
             context = {
                 'app': app,
                 'address': hostel_address,
+                'hostel': hostel,
+                'room': room,
                 'qr_code': generate_qr_code(f'{BASE_URL}/check_order?order_type=hostel_referral&id={obj_id}')
             }
             return render_pdf('applications/hostel_referral.html', context)
@@ -491,9 +538,6 @@ def hostel_space(request):
     all_space = dict()
     free_space = dict()
 
-    all_space_by_sex = dict()
-    free_space_by_sex = dict()
-
     for room in HostelRoom.objects.all():
         if room.hostel in all_space.keys():
             all_space[room.hostel] += room.all_space
@@ -502,42 +546,70 @@ def hostel_space(request):
             all_space[room.hostel] = room.all_space
             free_space[room.hostel] = room.free_space
 
-        if room.sex in all_space_by_sex:
-            all_space_by_sex[room.sex] += room.all_space
-            free_space_by_sex[room.sex] += room.free_space
-        else:
-            all_space_by_sex[room.sex] = room.all_space
-            free_space_by_sex[room.sex] = room.free_space
-
     output = io.BytesIO()
 
     workbook = xlsxwriter.Workbook(output)
     worksheet = workbook.add_worksheet()
     worksheet.set_column("A:A", 50)
-    worksheet.set_column("B:C", 15)
+    worksheet.set_column("B:D", 15)
     workbook.formats[0].set_font_size(14)
     workbook.formats[0].set_font_name("Times New Roman")
 
     worksheet.write(0, 0, "Отчет по местам в общежитии")
     worksheet.write(1, 0, "Общежитие")
     worksheet.write(1, 1, "Всего мест")
-    worksheet.write(1, 2, "Свободно")
+    worksheet.write(1, 2, "Занято")
+    worksheet.write(1, 3, "Свободно")
 
     row_num = 2
 
     for hostel in all_space:
         worksheet.write(row_num, 0, hostel)
         worksheet.write(row_num, 1, all_space[hostel])
-        worksheet.write(row_num, 2, free_space[hostel])
+        worksheet.write(row_num, 2, all_space[hostel] - free_space[hostel])
+        worksheet.write(row_num, 3, free_space[hostel])
         row_num += 1
 
-    worksheet.write(row_num, 0, "Из них")
-    row_num += 1
+    workbook.close()
+    output.seek(0)
 
-    for sex in all_space_by_sex:
-        worksheet.write(row_num, 0, sex)
-        worksheet.write(row_num, 1, all_space_by_sex[sex])
-        worksheet.write(row_num, 2, free_space_by_sex[sex])
+    filename = 'hostel_space.xlsx'
+    response = HttpResponse(
+        output,
+        content_type='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+    )
+    response['Content-Disposition'] = 'attachment; filename=%s' % filename
+
+    return response
+
+
+def hostel_referral_list(request):
+    """
+    Проверка
+    списка назначенных направлений
+    """
+
+    output = io.BytesIO()
+
+    workbook = xlsxwriter.Workbook(output)
+    worksheet = workbook.add_worksheet()
+    worksheet.set_column("A:A", 50)
+    worksheet.set_column("B:D", 15)
+    workbook.formats[0].set_font_size(14)
+    workbook.formats[0].set_font_name("Times New Roman")
+
+    worksheet.write(0, 0, "Отчет по выданным направлениям")
+    worksheet.write(1, 0, "Фамилия")
+    worksheet.write(1, 1, "Имя")
+    worksheet.write(1, 2, "Отчество")
+    worksheet.write(1, 3, "Статус")
+    row_num = 2
+
+    for referral in HostelReferral.objects.filter(Q(status='Одобрено') | Q(status='Заселен')):
+        worksheet.write(row_num, 0, referral.last_name)
+        worksheet.write(row_num, 1, referral.first_name)
+        worksheet.write(row_num, 2, referral.patronymic)
+        worksheet.write(row_num, 3, referral.status)
         row_num += 1
 
     workbook.close()

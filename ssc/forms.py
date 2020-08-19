@@ -97,6 +97,26 @@ class HostelForm(ModelForm):
         self.fields['group'].required = False
         self.fields['status'].required = False
 
+    def localize(self):
+        self.fields['last_name'].label = 'Тегі'
+        self.fields['first_name'].label = 'Аты'
+        self.fields['patronymic'].label = 'Жөні'
+        self.fields['individual_identification_number'].label = 'ЖСН'
+        self.fields['email'].label = 'Электронды поштасы'
+        self.fields['phone_number'].label = 'Нөмір телефоны'
+        self.fields['course'].label = 'Курсы'
+        self.fields['faculty'].label = 'Факультеті'
+        self.fields['group'].label = 'Тобы'
+        self.fields['specialty'].label = 'Мамандығы'
+        self.fields['is_serpin'].label = '«Серпін-2050» бағдарламасының қатысушысы'
+        self.fields['place_of_arrival'].label = 'Келген жері (мекен-жайы)'
+        self.fields['iin_attachment_front'].label = 'Жеке басын куәландыратын құжаттың көшірмесін бекіту-алдыңғы жағы'
+        self.fields['iin_attachment_back'].label = 'Жеке басын куәландыратын құжаттың көшірмесін бекіту-артқы жағы'
+        self.fields['attachmentProperty'].label = 'Жылжымайтын мүліктің жоқ (бар) екендігі туралы анықтама'
+        self.fields['attachmentDeath'].label = 'Екі немесе жалғыз ата-ананың қайтыс болуы туралы куәлік немесе балалар үйінен анықтама'
+        self.fields['attachmentLarge'].label = 'Отбасында 4 және одан да көп баланың болуы туралы анықтама'
+        self.fields['attachmentDisabled'].label = 'Мүгедектікті растау туралы анықтама'
+        self.fields['attachmentKandas'].label = '"Кандас" мәртебесі туралы құжат'
 
 # class DuplicateForm(ModelForm):
 #     """

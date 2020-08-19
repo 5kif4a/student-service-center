@@ -578,8 +578,8 @@ class HostelReferralAdmin(CustomAdmin):
         'last_name', 'first_name', 'patronymic', 'individual_identification_number', 'faculty', 'date_of_application',
         'status',
         'room', 'print')
-    search_fields = ('last_name', 'first_name', 'patronymic', 'address', 'specialty__name',
-                     'individual_identification_number')
+    search_fields = ('last_name', 'first_name', 'patronymic', 'specialty__name',
+                     'individual_identification_number', 'room__number', 'room__hostel')
     autocomplete_fields = ('specialty',)
     readonly_fields = ('id_card_front', 'id_card_back', 'number', 'appearance')
 
@@ -742,8 +742,12 @@ document.getElementById('postPopulate').submit();">
 
     def formfield_for_foreignkey(self, db_field, request, **kwargs):
         if db_field.name == "room":
-            if self.obj_formfield.room:
-                kwargs["queryset"] = HostelRoom.objects.filter(id=self.obj_formfield.room.id)
+            if self.obj_formfield is not None:
+                if self.obj_formfield.room:
+                    kwargs["queryset"] = HostelRoom.objects.filter(id=self.obj_formfield.room.id)
+                else:
+                    kwargs["queryset"] = HostelRoom.objects.filter(free_space__gt=0)
+
             else:
                 kwargs["queryset"] = HostelRoom.objects.filter(free_space__gt=0)
         return super().formfield_for_foreignkey(db_field, request, **kwargs)

@@ -51,7 +51,8 @@ check_order_urls = [path('check_order', views.check_order)]
 hostel_referral_urls = [path('hostel_referral/report/<obj_id>', views.HostelReferralView.render)]
 
 check_hostel_urls = [path('check_hostel', views.check_hostel),
-                     path('hostel_space', views.hostel_space)]
+                     path('hostel_space', views.hostel_space),
+                     path('hostel_referral_list', views.hostel_referral_list)]
 
 urlpatterns = [
                   path('', views.index),
