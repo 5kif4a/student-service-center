@@ -1,0 +1,165 @@
+{% extends "ssc/service_wrapper.html" %}
+{% load crispy_forms_tags %}
+{% block content %}
+    <div class="container">
+        {% block description %}
+            <h3 class="text-center p-3">Жоғары оқу орындарында білім алушыларға жатақхана беру</h3>
+            <div class="alert alert-info text-center"><h5>Қызмет мәртебесі: {% if status %}автоматтандырылған
+                <i class="fas fa-cogs fa-lg"></i>{% else %}в процессе разработки <i class="fab fa-dev fa-lg"></i>
+                </i>{% endif %}</h5></div>
+            <div class="container">
+                <div class="row text-break">
+                    <div class="col m-2 border border-info">
+                        <ul class="list-group list-group-flush">
+                            <li class="list-group-item"><b>Мемлекеттік орган: </b> ҚР Білім және ғылым министрлігі</li>
+                            <li class="list-group-item"><b>Қызметті алушылар:</b> Жеке тұлғалар</li>
+                            <li class="list-group-item"><b>Қызмет көрсету орны:</b>
+                                <ul class="list-unstyled">
+                                    <li><a href="http://egov.kz/cms/ru/articles/2Fvusi_rk" target="_blank">ҚР жоғары оқу орындарына</a></li>
+                                    <li><a href="https://egov.kz/cms/ru/government-services/for_citizen"
+                                           target="_blank">«Электрондық үкімет» порталы</a></li>
+                                </ul>
+                            </li>
+                            <li class="list-group-item"><b>Қызмет құны:</b> Тегін</li>
+                            <li class="list-group-item"><b>Қызмет көрсету мерзімі:</b> 3 жұмыс күні</li>
+                            <li class="list-group-item"><b>Қызметтің толық атауы:</b> Жоғары оқу орындарында білім алушыларға
+                                жатақхана беру
+                            </li>
+                        </ul>
+                    </div>
+                    <div class="col-md-9 mb-2">
+                        <div class="row mb-2">
+                            <div class="col-lg mt-2">
+                                <a class="btn btn-info btn-block"
+                                   href="https://egov.kz"
+                                   target="_blank">EGOV арқылы қызмет алу</a>
+                            </div>
+                        </div>
+
+                        <div class="row mb-2">
+                            <div class="col-lg mt-2">
+                                <a class="btn btn-info btn-block"
+                                   href="/check_hostel">Өз өтінішіңізді тексеру</a>
+                            </div>
+                        </div>
+
+                        <div class="row mb-2">
+                            <div class="col-lg mt-2">
+                                <a class="btn btn-info btn-block"
+                                   href="/hostel_space"
+                                   target="_blank">Жатақханадағы орындар туралы есеп</a>
+                            </div>
+                        </div>
+
+                        <li class="list-group-item"><b>Қажетті құжаттар:</b>
+                            <ol>
+                                <li>Өтініш.</li>
+                                <li>Қызметті алушының жеке басын куәландыратын құжаттың көшірмесі.</li>
+                                <li>Жылжымайтын мүліктің жоқ (бар) екендігі туралы анықтама.</li>
+                                <li>Екі немесе жалғыз ата-ананың қайтыс болуы туралы куәліктің көшірмесі
+                                    немесе балалар үйінен анықтама.
+                                </li>
+                                <li>Отбасында 4 және одан да көп баланың болуы туралы анықтама.</li>
+                                <li>Мүгедектікті растау туралы анықтама.</li>
+                                <li>"Кандас" мәртебесі туралы құжат.</li>
+                            </ol>
+                        </li>
+                        {% block form %}
+                            <form class="p-2 border border-primary" method="post" enctype="multipart/form-data">
+                                <h4 class="text-center">Өтініш нысаны</h4>
+                                {% csrf_token %}
+                                <div class="form-group">
+                                    <div class="form-row">
+                                        <div class="form-group col-sm">
+                                            {{ form.last_name|as_crispy_field }}
+                                        </div>
+                                        <div class="form-group col-sm">
+                                            {{ form.first_name|as_crispy_field }}
+                                        </div>
+                                        <div class="form-group col-sm">
+                                            {{ form.patronymic|as_crispy_field }}
+                                        </div>
+                                        <div class="form-group col-sm">
+                                            {{ form.individual_identification_number|as_crispy_field }}
+                                        </div>
+                                    </div>
+                                    <div class="form-row align-items-end">
+                                        <div class="form-group col-sm">
+                                            {{ form.email|as_crispy_field }}
+                                        </div>
+                                        <div class="form-group col-sm">
+                                            {{ form.phone_number|as_crispy_field }}
+                                        </div>
+                                    </div>
+                                    <div class="form-row">
+                                        <div class="form-group col-sm">
+                                            {{ form.course|as_crispy_field }}
+                                        </div>
+                                        <div class="form-group col-sm">
+                                            {{ form.group|as_crispy_field }}
+                                        </div>
+                                        <div class="form-group col-sm">
+                                            {{ form.faculty|as_crispy_field }}
+                                        </div>
+                                        <div class="form-group col-sm">
+                                            {{ form.specialty|as_crispy_field }}
+                                        </div>
+                                    </div>
+                                    <div class="form-row">
+                                        <div class="form-group col-sm">
+                                            {{ form.is_serpin|as_crispy_field }}
+                                        </div>
+                                        <div class="form-group col-sm">
+                                            {{ form.place_of_arrival|as_crispy_field }}
+                                        </div>
+                                    </div>
+                                    <div class="form-row">
+                                        <div class="form-group col-sm">
+                                            {{ form.iin_attachment_front|as_crispy_field }}
+                                        </div>
+                                        <div class="form-group col-sm">
+                                            {{ form.iin_attachment_back|as_crispy_field }}
+                                        </div>
+                                    </div>
+                                    <div class="form-row">
+                                        <div class="form-group col-sm">
+                                            {{ form.attachmentProperty|as_crispy_field }}
+                                        </div>
+                                    </div>
+                                    <div class="form-row">
+                                        <div class="form-group col-sm">
+                                            {{ form.attachmentDeath|as_crispy_field }}
+                                        </div>
+                                    </div>
+                                    <div class="form-row">
+                                        <div class="form-group col-sm">
+                                            {{ form.attachmentLarge|as_crispy_field }}
+                                        </div>
+                                    </div>
+                                    <div class="form-row">
+                                        <div class="form-group col-sm">
+                                            {{ form.attachmentDisabled|as_crispy_field }}
+                                        </div>
+                                    </div>
+                                    <div class="form-row">
+                                        <div class="form-group col-sm">
+                                            {{ form.attachmentKandas|as_crispy_field }}
+                                        </div>
+                                    </div>
+                                    <div class="alert alert-danger"><p>Құжаттардың фотосуреттері немесе сканерленген
+                                        суреттері анық болуы керек, құжаттың барлық деректері көріну қажет!</p>
+                                        <p class="mb-0">Бекіту файлының ең үлкен өлшемі 5 мегабайттан (5 МВ) аспауы тиіс.</p>
+                                    </div>
+                                    {{ form.captcha }}
+                                    <p class="text-muted">* - толтыру үшін міндетті жолдар</p>
+                                    <button type="submit" class="btn btn-success mt-1">Өтінішті жіберу</button>
+                                </div>
+                            </form>
+                            </div>
+                        {% endblock form %}
+                </div>
+            </div>
+            </div>
+        {% endblock description %}
+    </div>
+{% endblock content %}
