@@ -345,7 +345,7 @@ class HostelAdmin(CustomAdmin):
     service_name = "Предоставление общежития обучающимся в высших учебных заведениях"
     list_per_page = 15
     list_filter = ('date_of_application', 'faculty', 'course', 'status')
-    list_display = ('last_name', 'first_name', 'patronymic', 'specialty', 'date_of_application', 'status',
+    list_display = ('last_name', 'first_name', 'patronymic', 'specialty', 'course', 'date_of_application', 'status',
                     'print')
     search_fields = ('last_name', 'first_name', 'patronymic', 'address', 'specialty__name',
                      'individual_identification_number')
@@ -575,7 +575,7 @@ class HostelReferralAdmin(CustomAdmin):
     list_per_page = 15
     list_filter = ('date_of_application', 'is_serpin', 'room__hostel', 'faculty', 'course', 'status')
     list_display = (
-        'last_name', 'first_name', 'patronymic', 'individual_identification_number', 'faculty', 'date_of_application',
+        'last_name', 'first_name', 'patronymic', 'individual_identification_number', 'faculty', 'course', 'date_of_application',
         'status',
         'room', 'print')
     search_fields = ('last_name', 'first_name', 'patronymic', 'specialty__name',
