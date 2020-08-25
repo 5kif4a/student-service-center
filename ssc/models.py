@@ -237,13 +237,13 @@ class Hostel(Person, Application):
     """
     id = HashidAutoField(primary_key=True, min_length=16)
 
-    individual_identification_number = models.CharField(max_length=12, verbose_name=_('ИИН'), validators=iin_validator, unique=True)
+    individual_identification_number = models.CharField(max_length=12, verbose_name=_('ИИН'), validators=iin_validator)
 
     faculty = models.CharField(max_length=200, choices=faculties, verbose_name=_('Факультет'))
 
     group = models.CharField(max_length=50, blank=True, verbose_name=_('Группа'))
 
-    place_of_arrival = models.CharField(max_length=200, verbose_name=_('Место прибытия (адрес)'))
+    place_of_arrival = models.CharField(max_length=200, verbose_name=_('Место прибытия (адрес прописки/проживания)'))
 
     # hostel = models.CharField(max_length=200, choices=hostels, verbose_name=_('Общежитие'))
 
@@ -570,12 +570,11 @@ class HostelReferral(Person, Application):
     """
     id = HashidAutoField(primary_key=True, min_length=16)
 
-    individual_identification_number = models.CharField(max_length=12, verbose_name=_('ИИН'), validators=iin_validator,
-                                                        unique=True)
+    individual_identification_number = models.CharField(max_length=12, verbose_name=_('ИИН'), validators=iin_validator)
 
     number = models.IntegerField(max_length=10, blank=True, verbose_name=_('Номер направления'), null=True)
 
-    appearance = models.DateField(max_length=10, blank=True, verbose_name=_('Время явки'), null=True)
+    #appearance = models.DateField(max_length=10, blank=True, verbose_name=_('Время явки'), null=True)
 
     faculty = models.CharField(max_length=200, choices=faculties, verbose_name=_('Факультет'))
 

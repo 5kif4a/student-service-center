@@ -497,7 +497,12 @@ def check_hostel(request):
     if request.method == 'POST':
         individual_identification_number = request.POST.get('iin')
         try:
-            order = Hostel.objects.get(individual_identification_number=individual_identification_number)
+            orders = Hostel.objects.filter(individual_identification_number=individual_identification_number).order_by(
+                '-date_of_application')
+            if orders.count() == 0:
+                raise Hostel.DoesNotExist
+            else:
+                order = orders.first()
 
             status = ""
             if order.status == 'Не проверено':
@@ -505,7 +510,13 @@ def check_hostel(request):
             elif order.status == 'Отозвано на исправление':
                 status = "Отозвано на исправление"
             else:
-                referral = HostelReferral.objects.get(individual_identification_number=individual_identification_number)
+                referrals = HostelReferral.objects.filter(
+                    individual_identification_number=individual_identification_number).order_by('-date_of_application')
+
+                if referrals.count() > 0:
+                    referral = referrals.first()
+                else:
+                    raise HostelReferral.DoesNotExist
 
                 if referral.status == 'Не рассмотрено':
                     status = 'Ожидает решения'
@@ -542,15 +553,28 @@ def hostel_space(request):
     overall_free_space = 0
 
     for room in HostelRoom.objects.all():
-        if room.hostel in all_space.keys():
-            all_space[room.hostel] += room.all_space
-            free_space[room.hostel] += room.free_space
-        else:
-            all_space[room.hostel] = room.all_space
-            free_space[room.hostel] = room.free_space
+        #if room.hostel in all_space.keys():
+         #   all_space[room.hostel] += room.all_space
+        #    free_space[room.hostel] += room.free_space
+        #else:
+         #   all_space[room.hostel] = room.all_space
+         #   free_space[room.hostel] = room.free_space
 
-        overall_space += room.all_space
-        overall_free_space += room.free_space
+        if room.hostel in all_space.keys():
+            all_space[room.hostel] += 1
+            if room.all_space == room.free_space:
+                free_space[room.hostel] += 1
+        else:
+            all_space[room.hostel] = 1
+            free_space[room.hostel] = 0
+            if room.all_space == room.free_space:
+                free_space[room.hostel] += 1
+
+        #overall_space += room.all_space
+        #overall_free_space += room.free_space
+        overall_space += 1
+        if room.all_space == room.free_space:
+            overall_free_space += 1
 
     output = io.BytesIO()
 
@@ -570,10 +594,7 @@ def hostel_space(request):
     row_num = 2
 
     for hostel in all_space:
-        if hostel == 'Общежитие «Серпіндестер Ордасы»':
-            worksheet.write(row_num, 0, 'Общежитие «Серпін үйi»')
-        else:
-            worksheet.write(row_num, 0, hostel)
+        worksheet.write(row_num, 0, hostel)
         worksheet.write(row_num, 1, all_space[hostel])
         worksheet.write(row_num, 2, all_space[hostel] - free_space[hostel])
         worksheet.write(row_num, 3, free_space[hostel])
@@ -624,7 +645,8 @@ def hostel_referral_list(request):
 
     count = 1
 
-    for referral in HostelReferral.objects.filter(Q(status='Одобрено') | Q(status='Заселен')).filter(room__hostel='Общежитие №3'):
+    for referral in HostelReferral.objects.filter(Q(status='Одобрено') | Q(status='Заселен')).filter(
+            room__hostel='Общежитие №3'):
         worksheet.write(row_num, 0, count)
         worksheet.write(row_num, 1, referral.last_name + " " + referral.first_name + " " + referral.patronymic)
         worksheet.write(row_num, 2, referral.faculty)
@@ -638,7 +660,8 @@ def hostel_referral_list(request):
     worksheet.write(row_num, 0, 'Общежитие Жилищный комплекс «Армандастар Ордасы»')
     row_num += 2
 
-    for referral in HostelReferral.objects.filter(Q(status='Одобрено') | Q(status='Заселен')).filter(room__hostel='Общежитие Жилищный комплекс «Армандастар Ордасы»'):
+    for referral in HostelReferral.objects.filter(Q(status='Одобрено') | Q(status='Заселен')).filter(
+            room__hostel='Общежитие Жилищный комплекс «Армандастар Ордасы»'):
         worksheet.write(row_num, 0, count)
         worksheet.write(row_num, 1, referral.last_name + " " + referral.first_name + " " + referral.patronymic)
         worksheet.write(row_num, 2, referral.faculty)
@@ -652,7 +675,8 @@ def hostel_referral_list(request):
     worksheet.write(row_num, 0, 'Общежитие «Серпін үйi»')
     row_num += 2
 
-    for referral in HostelReferral.objects.filter(Q(status='Одобрено') | Q(status='Заселен')).filter(room__hostel='Общежитие «Серпіндестер Ордасы»'):
+    for referral in HostelReferral.objects.filter(Q(status='Одобрено') | Q(status='Заселен')).filter(
+            room__hostel='Общежитие «Серпін үйi»'):
         worksheet.write(row_num, 0, count)
         worksheet.write(row_num, 1, referral.last_name + " " + referral.first_name + " " + referral.patronymic)
         worksheet.write(row_num, 2, referral.faculty)
@@ -673,3 +697,9 @@ def hostel_referral_list(request):
     response['Content-Disposition'] = 'attachment; filename=%s' % filename
 
     return response
+
+
+def rename_hostel(request):
+    HostelRoom.objects.filter(hostel='Общежитие «Серпіндестер Ордасы»').update(hostel='Общежитие «Серпін үйi»')
+    messages.info(request, 'Переименовано удачно')
+    return HttpResponseRedirect('/check_hostel')
