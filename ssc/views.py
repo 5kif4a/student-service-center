@@ -710,6 +710,6 @@ def hostel_referral_list(request):
 
 
 def rename_hostel(request):
-    HostelRoom.objects.filter(hostel='Общежитие «Серпіндестер Ордасы»').update(hostel='Общежитие «Серпін үйi»')
+    HostelRoom.objects.filter(hostel='Общежитие «Серпін үйi»').update(hostel='Общежитие «Студенттер үйi»')
     messages.info(request, 'Переименовано удачно')
     return HttpResponseRedirect('/check_hostel')
