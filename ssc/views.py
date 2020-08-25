@@ -1,7 +1,9 @@
+import pytz
 import xlsxwriter
 from django.contrib import messages
 from django.shortcuts import render, render_to_response, redirect
 from django.contrib.sites.shortcuts import get_current_site
+from django.utils import timezone
 from django.views import View
 from django.http import JsonResponse, HttpResponseRedirect
 from django.core import serializers
@@ -583,12 +585,15 @@ def hostel_space(request):
 
     workbook = xlsxwriter.Workbook(output)
     worksheet = workbook.add_worksheet()
-    worksheet.set_column("A:A", 50)
-    worksheet.set_column("B:D", 15)
+    worksheet.set_column("A:A", 55)
+    worksheet.set_column("B:D", 16)
     workbook.formats[0].set_font_size(14)
     workbook.formats[0].set_font_name("Times New Roman")
 
     worksheet.write(0, 0, "Информация о наличии вакантных мест в общежитиях КарТУ")
+    time = timezone.localtime(timezone.now())
+    time = time.strftime("%d/%m/%Y, %H:%M")
+    worksheet.write(0, 1, "На " + time)
     worksheet.write(1, 0, "Общежитие")
     worksheet.write(1, 1, "Всего мест")
     worksheet.write(1, 2, "Выделено")
@@ -686,7 +691,7 @@ def hostel_referral_list(request):
     row_num += 2
 
     for referral in HostelReferral.objects.filter(Q(status='Одобрено') | Q(status='Заселен')).filter(
-            room__hostel='Общежитие «Серпін үйi»'):
+            room__hostel='Общежитие «Студенттер үйi»'):
         worksheet.write(row_num, 0, count)
         worksheet.write(row_num, 1, referral.last_name + " " + referral.first_name + " " + referral.patronymic)
         worksheet.write(row_num, 2, referral.faculty)
@@ -707,9 +712,3 @@ def hostel_referral_list(request):
     response['Content-Disposition'] = 'attachment; filename=%s' % filename
 
     return response
-
-
-def rename_hostel(request):
-    HostelRoom.objects.filter(hostel='Общежитие «Серпін үйi»').update(hostel='Общежитие «Студенттер үйi»')
-    messages.info(request, 'Переименовано удачно')
-    return HttpResponseRedirect('/check_hostel')
