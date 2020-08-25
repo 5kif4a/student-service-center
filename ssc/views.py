@@ -560,6 +560,9 @@ def hostel_space(request):
          #   all_space[room.hostel] = room.all_space
          #   free_space[room.hostel] = room.free_space
 
+        if room.hostel == 'Общежитие №3':
+            continue
+
         if room.hostel in all_space.keys():
             all_space[room.hostel] += 1
             if room.all_space == room.free_space:
@@ -599,6 +602,13 @@ def hostel_space(request):
         worksheet.write(row_num, 2, all_space[hostel] - free_space[hostel])
         worksheet.write(row_num, 3, free_space[hostel])
         row_num += 1
+
+    #Временно, пока 3 общежитие не работает
+    worksheet.write(row_num, 0, 'Общежитие №3')
+    worksheet.write(row_num, 1, '-')
+    worksheet.write(row_num, 2, '-')
+    worksheet.write(row_num, 3, '-')
+    row_num += 1
 
     worksheet.write(row_num, 0, 'Итого')
     worksheet.write(row_num, 1, overall_space)
