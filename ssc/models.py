@@ -281,6 +281,8 @@ class Hostel(Person, Application):
                                         verbose_name=_('Документ о статусе "кандас"'),
                                         validators=[file_size_validator, file_ext_validator])
 
+    message = models.CharField(max_length=200, blank=True, verbose_name=_('Отправленный ответ'))
+
     address = None
 
     class Meta:
@@ -619,6 +621,8 @@ class HostelReferral(Person, Application):
                               verbose_name=_('Статус'))
 
     group = models.CharField(max_length=50, blank=True, verbose_name=_('Группа'))
+
+    message = models.CharField(max_length=200, blank=True, verbose_name=_('Отправленный ответ'))
 
     address = None
 

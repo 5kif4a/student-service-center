@@ -1,4 +1,3 @@
-import pytz
 import xlsxwriter
 from django.contrib import messages
 from django.shortcuts import render, render_to_response, redirect
@@ -555,12 +554,12 @@ def hostel_space(request):
     overall_free_space = 0
 
     for room in HostelRoom.objects.all():
-        #if room.hostel in all_space.keys():
-         #   all_space[room.hostel] += room.all_space
+        # if room.hostel in all_space.keys():
+        #   all_space[room.hostel] += room.all_space
         #    free_space[room.hostel] += room.free_space
-        #else:
-         #   all_space[room.hostel] = room.all_space
-         #   free_space[room.hostel] = room.free_space
+        # else:
+        #   all_space[room.hostel] = room.all_space
+        #   free_space[room.hostel] = room.free_space
 
         if room.hostel == 'Общежитие №3':
             continue
@@ -575,8 +574,8 @@ def hostel_space(request):
             if room.all_space == room.free_space:
                 free_space[room.hostel] += 1
 
-        #overall_space += room.all_space
-        #overall_free_space += room.free_space
+        # overall_space += room.all_space
+        # overall_free_space += room.free_space
         overall_space += 1
         if room.all_space == room.free_space:
             overall_free_space += 1
@@ -585,40 +584,55 @@ def hostel_space(request):
 
     workbook = xlsxwriter.Workbook(output)
     worksheet = workbook.add_worksheet()
-    worksheet.set_column("A:A", 55)
-    worksheet.set_column("B:D", 16)
-    workbook.formats[0].set_font_size(14)
-    workbook.formats[0].set_font_name("Times New Roman")
 
-    worksheet.write(0, 0, "Информация о наличии вакантных мест в общежитиях КарТУ")
+    header_style = workbook.add_format({'bold': True,
+                                        'font_size': 14,
+                                        'font_name': 'Times New Roman',
+                                        'align': 'center'})
+
+    table_style = workbook.add_format({'font_size': 14,
+                                       'font_name': 'Times New Roman',
+                                       'align': 'center',
+                                       'border': 2,
+                                       'valign': 'vcenter'})
+
+    worksheet.set_column("A:A", 75)
+    worksheet.set_column("B:D", 20)
+    worksheet.set_row(2, 45)
+    worksheet.set_row(3, 30)
+    worksheet.set_row(4, 30)
+    worksheet.set_row(5, 30)
+    worksheet.set_row(6, 45)
+
+    worksheet.write(0, 0, "Информация о наличии вакантных мест в общежитиях КарТУ", header_style)
     time = timezone.localtime(timezone.now())
     time = time.strftime("%d/%m/%Y, %H:%M")
-    worksheet.write(0, 1, "На " + time)
-    worksheet.write(1, 0, "Общежитие")
-    worksheet.write(1, 1, "Всего мест")
-    worksheet.write(1, 2, "Выделено")
-    worksheet.write(1, 3, "Свободно")
+    worksheet.write(0, 2, "на " + time, header_style)
+    worksheet.write(2, 0, "Общежитие", table_style)
+    worksheet.write(2, 1, "Всего мест", table_style)
+    worksheet.write(2, 2, "Выделено", table_style)
+    worksheet.write(2, 3, "Свободно", table_style)
 
-    row_num = 2
+    row_num = 3
 
     for hostel in all_space:
-        worksheet.write(row_num, 0, hostel)
-        worksheet.write(row_num, 1, all_space[hostel])
-        worksheet.write(row_num, 2, all_space[hostel] - free_space[hostel])
-        worksheet.write(row_num, 3, free_space[hostel])
+        worksheet.write(row_num, 0, hostel, table_style)
+        worksheet.write(row_num, 1, all_space[hostel], table_style)
+        worksheet.write(row_num, 2, all_space[hostel] - free_space[hostel], table_style)
+        worksheet.write(row_num, 3, free_space[hostel], table_style)
         row_num += 1
 
-    #Временно, пока 3 общежитие не работает
-    worksheet.write(row_num, 0, 'Общежитие №3')
-    worksheet.write(row_num, 1, '-')
-    worksheet.write(row_num, 2, '-')
-    worksheet.write(row_num, 3, '-')
+    # Временно, пока 3 общежитие не работает
+    worksheet.write(row_num, 0, 'Общежитие №3', table_style)
+    worksheet.write(row_num, 1, '-', table_style)
+    worksheet.write(row_num, 2, '-', table_style)
+    worksheet.write(row_num, 3, '-', table_style)
     row_num += 1
 
-    worksheet.write(row_num, 0, 'Итого')
-    worksheet.write(row_num, 1, overall_space)
-    worksheet.write(row_num, 2, overall_space - overall_free_space)
-    worksheet.write(row_num, 3, overall_free_space)
+    worksheet.write(row_num, 0, 'Итого', table_style)
+    worksheet.write(row_num, 1, overall_space, table_style)
+    worksheet.write(row_num, 2, overall_space - overall_free_space, table_style)
+    worksheet.write(row_num, 3, overall_free_space, table_style)
 
     workbook.close()
     output.seek(0)
@@ -639,72 +653,144 @@ def hostel_referral_list(request):
     списка назначенных направлений
     """
 
+    # TODO: REFACTOR THIS CODE
+
     output = io.BytesIO()
 
     workbook = xlsxwriter.Workbook(output)
     worksheet = workbook.add_worksheet()
     worksheet.set_column("A:A", 10)
     worksheet.set_column("B:F", 15)
+
+    header_style = workbook.add_format({'bold': True,
+                                        'font_size': 14,
+                                        'font_name': 'Times New Roman',
+                                        'align': 'center'})
+
+    table_style = workbook.add_format({'font_size': 14,
+                                       'font_name': 'Times New Roman',
+                                       'align': 'center',
+                                       'border': 2,
+                                       'valign': 'vcenter'})
+
+    table_header_style = workbook.add_format({'font_size': 14,
+                                              'font_name': 'Times New Roman',
+                                              'align': 'center',
+                                              'border': 2,
+                                              'valign': 'vcenter',
+                                              'bold': True})
+
     workbook.formats[0].set_font_size(14)
     workbook.formats[0].set_font_name("Times New Roman")
 
-    worksheet.write(0, 0, "Отчет по выданным направлениям")
-    worksheet.write(1, 0, "№")
-    worksheet.write(1, 1, "ФИО")
-    worksheet.write(1, 2, "Факультет")
-    worksheet.write(1, 3, "Курс")
-    worksheet.write(1, 4, "Группа")
-    worksheet.write(1, 5, "Номер комнаты")
-    worksheet.write(2, 0, "Общежитие №3")
-    row_num = 3
+    worksheet.merge_range("A1:F1", "Списки студентов по заселению в общежитиях", header_style)
 
+    worksheet.merge_range("A3:F3", "Общежитие №3", header_style)
+    worksheet.write(3, 0, "№", table_header_style)
+    worksheet.write(3, 1, "ФИО", table_header_style)
+    worksheet.write(3, 2, "Факультет", table_header_style)
+    worksheet.write(3, 3, "Курс", table_header_style)
+    worksheet.write(3, 4, "Группа", table_header_style)
+    worksheet.write(3, 5, "Номер комнаты", table_header_style)
+    row_num = 4
+
+    old_count = 1
     count = 1
 
     for referral in HostelReferral.objects.filter(Q(status='Одобрено') | Q(status='Заселен')).filter(
             room__hostel='Общежитие №3'):
-        worksheet.write(row_num, 0, count)
-        worksheet.write(row_num, 1, referral.last_name + " " + referral.first_name + " " + referral.patronymic)
-        worksheet.write(row_num, 2, referral.faculty)
-        worksheet.write(row_num, 3, referral.course)
-        worksheet.write(row_num, 4, referral.group)
-        worksheet.write(row_num, 5, referral.room.number)
+        worksheet.write(row_num, 0, count, table_style)
+        worksheet.write(row_num, 1, referral.last_name + " " + referral.first_name + " " + referral.patronymic,
+                        table_style)
+        worksheet.write(row_num, 2, referral.faculty, table_style)
+        worksheet.write(row_num, 3, referral.course, table_style)
+        worksheet.write(row_num, 4, referral.group, table_style)
+        worksheet.write(row_num, 5, referral.room.number, table_style)
         row_num += 1
         count += 1
 
-    row_num += 1
-    worksheet.write(row_num, 0, 'Общежитие Жилищный комплекс «Армандастар Ордасы»')
+    if old_count == count:
+        worksheet.write(row_num, 0, "", table_style)
+        worksheet.write(row_num, 1, "",
+                        table_style)
+        worksheet.write(row_num, 2, "", table_style)
+        worksheet.write(row_num, 3, "", table_style)
+        worksheet.write(row_num, 4, "", table_style)
+        worksheet.write(row_num, 5, "", table_style)
+        row_num += 1
+
     row_num += 2
+    worksheet.merge_range("A" + str(row_num) + ":F" + str(row_num), "Общежитие Жилищный комплекс «Армандастар Ордасы»",
+                          header_style)
+    worksheet.write(row_num, 0, "№", table_header_style)
+    worksheet.write(row_num, 1, "ФИО", table_header_style)
+    worksheet.write(row_num, 2, "Факультет", table_header_style)
+    worksheet.write(row_num, 3, "Курс", table_header_style)
+    worksheet.write(row_num, 4, "Группа", table_header_style)
+    worksheet.write(row_num, 5, "Номер комнаты", table_header_style)
+    row_num += 1
+
+    old_count = count
 
     for referral in HostelReferral.objects.filter(Q(status='Одобрено') | Q(status='Заселен')).filter(
             room__hostel='Общежитие Жилищный комплекс «Армандастар Ордасы»'):
-        worksheet.write(row_num, 0, count)
-        worksheet.write(row_num, 1, referral.last_name + " " + referral.first_name + " " + referral.patronymic)
-        worksheet.write(row_num, 2, referral.faculty)
-        worksheet.write(row_num, 3, referral.course)
-        worksheet.write(row_num, 4, referral.group)
-        worksheet.write(row_num, 5, referral.room.number)
+        worksheet.write(row_num, 0, count, table_style)
+        worksheet.write(row_num, 1, referral.last_name + " " + referral.first_name + " " + referral.patronymic, table_style)
+        worksheet.write(row_num, 2, referral.faculty, table_style)
+        worksheet.write(row_num, 3, referral.course, table_style)
+        worksheet.write(row_num, 4, referral.group, table_style)
+        worksheet.write(row_num, 5, referral.room.number, table_style)
         row_num += 1
         count += 1
 
-    row_num += 1
-    worksheet.write(row_num, 0, 'Общежитие «Серпін үйi»')
+    if old_count == count:
+        worksheet.write(row_num, 0, "", table_style)
+        worksheet.write(row_num, 1, "",
+                        table_style)
+        worksheet.write(row_num, 2, "", table_style)
+        worksheet.write(row_num, 3, "", table_style)
+        worksheet.write(row_num, 4, "", table_style)
+        worksheet.write(row_num, 5, "", table_style)
+        row_num += 1
+
     row_num += 2
+    worksheet.merge_range("A" + str(row_num) + ":F" + str(row_num), "Общежитие «Студенттер үйi»",
+                          header_style)
+    worksheet.write(row_num, 0, "№", table_header_style)
+    worksheet.write(row_num, 1, "ФИО", table_header_style)
+    worksheet.write(row_num, 2, "Факультет", table_header_style)
+    worksheet.write(row_num, 3, "Курс", table_header_style)
+    worksheet.write(row_num, 4, "Группа", table_header_style)
+    worksheet.write(row_num, 5, "Номер комнаты", table_header_style)
+    row_num += 1
+
+    old_count = count
 
     for referral in HostelReferral.objects.filter(Q(status='Одобрено') | Q(status='Заселен')).filter(
             room__hostel='Общежитие «Студенттер үйi»'):
-        worksheet.write(row_num, 0, count)
-        worksheet.write(row_num, 1, referral.last_name + " " + referral.first_name + " " + referral.patronymic)
-        worksheet.write(row_num, 2, referral.faculty)
-        worksheet.write(row_num, 3, referral.course)
-        worksheet.write(row_num, 4, referral.group)
-        worksheet.write(row_num, 5, referral.room.number)
+        worksheet.write(row_num, 0, count, table_style)
+        worksheet.write(row_num, 1, referral.last_name + " " + referral.first_name + " " + referral.patronymic, table_style)
+        worksheet.write(row_num, 2, referral.faculty, table_style)
+        worksheet.write(row_num, 3, referral.course, table_style)
+        worksheet.write(row_num, 4, referral.group, table_style)
+        worksheet.write(row_num, 5, referral.room.number, table_style)
         row_num += 1
         count += 1
+
+    if old_count == count:
+        worksheet.write(row_num, 0, "", table_style)
+        worksheet.write(row_num, 1, "",
+                        table_style)
+        worksheet.write(row_num, 2, "", table_style)
+        worksheet.write(row_num, 3, "", table_style)
+        worksheet.write(row_num, 4, "", table_style)
+        worksheet.write(row_num, 5, "", table_style)
+        row_num += 1
 
     workbook.close()
     output.seek(0)
 
-    filename = 'hostel_space.xlsx'
+    filename = 'referral_list.xlsx'
     response = HttpResponse(
         output,
         content_type='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
