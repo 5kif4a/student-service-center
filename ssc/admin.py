@@ -351,9 +351,24 @@ class HostelAdmin(CustomAdmin):
     search_fields = ('last_name', 'first_name', 'patronymic', 'specialty__name',
                      'individual_identification_number')
     autocomplete_fields = ('specialty',)
-    readonly_fields = ('id_card_front', 'id_card_back')
+    readonly_fields = ('id_card_front', 'id_card_back', 'message')
 
     def response_change(self, request, obj):
+        if obj.status != 'Отозвано на исправление':
+            note = request.POST.get('note')
+
+            obj.status = 'Отозвано на исправление'
+            obj.message = note
+            obj.save()
+
+            ctx = {'name': obj.first_name,
+                   'note': note}
+            to = (obj.email,)
+            send_email('mails/revoke.html', ctx, to)
+            self.message_user(request, f"Письмо с уведомлением отправлено {obj}")
+        else:
+            self.message_user(request, f"Письмо с уведомлением уже отправлено {obj}")
+
         if "_verify" in request.POST:
             # Если подтвержден - выдаем сообщение, что заявление уже подтверждено
             if obj.status == 'Подтверждено':
@@ -583,7 +598,7 @@ class HostelReferralAdmin(CustomAdmin):
     search_fields = ('last_name', 'first_name', 'patronymic', 'specialty__name',
                      'individual_identification_number', 'room__number', 'room__hostel')
     autocomplete_fields = ('specialty',)
-    readonly_fields = ('id_card_front', 'id_card_back', 'number')
+    readonly_fields = ('id_card_front', 'id_card_back', 'number', 'message')
 
     def response_change(self, request, obj):
 
@@ -598,6 +613,7 @@ class HostelReferralAdmin(CustomAdmin):
                     obj.room = None
 
                 obj.status = 'Отказано'
+                obj.message = note
                 obj.save()
 
                 ctx = {'name': obj.first_name,
