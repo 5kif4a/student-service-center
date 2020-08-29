@@ -622,7 +622,7 @@ class HostelReferral(Person, Application):
 
     group = models.CharField(max_length=50, blank=True, verbose_name=_('Группа'))
 
-    message = models.CharField(max_length=200, blank=True, verbose_name=_('Отправленный ответ'))
+    message = models.CharField(max_length=500, blank=True, verbose_name=_('Отправленный ответ'))
 
     address = None
 
