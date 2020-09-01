@@ -400,11 +400,20 @@ class HostelReferralView(TemplateView):
             hostel = app.room.hostel
             room = "Комната " + str(app.room.number)
 
+            first_date = app.appearance_start
+            first_date = first_date.strftime("%d.%m.%Y")
+
+            second_date = app.appearance_end
+            second_date = second_date.strftime("%d.%m.%Y")
+
+            appearance = first_date + " - " + second_date
+
             context = {
                 'app': app,
                 'address': hostel_address,
                 'hostel': hostel,
                 'room': room,
+                'appearance': appearance,
                 'qr_code': generate_qr_code(f'{BASE_URL}/check_order?order_type=hostel_referral&id={obj_id}')
             }
             return render_pdf('applications/hostel_referral.html', context)
@@ -735,7 +744,8 @@ def hostel_referral_list(request):
     for referral in HostelReferral.objects.filter(Q(status='Одобрено') | Q(status='Заселен')).filter(
             room__hostel='Общежитие Жилищный комплекс «Армандастар Ордасы»'):
         worksheet.write(row_num, 0, count, table_style)
-        worksheet.write(row_num, 1, referral.last_name + " " + referral.first_name + " " + referral.patronymic, table_style)
+        worksheet.write(row_num, 1, referral.last_name + " " + referral.first_name + " " + referral.patronymic,
+                        table_style)
         worksheet.write(row_num, 2, referral.faculty, table_style)
         worksheet.write(row_num, 3, referral.course, table_style)
         worksheet.write(row_num, 4, referral.group, table_style)
@@ -769,7 +779,8 @@ def hostel_referral_list(request):
     for referral in HostelReferral.objects.filter(Q(status='Одобрено') | Q(status='Заселен')).filter(
             room__hostel='Общежитие «Студенттер үйi»'):
         worksheet.write(row_num, 0, count, table_style)
-        worksheet.write(row_num, 1, referral.last_name + " " + referral.first_name + " " + referral.patronymic, table_style)
+        worksheet.write(row_num, 1, referral.last_name + " " + referral.first_name + " " + referral.patronymic,
+                        table_style)
         worksheet.write(row_num, 2, referral.faculty, table_style)
         worksheet.write(row_num, 3, referral.course, table_style)
         worksheet.write(row_num, 4, referral.group, table_style)
@@ -798,3 +809,10 @@ def hostel_referral_list(request):
     response['Content-Disposition'] = 'attachment; filename=%s' % filename
 
     return response
+
+
+def update_dates(request):
+    first = datetime(2020, 8, 29)
+    HostelReferral.objects.filter(status='Одобрено').update(appearance_start=first)
+    second = datetime(2020, 8, 31)
+    HostelReferral.objects.filter(status='Одобрено').update(appearance_end=second)

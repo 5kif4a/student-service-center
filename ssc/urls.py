@@ -54,6 +54,8 @@ check_hostel_urls = [path('check_hostel', views.check_hostel),
                      path('hostel_space', views.hostel_space),
                      path('hostel_referral_list', views.hostel_referral_list)]
 
+tmp_url = [path('update_dates', views.update_dates)]
+
 urlpatterns = [
                   path('', views.index),
                   url(r'^%s(?P<path>.*)$' % settings.MEDIA_URL[1:], protected_serve,
@@ -70,4 +72,4 @@ urlpatterns = [
               notifications_urls + \
               check_order_urls + \
               hostel_referral_urls + \
-              check_hostel_urls
+              check_hostel_urls + tmp_url

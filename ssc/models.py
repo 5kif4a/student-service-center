@@ -576,7 +576,9 @@ class HostelReferral(Person, Application):
 
     number = models.IntegerField(max_length=10, blank=True, verbose_name=_('Номер направления'), null=True)
 
-    #appearance = models.DateField(max_length=10, blank=True, verbose_name=_('Время явки'), null=True)
+    appearance_start = models.DateField(max_length=10, blank=True, verbose_name=_('Время явки (начало)'), null=True)
+
+    appearance_end = models.DateField(max_length=10, blank=True, verbose_name=_('Время явки (конец)'), null=True)
 
     faculty = models.CharField(max_length=200, choices=faculties, verbose_name=_('Факультет'))
 

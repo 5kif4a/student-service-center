@@ -14,8 +14,8 @@
         <input type="button" value="Отказать" data-toggle="modal" data-target="#exampleModal">
         <input type="submit" class="default" value="Заселить" name="_populate">
         <input type="button" value="Выселить" data-toggle="modal" data-target="#evict_modal">
-        <!--<input type="button" value="Подтвердить" data-toggle="modal" data-target="#verify_modal"> -->
-      <input type="submit" value="Подтвердить" name="_approve">
+        <input type="button" value="Подтвердить" data-toggle="modal" data-target="#verify_modal">
+      <!--<input type="submit" value="Подтвердить" name="_approve">-->
     </div>
 {{ block.super }}
 
@@ -78,8 +78,10 @@
       </div>
       <div class="modal-body">
           <div class="form-group">
-            <label for="message-text" class="col-form-label">Дата и время рекомендуемой явки</label>
-            <input type="date" class="form-control" id="verify-message-text" name="datetime" required>
+            <label for="verify_first_day" class="col-form-label">Дата начала рекомендуемой явки</label>
+            <input type="date" class="form-control" id="verify_first_day" name="verify_first" required>
+            <label for="verify_last_day" class="col-form-label">Дата конца рекомендуемой явки</label>
+            <input type="date" class="form-control" id="verify_last_day" name="verify_second" required>
           </div>
       </div>
       <div class="modal-footer">

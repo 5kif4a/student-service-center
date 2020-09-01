@@ -59,7 +59,7 @@ DSN=Data Source Name
 ```
 - Миграция базы данных
 ```
-py manage.py magemigrations ssc 
+py manage.py makemigrations ssc 
 py manage.py migrate
 ```
 - Создание суперпользователя

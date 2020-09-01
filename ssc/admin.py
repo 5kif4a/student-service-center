@@ -598,7 +598,7 @@ class HostelReferralAdmin(CustomAdmin):
     search_fields = ('last_name', 'first_name', 'patronymic', 'specialty__name',
                      'individual_identification_number', 'room__number', 'room__hostel')
     autocomplete_fields = ('specialty',)
-    readonly_fields = ('id_card_front', 'id_card_back', 'number', 'message')
+    readonly_fields = ('id_card_front', 'id_card_back', 'number', 'message', 'appearance_start', 'appearance_end')
 
     def response_change(self, request, obj):
 
@@ -633,7 +633,8 @@ class HostelReferralAdmin(CustomAdmin):
             else:
                 obj.status = 'Одобрено'
 
-                appearance = request.POST.get('datetime')
+                appearance_first = request.POST.get('verify_first')
+                appearance_last = request.POST.get('verify_second')
 
                 try:
                     referral_number = HostelReferral.objects.all().aggregate(Max('number'))
@@ -643,7 +644,8 @@ class HostelReferralAdmin(CustomAdmin):
 
                 obj.number = referral_number
 
-                # obj.appearance = appearance
+                obj.appearance_start = appearance_first
+                obj.appearance_end = appearance_last
 
                 obj.room.free_space -= 1
                 obj.room.save()
