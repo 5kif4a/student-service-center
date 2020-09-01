@@ -809,10 +809,3 @@ def hostel_referral_list(request):
     response['Content-Disposition'] = 'attachment; filename=%s' % filename
 
     return response
-
-
-def update_dates(request):
-    first = datetime(2020, 8, 29)
-    HostelReferral.objects.filter(status='Одобрено').update(appearance_start=first)
-    second = datetime(2020, 8, 31)
-    HostelReferral.objects.filter(status='Одобрено').update(appearance_end=second)
