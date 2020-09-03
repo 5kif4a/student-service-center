@@ -354,20 +354,21 @@ class HostelAdmin(CustomAdmin):
     readonly_fields = ('id_card_front', 'id_card_back', 'message')
 
     def response_change(self, request, obj):
-        if obj.status != 'Отозвано на исправление':
-            note = request.POST.get('note')
+        if "_send_for_correction" in request.POST:
+            if obj.status != 'Отозвано на исправление':
+                note = request.POST.get('note')
 
-            obj.status = 'Отозвано на исправление'
-            obj.message = note
-            obj.save()
+                obj.status = 'Отозвано на исправление'
+                obj.message = note
+                obj.save()
 
-            ctx = {'name': obj.first_name,
-                   'note': note}
-            to = (obj.email,)
-            send_email('mails/revoke.html', ctx, to)
-            self.message_user(request, f"Письмо с уведомлением отправлено {obj}")
-        else:
-            self.message_user(request, f"Письмо с уведомлением уже отправлено {obj}")
+                ctx = {'name': obj.first_name,
+                    'note': note}
+                to = (obj.email,)
+                send_email('mails/revoke.html', ctx, to)
+                self.message_user(request, f"Письмо с уведомлением отправлено {obj}")
+            else:
+                self.message_user(request, f"Письмо с уведомлением уже отправлено {obj}")
 
         if "_verify" in request.POST:
             # Если подтвержден - выдаем сообщение, что заявление уже подтверждено
