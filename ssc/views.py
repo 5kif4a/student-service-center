@@ -669,7 +669,8 @@ def hostel_referral_list(request):
     workbook = xlsxwriter.Workbook(output)
     worksheet = workbook.add_worksheet()
     worksheet.set_column("A:A", 10)
-    worksheet.set_column("B:F", 15)
+    worksheet.set_column("B:C", 35)
+    worksheet.set_column("D:F", 15)
 
     header_style = workbook.add_format({'bold': True,
                                         'font_size': 14,
@@ -739,7 +740,8 @@ def hostel_referral_list(request):
     worksheet.write(row_num, 5, "Номер комнаты", table_header_style)
     row_num += 1
 
-    old_count = count
+    old_count = 1
+    count = 1
 
     for referral in HostelReferral.objects.filter(Q(status='Одобрено') | Q(status='Заселен')).filter(
             room__hostel='Общежитие Жилищный комплекс «Армандастар Ордасы»'):
@@ -774,7 +776,8 @@ def hostel_referral_list(request):
     worksheet.write(row_num, 5, "Номер комнаты", table_header_style)
     row_num += 1
 
-    old_count = count
+    old_count = 1
+    count = 1
 
     for referral in HostelReferral.objects.filter(Q(status='Одобрено') | Q(status='Заселен')).filter(
             room__hostel='Общежитие «Студенттер үйi»'):

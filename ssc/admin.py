@@ -1,6 +1,7 @@
 from django.contrib import admin
 from django.db.models import Max
 from django.utils.html import format_html
+from rangefilter.filter import DateRangeFilter
 
 from SSC_KSTU.settings import BASE_URL, DEBUG
 from ssc.models import *
@@ -344,7 +345,7 @@ class HostelAdmin(CustomAdmin):
     app = 'Ваше заявление принято в работу.'
     service_name = "Предоставление общежития обучающимся в высших учебных заведениях"
     list_per_page = 15
-    list_filter = ('date_of_application', 'faculty', 'course', 'status')
+    list_filter = (('date_of_application', DateRangeFilter), 'faculty', 'course', 'status')
     list_display = (
     'last_name', 'first_name', 'patronymic', 'faculty', 'specialty', 'course', 'date_of_application', 'status',
     'print')
@@ -590,7 +591,7 @@ class HostelReferralAdmin(CustomAdmin):
     app = 'Ваше направление в общежитие готово.'
     service_name = "Предоставление общежития обучающимся в высших учебных заведениях"
     list_per_page = 15
-    list_filter = ('date_of_application', 'is_serpin', 'room__hostel', 'faculty', 'course', 'status')
+    list_filter = (('date_of_application', DateRangeFilter), 'is_serpin', 'room__hostel', 'faculty', 'course', 'status')
     list_display = (
         'last_name', 'first_name', 'patronymic', 'individual_identification_number', 'faculty', 'course',
         'date_of_application',
@@ -707,6 +708,27 @@ class HostelReferralAdmin(CustomAdmin):
                 send_email("mails/ready/hostel_referral_evict.html", ctx, to)
 
                 self.message_user(request, f"""Обработка заявления "{obj}" завершена. Письмо отправлено""")
+
+        if "_absence" in request.POST:
+            if obj.status != 'Неявка':
+                note = 'Неявка'
+
+                if obj.status == 'Одобрено':
+                    obj.room.free_space += 1
+                    obj.room.save()
+                    obj.room = None
+
+                obj.status = 'Неявка'
+                obj.message = note
+                obj.save()
+
+                ctx = {'name': obj.first_name,
+                       'note': note}
+                to = (obj.email,)
+                send_email('mails/hostel_refuse.html', ctx, to)
+                self.message_user(request, f"Письмо с уведомлением отправлено {obj}")
+            else:
+                self.message_user(request, f"Письмо с уведомлением уже отправлено {obj}")
 
         return super().response_change(request, obj)
 
