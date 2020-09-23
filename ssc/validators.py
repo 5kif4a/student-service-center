@@ -7,6 +7,7 @@
 # 250MB - 214958080
 # 500MB - 429916160
 import datetime as dt
+import regex as re
 from django.core.validators import RegexValidator, MinValueValidator, MaxValueValidator, FileExtensionValidator
 from django.core.exceptions import ValidationError
 
@@ -21,7 +22,7 @@ iin_regex = '^((0[48]|[2468][048]|[13579][26])0229[1-6]|000229[34]|\d\d((0[13578
 # регулярное выражение для номера телефона (Казахстан)
 phone_number_regex = '^\+?77([0124567][0-8]\d{7})$'
 # регулярное выражение для символов
-alphabet_regex = '^[А-Яа-яA-Za-z]+$'
+alphabet_regex = re.compile('^(\p{L})+$', re.UNICODE)
 
 # валидаторы
 alphabet_validator = (RegexValidator(regex=alphabet_regex, message='В этом поле только символы'),)
