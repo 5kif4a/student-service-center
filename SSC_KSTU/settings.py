@@ -14,6 +14,7 @@ import os
 
 import environ
 import sentry_sdk
+from regex import regex
 from sentry_sdk.integrations.django import DjangoIntegration
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
