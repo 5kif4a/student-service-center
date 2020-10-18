@@ -1,0 +1,17 @@
+<h3 align="center" style="font-family: 'Times New Roman'">Информация о наличии вакантных мест в общежитиях КарТУ на {{time}}</h3>
+<table border="1" style="width:70%;" align="center">
+    <tr style="height: 50px">
+        <th>Общежитие</th>
+        <th>Всего мест</th>
+        <th>Выделено</th>
+        <th>Свободно</th>
+    </tr>
+    {% for r in result %}
+    <tr style="height: 50px">
+        <th> {{ r.hostel }}</th>
+        <th> {{ r.all_space }}</th>
+        <th> {{ r.taken_space }}</th>
+        <th> {{ r.free_space }}</th>
+    </tr>
+    {% endfor %}
+</table>

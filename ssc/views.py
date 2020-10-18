@@ -556,6 +556,8 @@ def hostel_space(request):
     мест в общежитии
     """
 
+    template = 'ssc/hostel_space.html'
+
     all_space = dict()
     free_space = dict()
 
@@ -589,71 +591,30 @@ def hostel_space(request):
         if room.all_space == room.free_space:
             overall_free_space += 1
 
-    output = io.BytesIO()
-
-    workbook = xlsxwriter.Workbook(output)
-    worksheet = workbook.add_worksheet()
-
-    header_style = workbook.add_format({'bold': True,
-                                        'font_size': 14,
-                                        'font_name': 'Times New Roman',
-                                        'align': 'center'})
-
-    table_style = workbook.add_format({'font_size': 14,
-                                       'font_name': 'Times New Roman',
-                                       'align': 'center',
-                                       'border': 2,
-                                       'valign': 'vcenter'})
-
-    worksheet.set_column("A:A", 75)
-    worksheet.set_column("B:D", 20)
-    worksheet.set_row(2, 45)
-    worksheet.set_row(3, 30)
-    worksheet.set_row(4, 30)
-    worksheet.set_row(5, 30)
-    worksheet.set_row(6, 45)
-
-    worksheet.write(0, 0, "Информация о наличии вакантных мест в общежитиях КарТУ", header_style)
     time = timezone.localtime(timezone.now())
     time = time.strftime("%d/%m/%Y, %H:%M")
-    worksheet.write(0, 2, "на " + time, header_style)
-    worksheet.write(2, 0, "Общежитие", table_style)
-    worksheet.write(2, 1, "Всего мест", table_style)
-    worksheet.write(2, 2, "Выделено", table_style)
-    worksheet.write(2, 3, "Свободно", table_style)
 
-    row_num = 3
-
+    result = []
     for hostel in all_space:
-        worksheet.write(row_num, 0, hostel, table_style)
-        worksheet.write(row_num, 1, all_space[hostel], table_style)
-        worksheet.write(row_num, 2, all_space[hostel] - free_space[hostel], table_style)
-        worksheet.write(row_num, 3, free_space[hostel], table_style)
-        row_num += 1
+        result.append({'hostel': hostel,
+                       'all_space': all_space[hostel],
+                       'taken_space': all_space[hostel] - free_space[hostel],
+                       'free_space': free_space[hostel]})
 
     # Временно, пока 3 общежитие не работает
-    worksheet.write(row_num, 0, 'Общежитие №3', table_style)
-    worksheet.write(row_num, 1, '-', table_style)
-    worksheet.write(row_num, 2, '-', table_style)
-    worksheet.write(row_num, 3, '-', table_style)
-    row_num += 1
+    result.append({'hostel': 'Общежитие №3',
+                   'all_space': '-',
+                   'taken_space': '-',
+                   'free_space': '-'})
 
-    worksheet.write(row_num, 0, 'Итого', table_style)
-    worksheet.write(row_num, 1, overall_space, table_style)
-    worksheet.write(row_num, 2, overall_space - overall_free_space, table_style)
-    worksheet.write(row_num, 3, overall_free_space, table_style)
+    result.append({'hostel': 'Итого',
+                   'all_space': overall_space,
+                   'taken_space': overall_space - overall_free_space,
+                   'free_space': overall_free_space})
 
-    workbook.close()
-    output.seek(0)
-
-    filename = 'hostel_space.xlsx'
-    response = HttpResponse(
-        output,
-        content_type='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
-    )
-    response['Content-Disposition'] = 'attachment; filename=%s' % filename
-
-    return response
+    context = {'result': result,
+               'time': time}
+    return render_to_response(template, context)
 
 
 def hostel_referral_list(request):
