@@ -1,0 +1,70 @@
+<h2 align="center" style="font-family: 'Times New Roman'">Списки студентов по заселению в общежитиях</h2>
+
+<br>
+<h3 align="center" style="font-family: 'Times New Roman'">Общежитие №3</h3>
+<table border="1" style="width:70%;" align="center">
+    <tr style="height: 50px">
+        <th width="5%">№</th>
+        <th width="45%">ФИО</th>
+        <th width="15%">Факультет</th>
+        <th width="10%">Курс</th>
+        <th width="15%">Группа</th>
+        <th width="10%">Номер комнаты</th>
+    </tr>
+    {% for record in hostel_three %}
+    <tr style="height: 50px">
+        <th width="5%"> {{ record.count }}</th>
+        <th width="45%"> {{ record.full_name }}</th>
+        <th width="15%"> {{ record.faculty }}</th>
+        <th width="10%"> {{ record.course }}</th>
+        <th width="15%"> {{ record.group }}</th>
+        <th width="10%"> {{ record.room_number }}</th>
+    </tr>
+    {% endfor %}
+</table>
+
+<br>
+<h3 align="center" style="font-family: 'Times New Roman'">Общежитие Жилищный комплекс «Армандастар Ордасы»</h3>
+<table border="1" style="width:70%;" align="center">
+    <tr style="height: 50px">
+        <th width="5%">№</th>
+        <th width="45%">ФИО</th>
+        <th width="15%">Факультет</th>
+        <th width="10%">Курс</th>
+        <th width="15%">Группа</th>
+        <th width="10%">Номер комнаты</th>
+    </tr>
+    {% for record in hostel_armandastar %}
+    <tr style="height: 50px">
+        <th width="5%"> {{ record.count }}</th>
+        <th width="45%"> {{ record.full_name }}</th>
+        <th width="15%"> {{ record.faculty }}</th>
+        <th width="10%"> {{ record.course }}</th>
+        <th width="15%"> {{ record.group }}</th>
+        <th width="10%"> {{ record.room_number }}</th>
+    </tr>
+    {% endfor %}
+</table>
+
+<br>
+<h3 align="center" style="font-family: 'Times New Roman'">Общежитие «Студенттер үйi»</h3>
+<table border="1" style="width:70%;" align="center">
+    <tr style="height: 50px">
+        <th width="5%">№</th>
+        <th width="45%">ФИО</th>
+        <th width="15%">Факультет</th>
+        <th width="10%">Курс</th>
+        <th width="15%">Группа</th>
+        <th width="10%">Номер комнаты</th>
+    </tr>
+    {% for record in hostel_uyi %}
+    <tr style="height: 50px">
+        <th width="5%"> {{ record.count }}</th>
+        <th width="45%"> {{ record.full_name }}</th>
+        <th width="15%"> {{ record.faculty }}</th>
+        <th width="10%"> {{ record.course }}</th>
+        <th width="15%"> {{ record.group }}</th>
+        <th width="10%"> {{ record.room_number }}</th>
+    </tr>
+    {% endfor %}
+</table>

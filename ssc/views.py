@@ -622,154 +622,74 @@ def hostel_referral_list(request):
     Проверка
     списка назначенных направлений
     """
+    template = 'ssc/hostel_referral_list.html'
 
     # TODO: REFACTOR THIS CODE
-
-    output = io.BytesIO()
-
-    workbook = xlsxwriter.Workbook(output)
-    worksheet = workbook.add_worksheet()
-    worksheet.set_column("A:A", 10)
-    worksheet.set_column("B:C", 35)
-    worksheet.set_column("D:F", 15)
-
-    header_style = workbook.add_format({'bold': True,
-                                        'font_size': 14,
-                                        'font_name': 'Times New Roman',
-                                        'align': 'center'})
-
-    table_style = workbook.add_format({'font_size': 14,
-                                       'font_name': 'Times New Roman',
-                                       'align': 'center',
-                                       'border': 2,
-                                       'valign': 'vcenter'})
-
-    table_header_style = workbook.add_format({'font_size': 14,
-                                              'font_name': 'Times New Roman',
-                                              'align': 'center',
-                                              'border': 2,
-                                              'valign': 'vcenter',
-                                              'bold': True})
-
-    workbook.formats[0].set_font_size(14)
-    workbook.formats[0].set_font_name("Times New Roman")
-
-    worksheet.merge_range("A1:F1", "Списки студентов по заселению в общежитиях", header_style)
-
-    worksheet.merge_range("A3:F3", "Общежитие №3", header_style)
-    worksheet.write(3, 0, "№", table_header_style)
-    worksheet.write(3, 1, "ФИО", table_header_style)
-    worksheet.write(3, 2, "Факультет", table_header_style)
-    worksheet.write(3, 3, "Курс", table_header_style)
-    worksheet.write(3, 4, "Группа", table_header_style)
-    worksheet.write(3, 5, "Номер комнаты", table_header_style)
-    row_num = 4
-
-    old_count = 1
     count = 1
+
+    hostel_three = []
 
     for referral in HostelReferral.objects.filter(Q(status='Одобрено') | Q(status='Заселен')).filter(
             room__hostel='Общежитие №3'):
-        worksheet.write(row_num, 0, count, table_style)
-        worksheet.write(row_num, 1, referral.last_name + " " + referral.first_name + " " + referral.patronymic,
-                        table_style)
-        worksheet.write(row_num, 2, referral.faculty, table_style)
-        worksheet.write(row_num, 3, referral.course, table_style)
-        worksheet.write(row_num, 4, referral.group, table_style)
-        worksheet.write(row_num, 5, referral.room.number, table_style)
-        row_num += 1
+        hostel_three.append({'count':count,
+                             'full_name': referral.last_name + " " + referral.first_name + " " + referral.patronymic,
+                             'faculty': referral.faculty,
+                             'course': referral.course,
+                             'group': referral.group,
+                             'room_number': referral.room.number})
         count += 1
 
-    if old_count == count:
-        worksheet.write(row_num, 0, "", table_style)
-        worksheet.write(row_num, 1, "",
-                        table_style)
-        worksheet.write(row_num, 2, "", table_style)
-        worksheet.write(row_num, 3, "", table_style)
-        worksheet.write(row_num, 4, "", table_style)
-        worksheet.write(row_num, 5, "", table_style)
-        row_num += 1
+    if len(hostel_three) == 0:
+        hostel_three.append({'count': "",
+                             'full_name': "",
+                             'faculty': "",
+                             'course': "",
+                             'group': "",
+                             'room_number': ""})
 
-    row_num += 2
-    worksheet.merge_range("A" + str(row_num) + ":F" + str(row_num), "Общежитие Жилищный комплекс «Армандастар Ордасы»",
-                          header_style)
-    worksheet.write(row_num, 0, "№", table_header_style)
-    worksheet.write(row_num, 1, "ФИО", table_header_style)
-    worksheet.write(row_num, 2, "Факультет", table_header_style)
-    worksheet.write(row_num, 3, "Курс", table_header_style)
-    worksheet.write(row_num, 4, "Группа", table_header_style)
-    worksheet.write(row_num, 5, "Номер комнаты", table_header_style)
-    row_num += 1
-
-    old_count = 1
     count = 1
 
+    hostel_armandastar = []
     for referral in HostelReferral.objects.filter(Q(status='Одобрено') | Q(status='Заселен')).filter(
             room__hostel='Общежитие Жилищный комплекс «Армандастар Ордасы»'):
-        worksheet.write(row_num, 0, count, table_style)
-        worksheet.write(row_num, 1, referral.last_name + " " + referral.first_name + " " + referral.patronymic,
-                        table_style)
-        worksheet.write(row_num, 2, referral.faculty, table_style)
-        worksheet.write(row_num, 3, referral.course, table_style)
-        worksheet.write(row_num, 4, referral.group, table_style)
-        worksheet.write(row_num, 5, referral.room.number, table_style)
-        row_num += 1
+        hostel_armandastar.append({'count':count,
+                             'full_name': referral.last_name + " " + referral.first_name + " " + referral.patronymic,
+                             'faculty': referral.faculty,
+                             'course': referral.course,
+                             'group': referral.group,
+                             'room_number': referral.room.number})
         count += 1
 
-    if old_count == count:
-        worksheet.write(row_num, 0, "", table_style)
-        worksheet.write(row_num, 1, "",
-                        table_style)
-        worksheet.write(row_num, 2, "", table_style)
-        worksheet.write(row_num, 3, "", table_style)
-        worksheet.write(row_num, 4, "", table_style)
-        worksheet.write(row_num, 5, "", table_style)
-        row_num += 1
+    if len(hostel_armandastar) == 0:
+        hostel_armandastar.append({'count': "",
+                             'full_name': "",
+                             'faculty': "",
+                             'course': "",
+                             'group': "",
+                             'room_number': ""})
 
-    row_num += 2
-    worksheet.merge_range("A" + str(row_num) + ":F" + str(row_num), "Общежитие «Студенттер үйi»",
-                          header_style)
-    worksheet.write(row_num, 0, "№", table_header_style)
-    worksheet.write(row_num, 1, "ФИО", table_header_style)
-    worksheet.write(row_num, 2, "Факультет", table_header_style)
-    worksheet.write(row_num, 3, "Курс", table_header_style)
-    worksheet.write(row_num, 4, "Группа", table_header_style)
-    worksheet.write(row_num, 5, "Номер комнаты", table_header_style)
-    row_num += 1
-
-    old_count = 1
     count = 1
 
+    hostel_uyi = []
     for referral in HostelReferral.objects.filter(Q(status='Одобрено') | Q(status='Заселен')).filter(
             room__hostel='Общежитие «Студенттер үйi»'):
-        worksheet.write(row_num, 0, count, table_style)
-        worksheet.write(row_num, 1, referral.last_name + " " + referral.first_name + " " + referral.patronymic,
-                        table_style)
-        worksheet.write(row_num, 2, referral.faculty, table_style)
-        worksheet.write(row_num, 3, referral.course, table_style)
-        worksheet.write(row_num, 4, referral.group, table_style)
-        worksheet.write(row_num, 5, referral.room.number, table_style)
-        row_num += 1
+        hostel_uyi.append({'count':count,
+                                   'full_name': referral.last_name + " " + referral.first_name + " " + referral.patronymic,
+                                   'faculty': referral.faculty,
+                                   'course': referral.course,
+                                   'group': referral.group,
+                                   'room_number': referral.room.number})
         count += 1
 
-    if old_count == count:
-        worksheet.write(row_num, 0, "", table_style)
-        worksheet.write(row_num, 1, "",
-                        table_style)
-        worksheet.write(row_num, 2, "", table_style)
-        worksheet.write(row_num, 3, "", table_style)
-        worksheet.write(row_num, 4, "", table_style)
-        worksheet.write(row_num, 5, "", table_style)
-        row_num += 1
+    if len(hostel_uyi) == 0:
+        hostel_uyi.append({'count': "",
+                                   'full_name': "",
+                                   'faculty': "",
+                                   'course': "",
+                                   'group': "",
+                                   'room_number': ""})
 
-    workbook.close()
-    output.seek(0)
-
-    filename = 'referral_list.xlsx'
-    response = HttpResponse(
-        output,
-        content_type='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
-    )
-    response['Content-Disposition'] = 'attachment; filename=%s' % filename
-
-    return response
+    context = {'hostel_three': hostel_three,
+               'hostel_armandastar': hostel_armandastar,
+               'hostel_uyi': hostel_uyi}
+    return render_to_response(template, context)
