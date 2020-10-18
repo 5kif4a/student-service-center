@@ -592,7 +592,7 @@ class HostelReferralAdmin(CustomAdmin):
     app = 'Ваше направление в общежитие готово.'
     service_name = "Предоставление общежития обучающимся в высших учебных заведениях"
     list_per_page = 15
-    list_filter = (('date_of_application', DateRangeFilter), 'is_serpin', 'room__hostel', 'faculty', 'course', 'status',
+    list_filter = (('date_of_application', DateRangeFilter), ('date_of_referral', DateRangeFilter), ('date_of_evict', DateRangeFilter), 'is_serpin', 'room__hostel', 'faculty', 'course', 'status',
                    CategoryFilter)
     list_display = (
         'last_name', 'first_name', 'patronymic', 'individual_identification_number', 'faculty', 'course',
@@ -602,7 +602,7 @@ class HostelReferralAdmin(CustomAdmin):
     search_fields = ('last_name', 'first_name', 'patronymic', 'specialty__name',
                      'individual_identification_number', 'room__number', 'room__hostel')
     autocomplete_fields = ('specialty',)
-    readonly_fields = ('id_card_front', 'id_card_back', 'number', 'message', 'appearance_start', 'appearance_end')
+    readonly_fields = ('id_card_front', 'id_card_back', 'number', 'message', 'appearance_start', 'appearance_end', 'date_of_referral', 'date_of_evict')
 
     def response_change(self, request, obj):
 
@@ -653,6 +653,8 @@ class HostelReferralAdmin(CustomAdmin):
 
                 obj.room.free_space -= 1
                 obj.room.save()
+
+                obj.date_of_referral = datetime.now()
                 obj.save()
 
                 # отправляем письмо после потверждения заявления
@@ -689,7 +691,7 @@ class HostelReferralAdmin(CustomAdmin):
 
         if "_evict" in request.POST:
             # Если завершено - выдаем сообщение, что заявление уже завершено
-            if obj.status == 'Заселен':
+            if obj.status == 'Выселен':
                 self.message_user(request, f"{obj} обработка завершена")
             # Если не завершено - завершаем и отправляем письмо на почту
             else:
@@ -701,6 +703,8 @@ class HostelReferralAdmin(CustomAdmin):
                 obj.room.save()
 
                 obj.room = None
+
+                obj.date_of_evict = datetime.now()
                 obj.save()
 
                 ctx = {'name': obj.first_name,
