@@ -3,8 +3,8 @@ from django.db.models import Q
 
 
 class CategoryFilter(SimpleListFilter):
-    title = 'Категория' # or use _('country') for translated title
-    parameter_name = 'country'
+    title = 'Категория приоритета'
+    parameter_name = 'priority_category'
 
     def lookups(self, request, model_admin):
         return [('Category1', 'Категория 1 (Инвалиды и сироты)'),
