@@ -135,7 +135,7 @@ class Student(models.Model):
 class Reference(Person, Application):
     """
     Модель(таблица) для заявления по услуге - "Выдача справки лицам, не завершившим высшее и послевузовское образование"
-    Услуга переименована в "Заявка на транскрипт обучавшихся в КарГТУ"
+    Услуга переименована в "Заявка на транскрипт обучавшихся в КарТУ"
     """
 
     id = HashidAutoField(primary_key=True, min_length=16)
@@ -173,8 +173,8 @@ class Reference(Person, Application):
     address = None
 
     class Meta:
-        verbose_name = _('заявки на транскрипт обучавшихся в КарГТУ')
-        verbose_name_plural = _('заявки на транскрипт обучавшихся в КарГТУ')
+        verbose_name = _('заявки на транскрипт обучавшихся в КарТУ')
+        verbose_name_plural = _('заявки на транскрипт обучавшихся в КарТУ')
 
     def __str__(self):
         return f'{self.last_name} {self.first_name} {self.patronymic}. ИИН: {self.individual_identification_number}'
@@ -363,7 +363,7 @@ class AcademicLeave(Person, Application):
 
 class TransferKSTU(Person, Application):
     """
-    Перевод в КарГТУ
+    Перевод в КарТУ
     """
     id = HashidAutoField(primary_key=True, min_length=16)
 
@@ -385,7 +385,7 @@ class TransferKSTU(Person, Application):
 
     foundation_in_kstu = models.CharField(max_length=200, choices=foundation_types,
                                           default='на платной основе',
-                                          verbose_name=_('Основа обучения в КарГТУ'))
+                                          verbose_name=_('Основа обучения в КарТУ'))
 
     iin_attachment_front = models.ImageField(upload_to='transfer_kstu_attachments/',
                                              verbose_name=_(
@@ -419,8 +419,8 @@ class TransferKSTU(Person, Application):
     specialty = None
 
     class Meta:
-        verbose_name = _('заявление на перевод в КарГТУ')
-        verbose_name_plural = _('заявления на перевод в КарГТУ')
+        verbose_name = _('заявление на перевод в КарТУ')
+        verbose_name_plural = _('заявления на перевод в КарТУ')
 
     def __str__(self):
         return f'{self.last_name} {self.first_name} {self.patronymic}. ИИН: {self.individual_identification_number}'
@@ -442,7 +442,7 @@ class Transfer(Person, Application):
     faculty = models.CharField(max_length=200, choices=faculties, verbose_name=_('Факультет'))
 
     foundation_in_kstu = models.CharField(max_length=200, choices=foundation_types, default='на платной основе',
-                                          verbose_name=_('Основа обучения в КарГТУ'))
+                                          verbose_name=_('Основа обучения в КарТУ'))
 
     foundation_in_transfer = models.CharField(max_length=200, choices=foundation_types, default='на платной основе',
                                               verbose_name=_('Основа обучения в ВУЗе перевода'))
@@ -523,7 +523,7 @@ class Notification(models.Model):
                           ('Академическая справка', 'Академическая справка'),
                           ('Академический отпуск', 'Академический отпуск'),
                           ('Перевод в другой ВУЗ', 'Перевод в другой ВУЗ'),
-                          ('Перевод в КарГТУ', 'Перевод в КарГТУ'),
+                          ('Перевод в КарТУ', 'Перевод в КарТУ'),
                           ('Восстановление в число обучающихся', 'Восстановление в число обучающихся'),
                           ]
 

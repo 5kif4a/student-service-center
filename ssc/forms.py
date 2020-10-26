@@ -169,7 +169,7 @@ class TransferForm(ModelForm):
 
 class TransferKSTUForm(ModelForm):
     """
-    Форма для заявление услуги - "Перевод в КарГТУ"
+    Форма для заявление услуги - "Перевод в КарТУ"
     """
     captcha = ReCaptchaField(
         widget=ReCaptchaV3(
