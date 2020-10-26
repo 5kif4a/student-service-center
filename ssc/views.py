@@ -328,13 +328,13 @@ class TransferView(TemplateView):
 class TransferKSTUView(TemplateView):
     """
     Представления для подачи заявления по услуге
-    "Перевод в КарГТУ"
+    "Перевод в КарТУ"
     Внутривузовская услуга
     """
     form_class = TransferKSTUForm
     template_name = 'ssc/transfer-kstu.html'
     context = {}
-    app_type = 'Перевод в КарГТУ'
+    app_type = 'Перевод в КарТУ'
     app_ref = 'transferkstu'
 
     @login_required
@@ -693,3 +693,11 @@ def hostel_referral_list(request):
                'hostel_armandastar': hostel_armandastar,
                'hostel_uyi': hostel_uyi}
     return render_to_response(template, context)
+
+def set_dates_of_referral(request):
+    for referral in HostelReferral.objects.all():
+        if referral.date_of_referral is None:
+            referral.date_of_referral = referral.appearance_start
+            referral.save()
+
+    return redirect("admin/ssc/hostelreferral/")

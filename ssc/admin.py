@@ -229,7 +229,7 @@ class ReferenceAdmin(CustomAdmin):
     entity = 'reference'
     mail_template = 'mails/reference.html'
     service_name = "Выдача транскрипта"
-    app = 'Ваш транскрипт готов. Вы можете получить его в КарГТУ, 1 корпус, кабинет № 109.'
+    app = 'Ваш транскрипт готов. Вы можете получить его в КарТУ, 1 корпус, кабинет № 109.'
     list_per_page = 15
     list_filter = ('date_of_application', 'receipt_year', 'exclude_year', 'education_form', 'course', 'status')
     list_display = ('last_name', 'first_name', 'patronymic', 'specialty', 'date_of_application', 'status',
@@ -247,7 +247,7 @@ class AcademicLeaveAdmin(CustomAdmin):
     entity = 'academic-leave'
     mail_template = 'mails/academic-leave.html'
     change_form_template = "custom_admin/academic-leave.html"
-    # app = 'Ваш приказ готов. Вы можете получить его в КарГТУ, 1 корпус, кабинет № 109.'
+    # app = 'Ваш приказ готов. Вы можете получить его в КарТУ, 1 корпус, кабинет № 109.'
     list_per_page = 15
     list_filter = ('date_of_application', 'status')
     list_display = ('last_name', 'first_name', 'patronymic', 'specialty', 'date_of_application', 'status',
@@ -431,7 +431,7 @@ class HostelAdmin(CustomAdmin):
 #     Админ.панель дубликатов
 #     """
 #     entity = 'duplicate'
-#     app = 'Ваш дубликат готов. Вы можете получить его в КарГТУ, 1 корпус, кабинет № 109.'
+#     app = 'Ваш дубликат готов. Вы можете получить его в КарТУ, 1 корпус, кабинет № 109.'
 #     list_per_page = 15
 #     list_filter = ('date_of_application', 'reason', 'duplicate_type', 'status')
 #     list_display = ('last_name', 'first_name', 'patronymic', 'date_of_application', 'status', 'print')
@@ -450,8 +450,8 @@ class TransferAdmin(CustomAdmin):
     """
     entity = 'transfer'
     mail_template = 'mails/transfer.html'
-    app = 'Ваше заявление подписано. Вы можете получить его в КарГТУ, 1 корпус, кабинет № 109.'
-    service_name = "Перевод в друой ВУЗ"
+    app = 'Ваше заявление подписано. Вы можете получить его в КарТУ, 1 корпус, кабинет № 109.'
+    service_name = "Перевод в другой ВУЗ"
     list_per_page = 15
     list_filter = ('date_of_application', 'faculty', 'foundation_in_kstu', 'foundation_in_transfer', 'status')
     list_display = ('last_name', 'first_name', 'patronymic', 'date_of_application', 'status', 'print')
@@ -464,16 +464,16 @@ class TransferAdmin(CustomAdmin):
 @admin.register(TransferKSTU)
 class TransferKSTUAdmin(CustomAdmin):
     """
-    Админ.панель переводов в КарГТУ
+    Админ.панель переводов в КарТУ
     """
     entity = 'transfer-kstu'
     mail_template = 'mails/transfer-kstu.html'
     ready_mail = 'mails/ready/transfer-kstu.html'
-    app = 'Ваше заявление принято. Вам необходимо в течение 1 дня подойти в КарГТУ, ' \
+    app = 'Ваше заявление принято. Вам необходимо в течение 1 дня подойти в КарТУ, ' \
           'главный корпус, кабинет № 309 б., ' \
           'для заключения договора. При себе иметь удостоверение личности. ' \
           'После подписания договора подойти в каб. № 109, 1 корпус.'
-    service_name = "Перевод в КарГТУ"
+    service_name = "Перевод в КарТУ"
     list_per_page = 15
     list_filter = (
         'date_of_application', 'faculty', 'course', 'foundation_on_previous_university', 'foundation_in_kstu', 'status')
