@@ -631,7 +631,7 @@ def hostel_referral_list(request):
 
     for referral in HostelReferral.objects.filter(Q(status='Одобрено') | Q(status='Заселен')).filter(
             room__hostel='Общежитие №3'):
-        hostel_three.append({'count':count,
+        hostel_three.append({'count': count,
                              'full_name': referral.last_name + " " + referral.first_name + " " + referral.patronymic,
                              'faculty': referral.faculty,
                              'course': referral.course,
@@ -652,28 +652,7 @@ def hostel_referral_list(request):
     hostel_armandastar = []
     for referral in HostelReferral.objects.filter(Q(status='Одобрено') | Q(status='Заселен')).filter(
             room__hostel='Общежитие Жилищный комплекс «Армандастар Ордасы»'):
-        hostel_armandastar.append({'count':count,
-                             'full_name': referral.last_name + " " + referral.first_name + " " + referral.patronymic,
-                             'faculty': referral.faculty,
-                             'course': referral.course,
-                             'group': referral.group,
-                             'room_number': referral.room.number})
-        count += 1
-
-    if len(hostel_armandastar) == 0:
-        hostel_armandastar.append({'count': "",
-                             'full_name': "",
-                             'faculty': "",
-                             'course': "",
-                             'group': "",
-                             'room_number': ""})
-
-    count = 1
-
-    hostel_uyi = []
-    for referral in HostelReferral.objects.filter(Q(status='Одобрено') | Q(status='Заселен')).filter(
-            room__hostel='Общежитие «Студенттер үйi»'):
-        hostel_uyi.append({'count':count,
+        hostel_armandastar.append({'count': count,
                                    'full_name': referral.last_name + " " + referral.first_name + " " + referral.patronymic,
                                    'faculty': referral.faculty,
                                    'course': referral.course,
@@ -681,23 +660,36 @@ def hostel_referral_list(request):
                                    'room_number': referral.room.number})
         count += 1
 
-    if len(hostel_uyi) == 0:
-        hostel_uyi.append({'count': "",
+    if len(hostel_armandastar) == 0:
+        hostel_armandastar.append({'count': "",
                                    'full_name': "",
                                    'faculty': "",
                                    'course': "",
                                    'group': "",
                                    'room_number': ""})
 
+    count = 1
+
+    hostel_uyi = []
+    for referral in HostelReferral.objects.filter(Q(status='Одобрено') | Q(status='Заселен')).filter(
+            room__hostel='Общежитие «Студенттер үйi»'):
+        hostel_uyi.append({'count': count,
+                           'full_name': referral.last_name + " " + referral.first_name + " " + referral.patronymic,
+                           'faculty': referral.faculty,
+                           'course': referral.course,
+                           'group': referral.group,
+                           'room_number': referral.room.number})
+        count += 1
+
+    if len(hostel_uyi) == 0:
+        hostel_uyi.append({'count': "",
+                           'full_name': "",
+                           'faculty': "",
+                           'course': "",
+                           'group': "",
+                           'room_number': ""})
+
     context = {'hostel_three': hostel_three,
                'hostel_armandastar': hostel_armandastar,
                'hostel_uyi': hostel_uyi}
     return render_to_response(template, context)
-
-def set_dates_of_referral(request):
-    for referral in HostelReferral.objects.all():
-        if referral.date_of_referral is None:
-            referral.date_of_referral = referral.appearance_start
-            referral.save()
-
-    return redirect("admin/ssc/hostelreferral/")
