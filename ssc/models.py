@@ -350,12 +350,16 @@ class AcademicLeave(Person, Application):
     reason = models.CharField(max_length=100, choices=academic_leave_reasons, default='состоянием здоровья',
                               verbose_name=_('Причина'))
 
+    is_prolongation = models.BooleanField(verbose_name="Продление академ. отпуска", default=False)
+
     course = None
     group = None
 
     class Meta:
-        verbose_name = _('заявление на предоставление академ.отпусков обучающимся в организациях образования')
-        verbose_name_plural = _('заявления на предоставление академ.отпусков обучающимся в организациях образования')
+        verbose_name = _('заявление на предоставление и продление академ.отпусков обучающимся в организациях '
+                         'образования')
+        verbose_name_plural = _('заявления на предоставление и продление академ.отпусков обучающимся в организациях '
+                                'образования')
 
     def __str__(self):
         return f'{self.last_name} {self.first_name} {self.patronymic}. ИИН: {self.individual_identification_number}'

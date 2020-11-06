@@ -261,7 +261,10 @@ class AcademicLeaveView(TemplateView):
                 'app': app,
                 'qr_code': generate_qr_code(f'{BASE_URL}/check_order?order_type=academic_leave&id={obj_id}')
             }
-            return render_pdf('applications/academic-leave.html', context)
+            if not app.is_prolongation:
+                return render_pdf('applications/academic-leave.html', context)
+            else:
+                return render_pdf('applications/academic-leave-prolongation.html', context)
         else:
             return HttpResponse('<center><h1>Заявление не потверждено!</h1></center>')
 
