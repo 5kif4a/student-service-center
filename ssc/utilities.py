@@ -145,4 +145,4 @@ def send_email_with_attachment(mail_template, context, to, file):
 # Генерация QR кода - альтернатива подписи, как верификация пользователя услуги
 def generate_qr_code(url):
     qr = pyqrcode.create(url)
-    return qr.png_as_base64_str(scale=6)
+    return qr.png_as_base64_str(scale=4)
