@@ -1,6 +1,5 @@
-import xlsxwriter
 from django.contrib import messages
-from django.shortcuts import render, render_to_response, redirect
+from django.shortcuts import render, render_to_response
 from django.contrib.sites.shortcuts import get_current_site
 from django.utils import timezone
 from django.views import View
@@ -243,7 +242,7 @@ class DuplicateView(TemplateView):
 class AcademicLeaveView(TemplateView):
     """
     Представления для подачи заявления по услуге
-    "Предоставление академических отпусков обучающимся в организациях образования"
+    "Предоставление и продление академических отпусков обучающимся в организациях образования"
     Государственная услуга
     """
     form_class = AcademicLeaveForm

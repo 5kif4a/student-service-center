@@ -167,7 +167,7 @@ div.WordSection1
   <p class=MsoNormal style='margin-top:0cm;margin-right:0cm;margin-bottom:0cm;
   margin-left:285.15pt;margin-bottom:.0001pt;line-height:normal'><span
   style='font-size:16.0pt;font-family:"Times New Roman","serif";color:black;
-  letter-spacing:.1pt;background:white'>от студента <b><u>{{ app.last_name }}{{ app.first_name }}{{ app.patronymic }}</u></b></span></p>
+  letter-spacing:.1pt;background:white'>от студента <b><u>{{ app.last_name }} {{ app.first_name }} {{ app.patronymic }}</u></b></span></p>
   <p class=MsoNormal style='margin-top:0cm;margin-right:0cm;margin-bottom:0cm;
   margin-left:285.15pt;margin-bottom:.0001pt;line-height:normal'><span
   style='font-size:16.0pt;font-family:"Times New Roman","serif";color:black;
@@ -184,10 +184,14 @@ div.WordSection1
   margin-left:285.15pt;margin-bottom:.0001pt;line-height:normal'><span
   style='font-size:16.0pt;font-family:"Times New Roman","serif";color:black;
   letter-spacing:.1pt;background:white'>факультет <b><u>{{ app.faculty }}</u></b></span></p>
-  <p class=MsoNormal style='margin-top:0cm;margin-right:0cm;margin-bottom:0cm;
-  margin-left:285.15pt;margin-bottom:.0001pt;line-height:normal'><u><span
-  lang=EN-US style='font-size:16.0pt;font-family:"Times New Roman","serif";
-  color:black;letter-spacing:.1pt;background:white'>{{ app.address }}</span></u></p>
+   <p class=MsoNormal style='margin-top:0cm;margin-right:0cm;margin-bottom:0cm;
+  margin-left:285.15pt;margin-bottom:.0001pt;line-height:normal'><span
+           style='font-size:16.0pt;font-family:"Times New Roman","serif";color:black;
+  letter-spacing:.1pt;background:white'>группа <b><u>{{ app.group }}</u></b></span></p>
+   <p class=MsoNormal style='margin-top:0cm;margin-right:0cm;margin-bottom:0cm;
+  margin-left:285.15pt;margin-bottom:.0001pt;line-height:normal'><span
+           style='font-size:16.0pt;font-family:"Times New Roman","serif";color:black;
+  letter-spacing:.1pt;background:white'>тип обучения <b><u>{{ app.foundation_type }}</u></b></span></p>
   <p class=MsoNormal style='margin-top:0cm;margin-right:0cm;margin-bottom:0cm;
   margin-left:285.15pt;margin-bottom:.0001pt;line-height:normal'><u><span
   lang=EN-US style='font-size:16.0pt;font-family:"Times New Roman","serif";
