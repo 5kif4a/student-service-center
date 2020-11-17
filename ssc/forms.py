@@ -1,4 +1,4 @@
-from django.forms import ModelForm, NumberInput, FileInput, TextInput
+from django.forms import ModelForm, NumberInput
 from ssc.models import *
 from captcha.fields import ReCaptchaField, ReCaptchaV3
 
@@ -32,7 +32,7 @@ class ReferenceForm(ModelForm):
 
 class AcademicLeaveForm(ModelForm):
     """
-    Форма для заявление услуги - "Предоставление академических отпусков обучающимся в организациях образования"
+    Форма для заявление услуги - "Предоставление и продление академических отпусков обучающимся в организациях образования"
     """
     captcha = ReCaptchaField(
         widget=ReCaptchaV3(
@@ -50,7 +50,7 @@ class AcademicLeaveForm(ModelForm):
         super(AcademicLeaveForm, self).__init__(*args, **kwargs)
         self.fields['reason'].label = 'Причина (в связи)'
         self.fields['specialty'].label = 'Специальность'
-        self.fields['attachment'].label = 'Прикрепление файла копии заключения/решения/свидетельства/повестки'
+        self.fields['attachment'].label = 'Прикрепление файла копии заключения/решения/свидетельства/повестки/справки'
         self.fields['status'].required = False
 
 

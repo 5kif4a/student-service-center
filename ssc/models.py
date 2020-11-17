@@ -1,5 +1,4 @@
 from django.db import models
-from django.db.models import Q
 from django.utils.translation import gettext_lazy as _
 from hashid_field import HashidAutoField
 
@@ -325,12 +324,21 @@ class Hostel(Person, Application):
 
 class AcademicLeave(Person, Application):
     """
-    Предоставление академических отпусков обучающимся в организациях образования
+    Предоставление и продление академических отпусков обучающимся в организациях образования
     Государственная услуга
     """
     id = HashidAutoField(primary_key=True, min_length=16)
 
     faculty = models.CharField(max_length=200, choices=faculties, verbose_name=_('Факультет'))
+
+    foundation_type = models.CharField(max_length=200, choices=foundation_types,
+                                       default='на платной основе',
+                                       verbose_name=_('Основа обучения'))
+
+    reason = models.CharField(max_length=100, choices=academic_leave_reasons, default='состоянием здоровья',
+                              verbose_name=_('Причина'))
+
+    is_prolongation = models.BooleanField(verbose_name="Продление академ. отпуска", default=False)
 
     iin_attachment_front = models.ImageField(upload_to='academic_leave_attachments/',
                                              verbose_name=_(
@@ -347,15 +355,14 @@ class AcademicLeave(Person, Application):
     attachment = models.FileField(upload_to='academic_leave_attachments/', verbose_name=_('Прикрепление'),
                                   validators=[file_size_validator, file_ext_validator])
 
-    reason = models.CharField(max_length=100, choices=academic_leave_reasons, default='состоянием здоровья',
-                              verbose_name=_('Причина'))
-
     course = None
-    group = None
+    address = None
 
     class Meta:
-        verbose_name = _('заявление на предоставление академ.отпусков обучающимся в организациях образования')
-        verbose_name_plural = _('заявления на предоставление академ.отпусков обучающимся в организациях образования')
+        verbose_name = _('заявление на предоставление и продление академ.отпусков обучающимся в организациях '
+                         'образования')
+        verbose_name_plural = _('заявления на предоставление и продление академ.отпусков обучающимся в организациях '
+                                'образования')
 
     def __str__(self):
         return f'{self.last_name} {self.first_name} {self.patronymic}. ИИН: {self.individual_identification_number}'

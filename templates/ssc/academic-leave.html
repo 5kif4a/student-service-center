@@ -62,7 +62,7 @@
                                 </tr>
                                 <tr>
                                     <td>Для предоставления академического отпуска студентам-призывникам</td>
-                                    <td>Повестка о призыве на воинскую службу</td>
+                                    <td>Повестка о призыве на воинскую службу / справка с военкомата о призыве</td>
                                 </tr>
                                 </tbody>
                             </table>
@@ -86,13 +86,16 @@
                                     </div>
                                     <div class="form-row align-items-end">
                                         <div class="form-group col-sm">
-                                            {{ form.address|as_crispy_field }}
+                                            {{ form.group|as_crispy_field }}
                                         </div>
                                         <div class="form-group col-sm">
                                             {{ form.email|as_crispy_field }}
                                         </div>
                                         <div class="form-group col-sm">
                                             {{ form.phone_number|as_crispy_field }}
+                                        </div>
+                                        <div class="form-group col-sm">
+                                            {{ form.is_prolongation|as_crispy_field }}
                                         </div>
                                     </div>
                                     <div class="form-row align-items-end">
@@ -101,6 +104,9 @@
                                         </div>
                                         <div class="form-group col-sm">
                                             {{ form.faculty|as_crispy_field }}
+                                        </div>
+                                        <div class="form-group col-sm">
+                                            {{ form.foundation_type|as_crispy_field }}
                                         </div>
                                         <div class="form-group col-sm">
                                             {{ form.reason|as_crispy_field }}
@@ -133,5 +139,4 @@
             </div>
             </div>
         {% endblock description %}
-    </div>
 {% endblock content %}

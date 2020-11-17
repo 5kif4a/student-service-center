@@ -246,11 +246,12 @@ class AcademicLeaveAdmin(CustomAdmin):
     """
     entity = 'academic-leave'
     mail_template = 'mails/academic-leave.html'
+    mail_template_prolongation = 'mails/academic-leave-prolongation.html'
     change_form_template = "custom_admin/academic-leave.html"
     # app = 'Ваш приказ готов. Вы можете получить его в КарТУ, 1 корпус, кабинет № 109.'
     list_per_page = 15
-    list_filter = ('date_of_application', 'status')
-    list_display = ('last_name', 'first_name', 'patronymic', 'specialty', 'date_of_application', 'status',
+    list_filter = ('date_of_application', 'status', 'is_prolongation')
+    list_display = ('last_name', 'first_name', 'patronymic', 'specialty', 'is_prolongation', 'date_of_application', 'status',
                     'print')
     search_fields = ('last_name', 'first_name', 'patronymic', 'address', 'specialty__name',
                      'individual_identification_number')
@@ -289,7 +290,10 @@ class AcademicLeaveAdmin(CustomAdmin):
                 ctx = {'name': request.POST['first_name']}
                 to = (request.POST.get('email', ''),)
 
-                send_email(self.mail_template, ctx, to)
+                if not obj.is_prolongation:
+                    send_email(self.mail_template, ctx, to)
+                else:
+                    send_email(self.mail_template_prolongation, ctx, to)
 
                 self.message_user(request, f"""{obj} подтверждено""")
 
@@ -307,7 +311,10 @@ class AcademicLeaveAdmin(CustomAdmin):
                 to = (obj.email,)
 
                 uploaded_file = request.FILES['scanned_file']
-                send_email_with_attachment("mails/ready/academic-leave.html", ctx, to, uploaded_file)
+                if not obj.is_prolongation:
+                    send_email_with_attachment("mails/ready/academic-leave.html", ctx, to, uploaded_file)
+                else:
+                    send_email_with_attachment("mails/ready/academic-leave-prolongation.html", ctx, to, uploaded_file)
 
                 self.message_user(request, f"""Обработка заявления "{obj}" завершена. Письмо отправлено""")
 
