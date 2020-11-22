@@ -27,7 +27,8 @@ statuses = {
     'duplicate': True,
     'reference': True,
     'academic-leave': True,
-    'transfer-and-recovery': True
+    'transfer-and-recovery': True,
+    'academic-leave-return': True
 }
 
 # Опции

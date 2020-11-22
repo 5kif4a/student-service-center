@@ -113,10 +113,12 @@ class HostelForm(ModelForm):
         self.fields['iin_attachment_front'].label = 'Жеке басын куәландыратын құжаттың көшірмесін бекіту-алдыңғы жағы'
         self.fields['iin_attachment_back'].label = 'Жеке басын куәландыратын құжаттың көшірмесін бекіту-артқы жағы'
         self.fields['attachmentProperty'].label = 'Жылжымайтын мүліктің жоқ (бар) екендігі туралы анықтама'
-        self.fields['attachmentDeath'].label = 'Екі немесе жалғыз ата-ананың қайтыс болуы туралы куәлік немесе балалар үйінен анықтама'
+        self.fields[
+            'attachmentDeath'].label = 'Екі немесе жалғыз ата-ананың қайтыс болуы туралы куәлік немесе балалар үйінен анықтама'
         self.fields['attachmentLarge'].label = 'Отбасында 4 және одан да көп баланың болуы туралы анықтама'
         self.fields['attachmentDisabled'].label = 'Мүгедектікті растау туралы анықтама'
         self.fields['attachmentKandas'].label = '"Кандас" мәртебесі туралы құжат'
+
 
 # class DuplicateForm(ModelForm):
 #     """
@@ -241,4 +243,28 @@ class HostelReferralForm(ModelForm):
         super(HostelReferralForm, self).__init__(*args, **kwargs)
         self.fields['specialty'].label = 'Специальность'
         self.fields['group'].required = False
+        self.fields['status'].required = False
+
+
+class AcademicLeaveReturnForm(ModelForm):
+    """
+    Форма для заявление услуги - "Возвращение из академических отпусков обучающихся в организациях образования"
+    """
+    captcha = ReCaptchaField(
+        widget=ReCaptchaV3(
+            attrs={
+                'required_score': 0.85
+            }
+        )
+    )
+
+    class Meta:
+        model = AcademicLeaveReturn
+        fields = "__all__"
+
+    def __init__(self, *args, **kwargs):
+        super(AcademicLeaveReturnForm, self).__init__(*args, **kwargs)
+        self.fields['specialty'].label = 'Специальность'
+        self.fields['reason'].label = 'Причина (в связи)'
+        self.fields['attachment'].label = 'Прикрепление файла копии справки/военного билета/свидетельства о рождении'
         self.fields['status'].required = False

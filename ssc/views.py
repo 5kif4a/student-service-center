@@ -472,7 +472,8 @@ def check_order(request):
                         'transfer_kstu': TransferKSTU,
                         'transfer': Transfer,
                         'recovery': Recovery,
-                        'hostel_referral': HostelReferral}
+                        'hostel_referral': HostelReferral,
+                        'academic_leave_return': AcademicLeaveReturn}
 
     if request.method == 'GET':
         order_type = request.GET.get('order_type')
@@ -695,3 +696,37 @@ def hostel_referral_list(request):
                'hostel_armandastar': hostel_armandastar,
                'hostel_uyi': hostel_uyi}
     return render_to_response(template, context)
+
+
+class AcademicLeaveReturnView(TemplateView):
+    """
+    Представления для подачи заявления по услуге
+    "Возвращение из академических отпусков обучающихся в организациях образования"
+    Государственная услуга
+    """
+    form_class = AcademicLeaveReturnForm
+    template_name = 'ssc/academic-leave-return.html'
+    context = {'status': statuses.get('academic-leave-return')}
+    app_type = 'Академический отпуск'
+    app_ref = 'academicleavereturn'
+
+    @login_required
+    def render(self, obj_id):
+        app = AcademicLeaveReturn.objects.get(id=obj_id)
+        if app.status not in ('Не проверено', 'Отозвано на исправление'):
+
+            documents = {
+                'по состоянию здоровья': 'Справка ВКК',
+                'с призывом на воинскую службу': 'Копия военного билета',
+                'с рождением ребенка': 'Копия свидетельства о рождении ребенка'
+            }
+
+            context = {
+                'rector_name': rector_name,
+                'app': app,
+                'qr_code': generate_qr_code(f'{BASE_URL}/check_order?order_type=academic_leave_return&id={obj_id}'),
+                'document': documents[app.reason]
+            }
+            return render_pdf('applications/academic-leave-return.html', context)
+        else:
+            return HttpResponse('<center><h1>Заявление не потверждено!</h1></center>')
