@@ -118,6 +118,7 @@ class HostelForm(ModelForm):
         self.fields['attachmentDisabled'].label = 'Мүгедектікті растау туралы анықтама'
         self.fields['attachmentKandas'].label = '"Кандас" мәртебесі туралы құжат'
 
+
 # class DuplicateForm(ModelForm):
 #     """
 #     Форма для заявление услуги - "Выдача справки лицам, не завершившим высшее и послевузовское образование"
@@ -241,4 +242,28 @@ class HostelReferralForm(ModelForm):
         super(HostelReferralForm, self).__init__(*args, **kwargs)
         self.fields['specialty'].label = 'Специальность'
         self.fields['group'].required = False
+        self.fields['status'].required = False
+
+
+class AcademicLeaveReturnForm(ModelForm):
+    """
+    Форма для заявление услуги - "Возвращение из академических отпусков обучающихся в организациях образования"
+    """
+    captcha = ReCaptchaField(
+        widget=ReCaptchaV3(
+            attrs={
+                'required_score': 0.85
+            }
+        )
+    )
+
+    class Meta:
+        model = AcademicLeaveReturn
+        fields = "__all__"
+
+    def __init__(self, *args, **kwargs):
+        super(AcademicLeaveReturnForm, self).__init__(*args, **kwargs)
+        self.fields['specialty'].label = 'Специальность'
+        self.fields['reason'].label = 'Причина (в связи)'
+        self.fields['attachment'].label = 'Прикрепление файла копии справки/военного билета/свидетельства о рождении'
         self.fields['status'].required = False

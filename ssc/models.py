@@ -648,3 +648,47 @@ class HostelReferral(Person, Application):
 
 
 HostelReferral._meta.get_field('date_of_application').verbose_name = 'Дата приема заявления'
+
+
+class AcademicLeaveReturn(Person, Application):
+    """
+    Возвращение из академических отпусков обучающихся в организациях образования
+    Государственная услуга
+    """
+    id = HashidAutoField(primary_key=True, min_length=16)
+
+    faculty = models.CharField(max_length=200, choices=faculties, verbose_name=_('Факультет'))
+
+    foundation_type = models.CharField(max_length=200, choices=foundation_types,
+                                       default='на платной основе',
+                                       verbose_name=_('Основа обучения'))
+
+    reason = models.CharField(max_length=100, choices=academic_leave_reasons, default='состоянием здоровья',
+                              verbose_name=_('Причина'))
+
+    iin_attachment_front = models.ImageField(upload_to='academic_leave_return_attachments/',
+                                             verbose_name=_(
+                                                 'Прикрепление копии документа, удостоверяющего личность - передняя '
+                                                 'сторона'),
+                                             validators=[file_size_validator])
+
+    iin_attachment_back = models.ImageField(upload_to='academic_leave_return_attachments/',
+                                            verbose_name=_(
+                                                'Прикрепление копии документа, удостоверяющего личность - обратная '
+                                                'сторона'),
+                                            validators=[file_size_validator])
+
+    attachment = models.FileField(upload_to='academic_leave_return_attachments/', verbose_name=_('Прикрепление'),
+                                  validators=[file_size_validator, file_ext_validator])
+
+    course = None
+    address = None
+
+    class Meta:
+        verbose_name = _('заявление на возвращение из академ.отпусков обучающихся в организациях '
+                         'образования')
+        verbose_name_plural = _('заявления на возвращение из академ.отпусков обучающихся в организациях '
+                                'образования')
+
+    def __str__(self):
+        return f'{self.last_name} {self.first_name} {self.patronymic}. ИИН: {self.individual_identification_number}'

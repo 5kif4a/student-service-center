@@ -54,6 +54,9 @@ check_hostel_urls = [path('check_hostel', views.check_hostel),
                      path('hostel_space', views.hostel_space),
                      path('hostel_referral_list', views.hostel_referral_list)]
 
+academic_leave_return_urls = [path('academic-leave-return', views.AcademicLeaveReturnView.as_view()),
+                       path('academic-leave-return/report/<obj_id>/', views.AcademicLeaveReturnView.render)]
+
 urlpatterns = [
                   path('', views.index),
                   url(r'^%s(?P<path>.*)$' % settings.MEDIA_URL[1:], protected_serve,
@@ -70,4 +73,5 @@ urlpatterns = [
               notifications_urls + \
               check_order_urls + \
               hostel_referral_urls + \
-              check_hostel_urls
+              check_hostel_urls + \
+              academic_leave_return_urls
