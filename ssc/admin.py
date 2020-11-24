@@ -879,7 +879,9 @@ class AcademicLeaveReturnAdmin(CustomAdmin):
                 obj.number = request.POST['number']
                 obj.save()
 
-                ctx = {'name': obj.first_name, 'number': obj.number, 'date': obj.leave_end}
+                date = datetime.strptime(obj.leave_end, '%Y-%m-%d')
+
+                ctx = {'name': obj.first_name, 'number': obj.number, 'date': date.strftime("%d.%m.%Y")}
                 to = (obj.email,)
 
                 send_email("mails/ready/academic-leave-return.html", ctx, to)
