@@ -255,10 +255,18 @@ class AcademicLeaveView(TemplateView):
     def render(self, obj_id):
         app = AcademicLeave.objects.get(id=obj_id)
         if app.status not in ('Не проверено', 'Отозвано на исправление'):
+
+            documents = {
+                'по состоянию здоровья': 'Справка ВКК',
+                'с призывом на воинскую службу': 'Справка из военкомата о призыве',
+                'с рождением ребенка': 'Копия свидетельства о рождении ребенка'
+            }
+
             context = {
                 'rector_name': rector_name,
                 'app': app,
-                'qr_code': generate_qr_code(f'{BASE_URL}/check_order?order_type=academic_leave&id={obj_id}')
+                'qr_code': generate_qr_code(f'{BASE_URL}/check_order?order_type=academic_leave&id={obj_id}'),
+                'document': documents[app.reason]
             }
             if not app.is_prolongation:
                 return render_pdf('applications/academic-leave.html', context)
