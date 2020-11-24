@@ -254,10 +254,10 @@ class AcademicLeaveAdmin(CustomAdmin):
     list_display = ('last_name', 'first_name', 'patronymic', 'specialty', 'is_prolongation', 'date_of_application', 'status',
                     'print')
     search_fields = ('last_name', 'first_name', 'patronymic', 'address', 'specialty__name',
-                     'individual_identification_number')
+                     'individual_identification_number', 'number')
     autocomplete_fields = ('specialty',)
 
-    readonly_fields = ('attachment', 'id_card_front', 'id_card_back')
+    readonly_fields = ('attachment', 'id_card_front', 'id_card_back', 'leave_start', 'leave_end', 'number')
 
     def response_change(self, request, obj):
         # Если заявление заполнено неправильно, отправляем письмо с уведомлением
@@ -305,16 +305,19 @@ class AcademicLeaveAdmin(CustomAdmin):
             # Если не завершено - завершаем и отправляем письмо на почту
             else:
                 obj.status = 'Завершено'
+
+                obj.leave_start = request.POST['leave_start']
+                obj.leave_end = request.POST['leave_end']
+                obj.number = request.POST['number']
                 obj.save()
 
-                ctx = {'name': obj.first_name}
+                ctx = {'name': obj.first_name, 'number': obj.number, 'date_start': obj.leave_start, 'date_end': obj.leave_end}
                 to = (obj.email,)
 
-                uploaded_file = request.FILES['scanned_file']
                 if not obj.is_prolongation:
-                    send_email_with_attachment("mails/ready/academic-leave.html", ctx, to, uploaded_file)
+                    send_email("mails/ready/academic-leave.html", ctx, to)
                 else:
-                    send_email_with_attachment("mails/ready/academic-leave-prolongation.html", ctx, to, uploaded_file)
+                    send_email("mails/ready/academic-leave-prolongation.html", ctx, to)
 
                 self.message_user(request, f"""Обработка заявления "{obj}" завершена. Письмо отправлено""")
 
@@ -816,7 +819,7 @@ class AcademicLeaveReturnAdmin(CustomAdmin):
     """
     entity = 'academic-leave-return'
     mail_template = 'mails/academic-leave-return.html'
-    change_form_template = "custom_admin/academic-leave.html"
+    change_form_template = "custom_admin/academic-leave-return.html"
     # app = 'Ваш приказ готов. Вы можете получить его в КарТУ, 1 корпус, кабинет № 109.'
     list_per_page = 15
     list_filter = ('date_of_application', 'status')
@@ -826,7 +829,7 @@ class AcademicLeaveReturnAdmin(CustomAdmin):
                      'individual_identification_number')
     autocomplete_fields = ('specialty',)
 
-    readonly_fields = ('attachment', 'id_card_front', 'id_card_back')
+    readonly_fields = ('attachment', 'id_card_front', 'id_card_back', 'leave_end', 'number')
 
     def response_change(self, request, obj):
         # Если заявление заполнено неправильно, отправляем письмо с уведомлением
@@ -871,13 +874,15 @@ class AcademicLeaveReturnAdmin(CustomAdmin):
             # Если не завершено - завершаем и отправляем письмо на почту
             else:
                 obj.status = 'Завершено'
+
+                obj.leave_end = request.POST['leave_end']
+                obj.number = request.POST['number']
                 obj.save()
 
-                ctx = {'name': obj.first_name}
+                ctx = {'name': obj.first_name, 'number': obj.number, 'date': obj.leave_end}
                 to = (obj.email,)
 
-                uploaded_file = request.FILES['scanned_file']
-                send_email_with_attachment("mails/ready/academic-leave-return.html", ctx, to, uploaded_file)
+                send_email("mails/ready/academic-leave-return.html", ctx, to)
 
                 self.message_user(request, f"""Обработка заявления "{obj}" завершена. Письмо отправлено""")
 
