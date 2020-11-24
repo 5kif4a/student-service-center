@@ -355,6 +355,12 @@ class AcademicLeave(Person, Application):
     attachment = models.FileField(upload_to='academic_leave_attachments/', verbose_name=_('Прикрепление'),
                                   validators=[file_size_validator, file_ext_validator])
 
+    leave_start = models.DateField(max_length=10, blank=True, verbose_name=_('Начало отпуска'), null=True)
+
+    leave_end = models.DateField(max_length=10, blank=True, verbose_name=_('Конец отпуска'), null=True)
+
+    number = models.IntegerField(max_length=10, blank=True, verbose_name=_('Номер приказа'), null=True)
+
     course = None
     address = None
 
@@ -680,6 +686,10 @@ class AcademicLeaveReturn(Person, Application):
 
     attachment = models.FileField(upload_to='academic_leave_return_attachments/', verbose_name=_('Прикрепление'),
                                   validators=[file_size_validator, file_ext_validator])
+
+    leave_end = models.DateField(max_length=10, blank=True, verbose_name=_('Дата выхода из отпуска'), null=True)
+
+    number = models.IntegerField(max_length=10, blank=True, verbose_name=_('Номер приказа'), null=True)
 
     course = None
     address = None
