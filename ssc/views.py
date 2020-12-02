@@ -748,4 +748,6 @@ def reference_init(request):
         elif reference.reason == 'В связи с переводом в другой университет':
             reference.reason = 'в связи с переводом в другой университет'
 
+        reference.save()
+
     return HttpResponse('<center><h1>Исправление завершено</h1></center>')
