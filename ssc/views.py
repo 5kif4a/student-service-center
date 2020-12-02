@@ -739,3 +739,13 @@ class AcademicLeaveReturnView(TemplateView):
             return render_pdf('applications/academic-leave-return.html', context)
         else:
             return HttpResponse('<center><h1>Заявление не потверждено!</h1></center>')
+
+
+def reference_init(request):
+    for reference in Reference.objects.all():
+        if reference.reason == 'В связи с отчислением':
+            reference.reason = 'в связи с отчислением'
+        elif reference.reason == 'В связи с переводом в другой университет':
+            reference.reason = 'в связи с переводом в другой университет'
+
+    return HttpResponse('<center><h1>Исправление завершено</h1></center>')
