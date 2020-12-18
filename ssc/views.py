@@ -482,7 +482,8 @@ def check_order(request):
                         'transfer': Transfer,
                         'recovery': Recovery,
                         'hostel_referral': HostelReferral,
-                        'academic_leave_return': AcademicLeaveReturn}
+                        'academic_leave_return': AcademicLeaveReturn,
+                        'private_information_change': PrivateInformationChange}
 
     if request.method == 'GET':
         order_type = request.GET.get('order_type')
@@ -737,5 +738,31 @@ class AcademicLeaveReturnView(TemplateView):
                 'document': documents[app.reason]
             }
             return render_pdf('applications/academic-leave-return.html', context)
+        else:
+            return HttpResponse('<center><h1>Заявление не потверждено!</h1></center>')
+
+
+class PrivateInformationChangeView(TemplateView):
+    """
+    Представления для подачи заявления по услуге
+    "Изменение персональных данных об обучающихся в организациях образования"
+    Государственная услуга
+    """
+    form_class = PrivateInformationChangeForm
+    template_name = 'ssc/private-information-change.html'
+    context = {'status': statuses.get('private-information-change')}
+    app_type = 'Смена документов'
+    app_ref = 'privateinformationchange'
+
+    @login_required
+    def render(self, obj_id):
+        app = PrivateInformationChange.objects.get(id=obj_id)
+        if app.status not in ('Не проверено', 'Отозвано на исправление'):
+            context = {
+                'rector_name': rector_name,
+                'app': app,
+                'qr_code': generate_qr_code(f'{BASE_URL}/check_order?order_type=private_information_change&id={obj_id}')
+            }
+            return render_pdf('applications/private-information-change.html', context)
         else:
             return HttpResponse('<center><h1>Заявление не потверждено!</h1></center>')
