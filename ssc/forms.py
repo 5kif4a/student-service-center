@@ -267,3 +267,26 @@ class AcademicLeaveReturnForm(ModelForm):
         self.fields['reason'].label = 'Причина (в связи)'
         self.fields['attachment'].label = 'Прикрепление файла копии справки/военного билета/свидетельства о рождении'
         self.fields['status'].required = False
+
+
+class PrivateInformationChangeForm(ModelForm):
+    """
+    Форма для заявление услуги - "Изменение персональных данных об обучающихся в организациях образования"
+    """
+    captcha = ReCaptchaField(
+        widget=ReCaptchaV3(
+            attrs={
+                'required_score': 0.85
+            }
+        )
+    )
+
+    class Meta:
+        model = PrivateInformationChange
+        fields = "__all__"
+
+    def __init__(self, *args, **kwargs):
+        super(PrivateInformationChangeForm, self).__init__(*args, **kwargs)
+        self.fields['specialty'].label = 'Специальность'
+        self.fields['reason'].label = 'Причина (в связи)'
+        self.fields['status'].required = False
