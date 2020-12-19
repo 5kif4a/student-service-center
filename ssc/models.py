@@ -746,3 +746,40 @@ class PrivateInformationChange(Person, Application):
 
     def __str__(self):
         return f'{self.last_name} {self.first_name} {self.patronymic}. ИИН: {self.individual_identification_number}'
+
+
+class Expulsion(Person, Application):
+    """
+    Отчисление обучающихся в организациях образования
+    Государственная услуга
+    """
+    id = HashidAutoField(primary_key=True, min_length=16)
+
+    faculty = models.CharField(max_length=200, choices=faculties, verbose_name=_('Факультет'))
+
+    foundation_type = models.CharField(max_length=200, choices=foundation_types,
+                                       default='на платной основе',
+                                       verbose_name=_('Основа обучения'))
+
+    iin_attachment_front = models.ImageField(upload_to='expulsion_attachments/',
+                                             verbose_name=_(
+                                                 'Прикрепление копии документа, удостоверяющего личность - передняя '
+                                                 'сторона'),
+                                             validators=[file_size_validator])
+
+    iin_attachment_back = models.ImageField(upload_to='expulsion_attachments/',
+                                            verbose_name=_(
+                                                'Прикрепление копии документа, удостоверяющего личность - обратная '
+                                                'сторона'),
+                                            validators=[file_size_validator])
+
+    address = None
+
+    class Meta:
+        verbose_name = _('заявление на отчисление обучающихся в организациях '
+                         'образования')
+        verbose_name_plural = _('заявления на отчисление обучающихся в организациях '
+                                'образования')
+
+    def __str__(self):
+        return f'{self.last_name} {self.first_name} {self.patronymic}. ИИН: {self.individual_identification_number}'

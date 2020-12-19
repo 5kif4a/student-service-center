@@ -483,7 +483,8 @@ def check_order(request):
                         'recovery': Recovery,
                         'hostel_referral': HostelReferral,
                         'academic_leave_return': AcademicLeaveReturn,
-                        'private_information_change': PrivateInformationChange}
+                        'private_information_change': PrivateInformationChange,
+                        'expulsion': Expulsion}
 
     if request.method == 'GET':
         order_type = request.GET.get('order_type')
@@ -764,5 +765,31 @@ class PrivateInformationChangeView(TemplateView):
                 'qr_code': generate_qr_code(f'{BASE_URL}/check_order?order_type=private_information_change&id={obj_id}')
             }
             return render_pdf('applications/private-information-change.html', context)
+        else:
+            return HttpResponse('<center><h1>Заявление не потверждено!</h1></center>')
+
+
+class ExpulsionView(TemplateView):
+    """
+    Представления для подачи заявления по услуге
+    "Отчисление обучающихся в организациях образования"
+    Государственная услуга
+    """
+    form_class = ExpulsionForm
+    template_name = 'ssc/expulsion.html'
+    context = {'status': statuses.get('expulsion')}
+    app_type = 'Отчисление'
+    app_ref = 'expulsion'
+
+    @login_required
+    def render(self, obj_id):
+        app = Expulsion.objects.get(id=obj_id)
+        if app.status not in ('Не проверено', 'Отозвано на исправление'):
+            context = {
+                'rector_name': rector_name,
+                'app': app,
+                'qr_code': generate_qr_code(f'{BASE_URL}/check_order?order_type=expulsion&id={obj_id}')
+            }
+            return render_pdf('applications/expulsion.html', context)
         else:
             return HttpResponse('<center><h1>Заявление не потверждено!</h1></center>')

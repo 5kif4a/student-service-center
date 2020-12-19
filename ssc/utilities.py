@@ -29,7 +29,8 @@ statuses = {
     'academic-leave': True,
     'transfer-and-recovery': True,
     'academic-leave-return': True,
-    'private-information-change': True
+    'private-information-change': True,
+    'expulsion': True
 }
 
 # Опции
