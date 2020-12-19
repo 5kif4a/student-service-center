@@ -113,7 +113,8 @@ class HostelForm(ModelForm):
         self.fields['iin_attachment_front'].label = 'Жеке басын куәландыратын құжаттың көшірмесін бекіту-алдыңғы жағы'
         self.fields['iin_attachment_back'].label = 'Жеке басын куәландыратын құжаттың көшірмесін бекіту-артқы жағы'
         self.fields['attachmentProperty'].label = 'Жылжымайтын мүліктің жоқ (бар) екендігі туралы анықтама'
-        self.fields['attachmentDeath'].label = 'Екі немесе жалғыз ата-ананың қайтыс болуы туралы куәлік немесе балалар үйінен анықтама'
+        self.fields[
+            'attachmentDeath'].label = 'Екі немесе жалғыз ата-ананың қайтыс болуы туралы куәлік немесе балалар үйінен анықтама'
         self.fields['attachmentLarge'].label = 'Отбасында 4 және одан да көп баланың болуы туралы анықтама'
         self.fields['attachmentDisabled'].label = 'Мүгедектікті растау туралы анықтама'
         self.fields['attachmentKandas'].label = '"Кандас" мәртебесі туралы құжат'
@@ -289,4 +290,26 @@ class PrivateInformationChangeForm(ModelForm):
         super(PrivateInformationChangeForm, self).__init__(*args, **kwargs)
         self.fields['specialty'].label = 'Специальность'
         self.fields['reason'].label = 'Причина (в связи)'
+        self.fields['status'].required = False
+
+
+class ExpulsionForm(ModelForm):
+    """
+    Форма для заявление услуги - "Отчисление обучающихся в организациях образования"
+    """
+    captcha = ReCaptchaField(
+        widget=ReCaptchaV3(
+            attrs={
+                'required_score': 0.85
+            }
+        )
+    )
+
+    class Meta:
+        model = Expulsion
+        fields = "__all__"
+
+    def __init__(self, *args, **kwargs):
+        super(ExpulsionForm, self).__init__(*args, **kwargs)
+        self.fields['specialty'].label = 'Специальность'
         self.fields['status'].required = False

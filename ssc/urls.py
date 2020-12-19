@@ -60,6 +60,9 @@ academic_leave_return_urls = [path('academic-leave-return', views.AcademicLeaveR
 private_information_change_urls = [path('private-information-change', views.PrivateInformationChangeView.as_view()),
                               path('private-information-change/report/<obj_id>/', views.PrivateInformationChangeView.render)]
 
+expulsion_urls = [path('expulsion', views.ExpulsionView.as_view()),
+                                   path('expulsion/report/<obj_id>/', views.ExpulsionView.render)]
+
 urlpatterns = [
                   path('', views.index),
                   url(r'^%s(?P<path>.*)$' % settings.MEDIA_URL[1:], protected_serve,
@@ -78,4 +81,5 @@ urlpatterns = [
               hostel_referral_urls + \
               check_hostel_urls + \
               academic_leave_return_urls + \
-              private_information_change_urls
+              private_information_change_urls + \
+              expulsion_urls
