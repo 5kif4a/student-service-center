@@ -70,7 +70,8 @@ class Application(models.Model):
 
     group = models.CharField(max_length=50, verbose_name=_('Группа'))
 
-    specialty = models.ForeignKey(Specialty, on_delete=models.CASCADE, verbose_name=_('Шифр и название специальности'))
+    specialty = models.ForeignKey(Specialty, on_delete=models.CASCADE,
+                                  verbose_name=_('Шифр и название образовательной программы/специальности'))
 
     date_of_application = models.DateTimeField(auto_now_add=True, verbose_name=_('Дата подачи заявления'))
 
@@ -538,6 +539,9 @@ class Notification(models.Model):
                           ('Перевод в другой ВУЗ', 'Перевод в другой ВУЗ'),
                           ('Перевод в КарТУ', 'Перевод в КарТУ'),
                           ('Восстановление в число обучающихся', 'Восстановление в число обучающихся'),
+                          ('Возвращение из акадического отпуска', 'Возвращение из акадического отпуска'),
+                          ('Изменение персональных данных', 'Изменение персональных данных'),
+                          ('Отчисление', 'Отчисление'),
                           ]
 
     id = HashidAutoField(primary_key=True, min_length=16)
@@ -733,7 +737,8 @@ class PrivateInformationChange(Person, Application):
                                                 'сторона'),
                                             validators=[file_size_validator])
 
-    attachment = models.FileField(upload_to='private_information_change_attachments/', verbose_name=_('Прикрепление'),
+    attachment = models.FileField(upload_to='private_information_change_attachments/',
+                                  verbose_name=_('Прикрепление копии свидетельства о браке'),
                                   validators=[file_size_validator, file_ext_validator], blank=True, null=True)
 
     address = None
@@ -760,18 +765,6 @@ class Expulsion(Person, Application):
     foundation_type = models.CharField(max_length=200, choices=foundation_types,
                                        default='на платной основе',
                                        verbose_name=_('Основа обучения'))
-
-    iin_attachment_front = models.ImageField(upload_to='expulsion_attachments/',
-                                             verbose_name=_(
-                                                 'Прикрепление копии документа, удостоверяющего личность - передняя '
-                                                 'сторона'),
-                                             validators=[file_size_validator])
-
-    iin_attachment_back = models.ImageField(upload_to='expulsion_attachments/',
-                                            verbose_name=_(
-                                                'Прикрепление копии документа, удостоверяющего личность - обратная '
-                                                'сторона'),
-                                            validators=[file_size_validator])
 
     address = None
 

@@ -718,7 +718,7 @@ class AcademicLeaveReturnView(TemplateView):
     form_class = AcademicLeaveReturnForm
     template_name = 'ssc/academic-leave-return.html'
     context = {'status': statuses.get('academic-leave-return')}
-    app_type = 'Академический отпуск'
+    app_type = 'Возвращение из акадического отпуска'
     app_ref = 'academicleavereturn'
 
     @login_required
@@ -752,7 +752,7 @@ class PrivateInformationChangeView(TemplateView):
     form_class = PrivateInformationChangeForm
     template_name = 'ssc/private-information-change.html'
     context = {'status': statuses.get('private-information-change')}
-    app_type = 'Смена документов'
+    app_type = 'Изменение персональных данных'
     app_ref = 'privateinformationchange'
 
     @login_required

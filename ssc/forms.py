@@ -26,7 +26,7 @@ class ReferenceForm(ModelForm):
 
     def __init__(self, *args, **kwargs):
         super(ReferenceForm, self).__init__(*args, **kwargs)
-        self.fields['specialty'].label = 'Специальность'
+        self.fields['specialty'].label = 'Образовательная программа/специальность'
         self.fields['status'].required = False
 
 
@@ -49,7 +49,7 @@ class AcademicLeaveForm(ModelForm):
     def __init__(self, *args, **kwargs):
         super(AcademicLeaveForm, self).__init__(*args, **kwargs)
         self.fields['reason'].label = 'Причина (в связи)'
-        self.fields['specialty'].label = 'Специальность'
+        self.fields['specialty'].label = 'Образовательная программа/специальность'
         self.fields['attachment'].label = 'Прикрепление файла копии заключения/решения/свидетельства/повестки/справки'
         self.fields['status'].required = False
 
@@ -93,7 +93,7 @@ class HostelForm(ModelForm):
 
     def __init__(self, *args, **kwargs):
         super(HostelForm, self).__init__(*args, **kwargs)
-        self.fields['specialty'].label = 'Специальность'
+        self.fields['specialty'].label = 'Образовательная программа/специальность'
         self.fields['group'].required = False
         self.fields['status'].required = False
 
@@ -218,7 +218,7 @@ class RecoveryForm(ModelForm):
 
     def __init__(self, *args, **kwargs):
         super(RecoveryForm, self).__init__(*args, **kwargs)
-        self.fields['specialty'].label = 'Специальность'
+        self.fields['specialty'].label = 'Образовательная программа/специальность'
         self.fields['university'].label = 'Предыдущий ВУЗ'
         self.fields['status'].required = False
 
@@ -241,7 +241,7 @@ class HostelReferralForm(ModelForm):
 
     def __init__(self, *args, **kwargs):
         super(HostelReferralForm, self).__init__(*args, **kwargs)
-        self.fields['specialty'].label = 'Специальность'
+        self.fields['specialty'].label = 'Образовательная программа/специальность'
         self.fields['group'].required = False
         self.fields['status'].required = False
 
@@ -264,7 +264,7 @@ class AcademicLeaveReturnForm(ModelForm):
 
     def __init__(self, *args, **kwargs):
         super(AcademicLeaveReturnForm, self).__init__(*args, **kwargs)
-        self.fields['specialty'].label = 'Специальность'
+        self.fields['specialty'].label = 'Образовательная программа/специальность'
         self.fields['reason'].label = 'Причина (в связи)'
         self.fields['attachment'].label = 'Прикрепление файла копии справки/военного билета/свидетельства о рождении'
         self.fields['status'].required = False
@@ -288,7 +288,7 @@ class PrivateInformationChangeForm(ModelForm):
 
     def __init__(self, *args, **kwargs):
         super(PrivateInformationChangeForm, self).__init__(*args, **kwargs)
-        self.fields['specialty'].label = 'Специальность'
+        self.fields['specialty'].label = 'Образовательная программа/специальность'
         self.fields['reason'].label = 'Причина (в связи)'
         self.fields['status'].required = False
 
@@ -311,5 +311,5 @@ class ExpulsionForm(ModelForm):
 
     def __init__(self, *args, **kwargs):
         super(ExpulsionForm, self).__init__(*args, **kwargs)
-        self.fields['specialty'].label = 'Специальность'
+        self.fields['specialty'].label = 'Образовательная программа/специальность'
         self.fields['status'].required = False
