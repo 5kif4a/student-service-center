@@ -596,12 +596,13 @@ def hostel_space(request):
         if room.hostel in all_space.keys():
             all_space[room.hostel] += 1
             if room.all_space == room.free_space:
-                free_space[room.hostel] = 1
+                free_space[room.hostel] += 1
             else:
-                taken_space[room.hostel] = 1
+                taken_space[room.hostel] += 1
         else:
             all_space[room.hostel] = 1
             free_space[room.hostel] = 0
+            taken_space[room.hostel] = 0
             if room.all_space == room.free_space:
                 free_space[room.hostel] = 1
             else:
