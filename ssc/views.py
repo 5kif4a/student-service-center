@@ -578,6 +578,10 @@ def hostel_space(request):
     overall_space = 0
     overall_free_space = 0
 
+    #временно
+    taken_space = dict()
+    overall_taken = 0
+
     for room in HostelRoom.objects.all():
         # if room.hostel in all_space.keys():
         #   all_space[room.hostel] += room.all_space
@@ -593,27 +597,40 @@ def hostel_space(request):
             all_space[room.hostel] += 1
             if room.all_space == room.free_space:
                 free_space[room.hostel] += 1
+            else:
+                taken_space[room.hostel] += 1
         else:
             all_space[room.hostel] = 1
             free_space[room.hostel] = 0
             if room.all_space == room.free_space:
-                free_space[room.hostel] += 1
+                free_space[room.hostel] = 1
+            else:
+                taken_space[room.hostel] = 1
 
-        overall_space += room.all_space
-        overall_free_space += room.free_space
-        #overall_space += 1
-        #if room.all_space == room.free_space:
-        #    overall_free_space += 1
+        # overall_space += room.all_space
+        # overall_free_space += room.free_space
+        overall_space += 1
+        if room.all_space == room.free_space:
+            overall_free_space += 1
+        else:
+            overall_taken += 1
 
     time = timezone.localtime(timezone.now())
     time = time.strftime("%d/%m/%Y, %H:%M")
 
     result = []
+
+    #временно, пока количество мест определено иным образом
+    all_space['Общежитие Жилищный комплекс «Армандастар Ордасы»'] = 478
+    all_space['Общежитие «Студенттер үйi»'] = 173
+
     for hostel in all_space:
         result.append({'hostel': hostel,
                        'all_space': all_space[hostel],
-                       'taken_space': all_space[hostel] - free_space[hostel],
-                       'free_space': free_space[hostel]})
+                       #'taken_space': all_space[hostel] - free_space[hostel],
+                       'taken_space': taken_space[hostel],
+                       'free_space': all_space[hostel] - taken_space[hostel]})
+                        #'free_space': free_space[hostel]})
 
     # Временно, пока 3 общежитие не работает
     result.append({'hostel': 'Общежитие №3',
@@ -623,8 +640,10 @@ def hostel_space(request):
 
     result.append({'hostel': 'Итого',
                    'all_space': overall_space,
-                   'taken_space': overall_space - overall_free_space,
-                   'free_space': overall_free_space})
+                   #'taken_space': overall_space - overall_free_space,
+                   'taken_space': overall_taken,
+                   'free_space': overall_space - overall_taken})
+                   #'free_space': overall_free_space})
 
     context = {'result': result,
                'time': time}
