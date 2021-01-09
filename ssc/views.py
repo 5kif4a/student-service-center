@@ -599,11 +599,11 @@ def hostel_space(request):
             if room.all_space == room.free_space:
                 free_space[room.hostel] += 1
 
-        # overall_space += room.all_space
-        # overall_free_space += room.free_space
-        overall_space += 1
-        if room.all_space == room.free_space:
-            overall_free_space += 1
+        overall_space += room.all_space
+        overall_free_space += room.free_space
+        #overall_space += 1
+        #if room.all_space == room.free_space:
+        #    overall_free_space += 1
 
     time = timezone.localtime(timezone.now())
     time = time.strftime("%d/%m/%Y, %H:%M")
