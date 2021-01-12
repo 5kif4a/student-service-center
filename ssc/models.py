@@ -776,3 +776,24 @@ class Expulsion(Person, Application):
 
     def __str__(self):
         return f'{self.last_name} {self.first_name} {self.patronymic}. ИИН: {self.individual_identification_number}'
+
+
+class TransferInside(Person, Application):
+    """
+    Перевод внутри ВУЗа
+    """
+    id = HashidAutoField(primary_key=True, min_length=16)
+
+    faculty = models.CharField(max_length=200, choices=faculties, verbose_name=_('Факультет'))
+
+    foundation_type = models.CharField(max_length=200, choices=foundation_types, default='на платной основе',
+                                       verbose_name=_('Основа обучения в КарТУ'))
+
+    course = None
+
+    class Meta:
+        verbose_name = _('заявление на перевод в другой ВУЗ')
+        verbose_name_plural = _('заявления на перевод в другой ВУЗ')
+
+    def __str__(self):
+        return f'{self.last_name} {self.first_name} {self.patronymic}. ИИН: {self.individual_identification_number}'

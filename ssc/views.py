@@ -589,6 +589,8 @@ def hostel_space(request):
         space_count = 1
         if room.all_space > 2:
             space_count = 2
+        if room.all_space > 5:
+            space_count = 3
 
         if room.hostel in all_space.keys():
             all_space[room.hostel] += space_count
@@ -596,6 +598,10 @@ def hostel_space(request):
                 free_space[room.hostel] += space_count
             if room.all_space - room.free_space == 1 and space_count == 2:
                 free_space[room.hostel] += 1
+            if room.all_space - room.free_space == 1 and space_count == 3:
+                free_space[room.hostel] += 2
+            if room.all_space - room.free_space == 2 and space_count == 3:
+                free_space += 1
         else:
             all_space[room.hostel] = space_count
             free_space[room.hostel] = 0
@@ -603,6 +609,10 @@ def hostel_space(request):
                 free_space[room.hostel] = space_count
             if room.all_space - room.free_space == 1 and space_count == 2:
                 free_space[room.hostel] = 1
+            if room.all_space - room.free_space == 1 and space_count == 3:
+                free_space[room.hostel] = 2
+            if room.all_space - room.free_space == 2 and space_count == 3:
+                free_space = 1
 
         # overall_space += room.all_space
         # overall_free_space += room.free_space
@@ -610,6 +620,10 @@ def hostel_space(request):
         if room.all_space == room.free_space:
             overall_free_space += space_count
         if room.all_space - room.free_space == 1 and space_count == 2:
+            overall_free_space += 1
+        if room.all_space - room.free_space == 1 and space_count == 3:
+            overall_free_space += 2
+        if room.all_space - room.free_space == 2 and space_count == 3:
             overall_free_space += 1
 
     time = timezone.localtime(timezone.now())
