@@ -218,7 +218,9 @@ class RecoveryForm(ModelForm):
 
     def __init__(self, *args, **kwargs):
         super(RecoveryForm, self).__init__(*args, **kwargs)
-        self.fields['specialty'].label = 'Образовательная программа/специальность'
+        self.fields['specialty'].label = 'Образовательная программа/специальность в КарТУ'
+        self.fields['specialty_on_previous_university'].label = 'Образовательная программа/специальность в предыдущем ВУЗе'
+        self.fields['faculty'].label = 'Факультет в КарТУ'
         self.fields['university'].label = 'Предыдущий ВУЗ'
         self.fields['status'].required = False
 

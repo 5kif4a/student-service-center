@@ -487,6 +487,10 @@ class Recovery(Person, Application):
 
     university = models.CharField(max_length=500, verbose_name=_('Наименование предыдущего ВУЗа)'))
 
+    specialty_on_previous_university = models.ForeignKey(Specialty, on_delete=models.CASCADE,
+                                                         verbose_name=_('Специальность обучения в предыдущем ВУЗе'),
+                                                         related_name='specialty_on_previous_university_recovery', null=True)
+
     faculty = models.CharField(max_length=200, choices=faculties, verbose_name=_('Факультет'))
 
     iin_attachment_front = models.ImageField(upload_to='recovery_attachments/',
