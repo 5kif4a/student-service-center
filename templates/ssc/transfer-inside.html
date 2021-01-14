@@ -3,36 +3,9 @@
 {% block content %}
     <div class="container">
         {% block description %}
-            <h3 class="text-center p-3">Перевод в КарТУ</h3>
+            <h3 class="text-center p-3">Перевод внутри ВУЗа</h3>
             {% block form %}
                 <div class="col">
-                    <table class="table table-bordered table-hover table-sm">
-                        <h4>Необходимые документы</h4>
-                        <thead class="thead-light">
-                        <th>Услуга</th>
-                        <th>Документы</th>
-                        </thead>
-                        <tbody>
-                        <tr>
-                            <td rowspan="6">При переводе в КарТУ</td>
-                        </tr>
-                        <tr>
-                            <td>Удостоверение личности услугополучателя</td>
-                        </tr>
-                        <tr>
-                            <td>Разрешение на перевод с предыдущего ВУЗа</td>
-                        </tr>
-                        <tr>
-                            <td>Копия сертификата ЕНТ/КТА</td>
-                        </tr>
-                        <tr>
-                            <td>Копия транскрипта</td>
-                        </tr>
-                        <tr>
-                            <td>Свидетельство о образовательном гранте(если грант)</td>
-                        </tr>
-                        </tbody>
-                    </table>
                     <form class="p-2 my-2 border border-primary" method="post" enctype="multipart/form-data">
                         <h4 class="text-center">Форма заявления</h4>
                         {% csrf_token %}
