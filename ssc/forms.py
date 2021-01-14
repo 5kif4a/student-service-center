@@ -320,7 +320,7 @@ class ExpulsionForm(ModelForm):
 
 class TransferInsideForm(ModelForm):
     """
-    Форма для заявление услуги - "Отчисление обучающихся в организациях образования"
+    Форма для заявление услуги - "Перевод внутри ВУЗа"
     """
     captcha = ReCaptchaField(
         widget=ReCaptchaV3(

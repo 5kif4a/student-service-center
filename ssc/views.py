@@ -806,7 +806,7 @@ class TransferInsideView(TemplateView):
 
     @login_required
     def render(self, obj_id):
-        app = Expulsion.objects.get(id=obj_id)
+        app = TransferInside.objects.get(id=obj_id)
         if app.status not in ('Не проверено', 'Отозвано на исправление'):
             context = {
                 'rector_name': rector_name,

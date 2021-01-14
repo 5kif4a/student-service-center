@@ -779,13 +779,15 @@ class TransferInside(Person, Application):
     faculty = models.CharField(max_length=200, choices=faculties, verbose_name=_('Факультет'))
 
     foundation_type = models.CharField(max_length=200, choices=foundation_types, default='на платной основе',
-                                       verbose_name=_('Основа обучения в КарТУ'))
+                                       verbose_name=_('Основа обучения'))
 
     language_from = models.CharField(max_length=200, choices=languages_from, verbose_name=_('С языка'))
 
     language_to = models.CharField(max_length=200, choices=languages_to, verbose_name=_('На язык'))
 
     course = None
+
+    address = None
 
     class Meta:
         verbose_name = _('заявление на перевод внутри ВУЗа')
