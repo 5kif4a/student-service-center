@@ -535,19 +535,6 @@ class Notification(models.Model):
     """
     Уведомление о заявлениях
     """
-    APPLICATIONS_TYPES = [('Академическая мобильность', 'Академическая мобильность'),
-                          ('Общежитие', 'Общежитие'),
-                          ('Дубликаты документов', 'Дубликаты документов'),
-                          ('Академическая справка', 'Академическая справка'),
-                          ('Академический отпуск', 'Академический отпуск'),
-                          ('Перевод в другой ВУЗ', 'Перевод в другой ВУЗ'),
-                          ('Перевод в КарТУ', 'Перевод в КарТУ'),
-                          ('Восстановление в число обучающихся', 'Восстановление в число обучающихся'),
-                          ('Возвращение из акадического отпуска', 'Возвращение из акадического отпуска'),
-                          ('Изменение персональных данных', 'Изменение персональных данных'),
-                          ('Отчисление', 'Отчисление'),
-                          ]
-
     id = HashidAutoField(primary_key=True, min_length=16)
     date = models.DateTimeField(auto_now_add=True, verbose_name=_('Дата отправки уведомления'))
     application_type = models.CharField(max_length=500, verbose_name=_('Тип заявления'), choices=APPLICATIONS_TYPES)
@@ -794,11 +781,15 @@ class TransferInside(Person, Application):
     foundation_type = models.CharField(max_length=200, choices=foundation_types, default='на платной основе',
                                        verbose_name=_('Основа обучения в КарТУ'))
 
+    language_from = models.CharField(max_length=200, choices=languages_from, verbose_name=_('С языка'))
+
+    language_to = models.CharField(max_length=200, choices=languages_to, verbose_name=_('На язык'))
+
     course = None
 
     class Meta:
-        verbose_name = _('заявление на перевод в другой ВУЗ')
-        verbose_name_plural = _('заявления на перевод в другой ВУЗ')
+        verbose_name = _('заявление на перевод внутри ВУЗа')
+        verbose_name_plural = _('заявления на перевод внутри ВУЗа')
 
     def __str__(self):
         return f'{self.last_name} {self.first_name} {self.patronymic}. ИИН: {self.individual_identification_number}'

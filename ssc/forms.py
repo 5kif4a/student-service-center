@@ -219,7 +219,8 @@ class RecoveryForm(ModelForm):
     def __init__(self, *args, **kwargs):
         super(RecoveryForm, self).__init__(*args, **kwargs)
         self.fields['specialty'].label = 'Образовательная программа/специальность в КарТУ'
-        self.fields['specialty_on_previous_university'].label = 'Образовательная программа/специальность в предыдущем ВУЗе'
+        self.fields[
+            'specialty_on_previous_university'].label = 'Образовательная программа/специальность в предыдущем ВУЗе'
         self.fields['faculty'].label = 'Факультет в КарТУ'
         self.fields['university'].label = 'Предыдущий ВУЗ'
         self.fields['status'].required = False
@@ -313,5 +314,27 @@ class ExpulsionForm(ModelForm):
 
     def __init__(self, *args, **kwargs):
         super(ExpulsionForm, self).__init__(*args, **kwargs)
+        self.fields['specialty'].label = 'Образовательная программа/специальность'
+        self.fields['status'].required = False
+
+
+class TransferInsideForm(ModelForm):
+    """
+    Форма для заявление услуги - "Отчисление обучающихся в организациях образования"
+    """
+    captcha = ReCaptchaField(
+        widget=ReCaptchaV3(
+            attrs={
+                'required_score': 0.85
+            }
+        )
+    )
+
+    class Meta:
+        model = TransferInside
+        fields = "__all__"
+
+    def __init__(self, *args, **kwargs):
+        super(TransferInsideForm, self).__init__(*args, **kwargs)
         self.fields['specialty'].label = 'Образовательная программа/специальность'
         self.fields['status'].required = False

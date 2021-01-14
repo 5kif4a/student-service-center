@@ -252,8 +252,8 @@ class AcademicLeaveAdmin(CustomAdmin):
     list_per_page = 15
     list_filter = ('date_of_application', 'status', 'is_prolongation')
     list_display = (
-    'last_name', 'first_name', 'patronymic', 'specialty', 'is_prolongation', 'date_of_application', 'status',
-    'print')
+        'last_name', 'first_name', 'patronymic', 'specialty', 'is_prolongation', 'date_of_application', 'status',
+        'print')
     search_fields = ('last_name', 'first_name', 'patronymic', 'address', 'specialty__name',
                      'individual_identification_number', 'number')
     autocomplete_fields = ('specialty',)
@@ -606,9 +606,10 @@ class HostelReferralAdmin(CustomAdmin):
     service_name = "Предоставление общежития обучающимся в высших учебных заведениях"
     list_per_page = 15
     list_filter = (
-    ('date_of_application', DateRangeFilter), ('date_of_referral', DateRangeFilter), ('date_of_evict', DateRangeFilter),
-    'is_serpin', 'room__hostel', 'faculty', 'course', 'status',
-    CategoryFilter)
+        ('date_of_application', DateRangeFilter), ('date_of_referral', DateRangeFilter),
+        ('date_of_evict', DateRangeFilter),
+        'is_serpin', 'room__hostel', 'faculty', 'course', 'status',
+        CategoryFilter)
     list_display = (
         'last_name', 'first_name', 'patronymic', 'individual_identification_number', 'faculty', 'course',
         'date_of_application',
@@ -618,8 +619,8 @@ class HostelReferralAdmin(CustomAdmin):
                      'individual_identification_number', 'room__number', 'room__hostel')
     autocomplete_fields = ('specialty', 'room')
     readonly_fields = (
-    'id_card_front', 'id_card_back', 'number', 'message', 'appearance_start', 'appearance_end', 'date_of_referral',
-    'date_of_evict')
+        'id_card_front', 'id_card_back', 'number', 'message', 'appearance_start', 'appearance_end', 'date_of_referral',
+        'date_of_evict')
 
     def response_change(self, request, obj):
 
@@ -965,7 +966,7 @@ class PrivateInformationChangeAdmin(CustomAdmin):
                 obj.status = 'Завершено'
                 obj.save()
 
-                ctx = {'name': obj.first_name,}
+                ctx = {'name': obj.first_name, }
                 to = (obj.email,)
 
                 send_email("mails/ready/private-information-change.html", ctx, to)
@@ -991,8 +992,6 @@ class ExpulsionAdmin(CustomAdmin):
     search_fields = ('last_name', 'first_name', 'patronymic', 'address', 'specialty__name',
                      'individual_identification_number')
     autocomplete_fields = ('specialty',)
-
-    readonly_fields = ('id_card_front', 'id_card_back')
 
     def response_change(self, request, obj):
         # Если заявление заполнено неправильно, отправляем письмо с уведомлением
@@ -1039,10 +1038,82 @@ class ExpulsionAdmin(CustomAdmin):
                 obj.status = 'Завершено'
                 obj.save()
 
-                ctx = {'name': obj.first_name,}
+                ctx = {'name': obj.first_name, }
                 to = (obj.email,)
 
                 send_email("mails/ready/expulsion.html", ctx, to)
+
+                self.message_user(request, f"""Обработка заявления "{obj}" завершена. Письмо отправлено""")
+
+        return super().response_change(request, obj)
+
+
+@admin.register(TransferInside)
+class TransferInsideAdmin(CustomAdmin):
+    """
+    Админ.панель перевода внутри ВУЗа
+    """
+    entity = 'transfer-inside'
+    mail_template = 'mails/transfer-inside.html'
+    change_form_template = "custom_admin/change_form.html"
+    # app = 'Ваш приказ готов. Вы можете получить его в КарТУ, 1 корпус, кабинет № 109.'
+    list_per_page = 15
+    list_filter = ('date_of_application', 'status')
+    list_display = ('last_name', 'first_name', 'patronymic', 'specialty', 'date_of_application', 'status',
+                    'print')
+    search_fields = ('last_name', 'first_name', 'patronymic', 'address', 'specialty__name',
+                     'individual_identification_number')
+    autocomplete_fields = ('specialty',)
+
+    def response_change(self, request, obj):
+        # Если заявление заполнено неправильно, отправляем письмо с уведомлением
+        if "_send_for_correction" in request.POST:
+            if obj.status != 'Отозвано на исправление':
+                note = request.POST.get('note')
+
+                obj.status = 'Отозвано на исправление'
+                obj.save()
+
+                ctx = {'name': obj.first_name,
+                       'note': note}
+                to = (obj.email,)
+                send_email('mails/revoke.html', ctx, to)
+                self.message_user(request, f"Письмо с уведомлением отправлено {obj}")
+            else:
+                self.message_user(request, f"Письмо с уведомлением уже отправлено {obj}")
+
+        # Потверждение заявления
+        if "_verify" in request.POST:
+            # Если подтвержден - выдаем сообщение, что заявление уже подтверждено
+            if obj.status == 'Подтверждено':
+                self.message_user(request, f"{obj} уже потвержден")
+            # Если не потверждено - подтверждаем и отправляем письмо на почту
+            else:
+                obj.status = 'Подтверждено'
+                obj.save()
+
+                # отправляем письмо после потверждения заявления
+                ctx = {'name': request.POST['first_name']}
+                to = (request.POST.get('email', ''),)
+
+                send_email(self.mail_template, ctx, to)
+
+                self.message_user(request, f"""{obj} подтверждено""")
+
+        # Завершение обработки заявления
+        if "_finish" in request.POST:
+            # Если завершено - выдаем сообщение, что заявление уже завершено
+            if obj.status == 'Завершено':
+                self.message_user(request, f"{obj} обработка завершена")
+            # Если не завершено - завершаем и отправляем письмо на почту
+            else:
+                obj.status = 'Завершено'
+                obj.save()
+
+                ctx = {'name': obj.first_name, }
+                to = (obj.email,)
+
+                send_email("mails/ready/transfer-inside.html", ctx, to)
 
                 self.message_user(request, f"""Обработка заявления "{obj}" завершена. Письмо отправлено""")
 
