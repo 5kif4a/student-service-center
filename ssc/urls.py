@@ -39,9 +39,11 @@ transfer_and_recovery_urls = [path('transfer-and-recovery', views.transfer_and_r
                               path('transfer', views.TransferView.as_view()),
                               path('transfer-kstu', views.TransferKSTUView.as_view()),
                               path('recovery', views.RecoveryView.as_view()),
+                              path('transfer-inside', views.TransferInsideView.as_view()),
                               path('transfer/report/<obj_id>/', views.TransferView.render),
                               path('transfer-kstu/report/<obj_id>/', views.TransferKSTUView.render),
-                              path('recovery/report/<obj_id>/', views.RecoveryView.render)]
+                              path('recovery/report/<obj_id>/', views.RecoveryView.render),
+                              path('transfer-inside/report/<obj_id>/', views.TransferInsideView.render)]
 
 notifications_urls = [path('notifications', views.get_notifications),
                       path('mark_as_read/<obj_id>', views.mark_as_read)]

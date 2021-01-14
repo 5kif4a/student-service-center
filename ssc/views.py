@@ -464,7 +464,8 @@ def check_order(request):
                         'hostel_referral': HostelReferral,
                         'academic_leave_return': AcademicLeaveReturn,
                         'private_information_change': PrivateInformationChange,
-                        'expulsion': Expulsion}
+                        'expulsion': Expulsion,
+                        'transfer-inside': TransferInside}
 
     if request.method == 'GET':
         order_type = request.GET.get('order_type')
@@ -787,5 +788,31 @@ class ExpulsionView(TemplateView):
                 'qr_code': generate_qr_code(f'{BASE_URL}/check_order?order_type=expulsion&id={obj_id}')
             }
             return render_pdf('applications/expulsion.html', context)
+        else:
+            return HttpResponse('<center><h1>Заявление не потверждено!</h1></center>')
+
+
+class TransferInsideView(TemplateView):
+    """
+    Представления для подачи заявления по услуге
+    "Перевод обучающихся внутри организации образования"
+    Государственная услуга
+    """
+    form_class = TransferInsideForm
+    template_name = 'ssc/transfer-inside.html'
+    context = {'status': statuses.get('transfer-inside')}
+    app_type = 'Перевод внутри ВУЗа'
+    app_ref = 'transfer-inside'
+
+    @login_required
+    def render(self, obj_id):
+        app = TransferInside.objects.get(id=obj_id)
+        if app.status not in ('Не проверено', 'Отозвано на исправление'):
+            context = {
+                'rector_name': rector_name,
+                'app': app,
+                'qr_code': generate_qr_code(f'{BASE_URL}/check_order?order_type=transfer-inside&id={obj_id}')
+            }
+            return render_pdf('applications/transfer-inside.html', context)
         else:
             return HttpResponse('<center><h1>Заявление не потверждено!</h1></center>')
