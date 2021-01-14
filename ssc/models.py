@@ -582,6 +582,7 @@ class HostelRoom(models.Model):
     class Meta:
         verbose_name = _('Комната в общежитии')
         verbose_name_plural = _('Комнаты в общежитии')
+        ordering = ["hostel", "number"]
 
     def __str__(self):
         return "Комната " + str(self.number) + "\n" + self.hostel + "\n" + self.sex

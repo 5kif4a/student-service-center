@@ -615,7 +615,7 @@ class HostelReferralAdmin(CustomAdmin):
         'room', 'print')
     search_fields = ('last_name', 'first_name', 'patronymic', 'specialty__name',
                      'individual_identification_number', 'room__number', 'room__hostel')
-    autocomplete_fields = ('specialty',)
+    autocomplete_fields = ('specialty', 'room')
     readonly_fields = (
     'id_card_front', 'id_card_back', 'number', 'message', 'appearance_start', 'appearance_end', 'date_of_referral',
     'date_of_evict')
