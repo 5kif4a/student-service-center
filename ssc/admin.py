@@ -591,6 +591,7 @@ class HostelRoomAdmin(admin.ModelAdmin):
     list_per_page = 15
     list_filter = ('hostel', 'free_space', 'sex')
     search_fields = ('number', 'hostel', 'free_space', 'sex')
+    readonly_fields = ('number', 'hostel', 'all_space', 'free_space')
 
 
 @admin.register(HostelReferral)
