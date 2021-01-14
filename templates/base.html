@@ -97,5 +97,12 @@
   <p class="text-center text-white">КарТУ 2019-2020</p>
 </footer>
 <script src="{% static 'js/script.js' %}"></script>
+{% if messages %}
+{% for message in messages %}
+{% if message.tags %}  <script>alert("{{ message }}")</script> {% endif %}
+
+{% endfor %}
+
+{% endif %}
 </body>
 </html>

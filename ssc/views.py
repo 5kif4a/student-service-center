@@ -1,3 +1,5 @@
+from smtplib import SMTPDataError, SMTPRecipientsRefused
+
 from django.contrib import messages
 from django.shortcuts import render, render_to_response
 from django.contrib.sites.shortcuts import get_current_site
@@ -45,6 +47,16 @@ class TemplateView(View):
         return render(request, self.template_name, self.context)
 
     def post(self, request):
+        ctx = {}
+        to = (request.POST.get('email', ''),)
+        try:
+            send_email("mails/email_verification.html", ctx, to)
+        except:
+            form = self.form_class()
+            self.context['form'] = form
+            messages.info(request, 'Вы ввели несуществующий email')
+            return render(request, self.template_name, self.context)
+
         form = self.form_class(request.POST, request.FILES)
         self.context['form'] = form
 
@@ -138,38 +150,6 @@ class HostelView(TemplateView):
                 form.localize()
 
         self.context['form'] = form
-        return render(request, self.template_name, self.context)
-
-    def post(self, request):
-        form = self.form_class(request.POST, request.FILES)
-
-        if request.GET.__contains__('lang'):
-            if request.GET.__getitem__('lang') == 'kz':
-                self.template_name = "ssc/hostel_kz.html"
-                form.localize()
-
-        self.context['form'] = form
-
-        files = request.FILES
-        fs = FileSystemStorage()
-
-        if form.is_valid():
-            for _, file in files.items():
-                fs.save(file.name, file)
-            data = form.save()
-
-            # создаем уведомление
-            base_url = get_current_site(request)
-            url_for_app = f'{base_url}/admin/ssc/{self.app_ref}/{data.id}/change/'
-
-            n = Notification(application_type=self.app_type, url_for_application=url_for_app)
-            n.save()
-
-            return render(request, 'ssc/complete.html')
-
-        if DEBUG:
-            print(form.errors)
-
         return render(request, self.template_name, self.context)
 
     @login_required
@@ -635,7 +615,7 @@ def hostel_space(request):
         result.append({'hostel': hostel,
                        'all_space': all_space[hostel],
                        'taken_space': all_space[hostel] - free_space[hostel],
-                        'free_space': free_space[hostel]})
+                       'free_space': free_space[hostel]})
 
     result.append({'hostel': 'Итого',
                    'all_space': overall_space,

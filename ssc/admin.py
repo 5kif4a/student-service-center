@@ -358,7 +358,7 @@ class HostelAdmin(CustomAdmin):
     app = 'Ваше заявление принято в работу.'
     service_name = "Предоставление общежития обучающимся в высших учебных заведениях"
     list_per_page = 15
-    list_filter = (('date_of_application', DateRangeFilter), 'faculty', 'course', 'status')
+    list_filter = (('date_of_application', DateRangeFilter), 'faculty', 'course', 'status', CategoryFilter)
     list_display = (
         'last_name', 'first_name', 'patronymic', 'faculty', 'specialty', 'course', 'date_of_application', 'status',
         'print')
