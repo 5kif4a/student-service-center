@@ -96,6 +96,8 @@ class HostelForm(ModelForm):
         self.fields['specialty'].label = 'Образовательная программа/специальность'
         self.fields['group'].required = False
         self.fields['status'].required = False
+        self.fields['place_of_arrival'].label = 'Место прибытия (адрес прописки/проживания) (Область, район, ' \
+                                                'нас. пункт, дом, квартира) '
 
     def localize(self):
         self.fields['last_name'].label = 'Тегі'
