@@ -1,9 +1,9 @@
 certifi==2020.4.5.1
-Django==2.2.13
+Django==2.2.17
 django-crispy-forms==1.8.1
 django-environ==0.4.5
 django-hashid-field==3.0.0
-django-recaptcha==2.0.5
+django-recaptcha==2.0.6
 hashids==1.2.0
 mysqlclient==1.4.6
 pdfkit==0.6.1

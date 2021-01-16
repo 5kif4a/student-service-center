@@ -1,7 +1,7 @@
 from smtplib import SMTPDataError, SMTPRecipientsRefused
 
 from django.contrib import messages
-from django.shortcuts import render, render_to_response
+from django.shortcuts import render
 from django.contrib.sites.shortcuts import get_current_site
 from django.utils import timezone
 from django.views import View
@@ -64,8 +64,8 @@ class TemplateView(View):
         fs = FileSystemStorage()
 
         if form.is_valid():
-            for _, file in files.items():
-                fs.save(file.name, file)
+            #for _, file in files.items():
+            #    fs.save(file.name, file)
             data = form.save()
 
             # создаем уведомление
@@ -625,7 +625,7 @@ def hostel_space(request):
 
     context = {'result': result,
                'time': time}
-    return render_to_response(template, context)
+    return render(request, template, context)
 
 
 def hostel_referral_list(request):
@@ -703,7 +703,7 @@ def hostel_referral_list(request):
     context = {'hostel_three': hostel_three,
                'hostel_armandastar': hostel_armandastar,
                'hostel_uyi': hostel_uyi}
-    return render_to_response(template, context)
+    return render(request, template, context)
 
 
 class AcademicLeaveReturnView(TemplateView):
