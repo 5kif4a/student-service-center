@@ -591,7 +591,11 @@ class HostelRoomAdmin(admin.ModelAdmin):
     list_per_page = 15
     list_filter = ('hostel', 'free_space', 'sex')
     search_fields = ('number', 'hostel', 'free_space', 'sex')
-    readonly_fields = ('number', 'hostel', 'all_space', 'free_space')
+
+    def changeform_view(self, request, *args, **kwargs):
+        if not request.user.is_superuser:
+            self.readonly_fields = ('number', 'hostel', 'all_space', 'free_space')
+        return super(HostelRoomAdmin, self).changeform_view(request, *args, **kwargs)
 
 
 @admin.register(HostelReferral)
