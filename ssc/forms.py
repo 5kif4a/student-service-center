@@ -338,5 +338,6 @@ class TransferInsideForm(ModelForm):
 
     def __init__(self, *args, **kwargs):
         super(TransferInsideForm, self).__init__(*args, **kwargs)
-        self.fields['specialty'].label = 'Образовательная программа/специальность'
+        self.fields['specialty'].label = 'Образовательная программа/специальность обучения'
+        self.fields['specialty_to'].label = 'Образовательная программа/специальность перевода'
         self.fields['status'].required = False

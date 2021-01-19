@@ -781,9 +781,12 @@ class TransferInside(Person, Application):
     foundation_type = models.CharField(max_length=200, choices=foundation_types, default='на платной основе',
                                        verbose_name=_('Основа обучения'))
 
-    language_from = models.CharField(max_length=200, choices=languages_from, verbose_name=_('С языка'))
+    specialty_to = models.ForeignKey(Specialty, on_delete=models.CASCADE, related_name="Specialty_to",
+                                     verbose_name=_('Шифр и название образовательной программы/специальности перевода'))
 
-    language_to = models.CharField(max_length=200, choices=languages_to, verbose_name=_('На язык'))
+    language_from = models.CharField(max_length=200, choices=languages_from, verbose_name=_('Язык обучения'))
+
+    language_to = models.CharField(max_length=200, choices=languages_to, verbose_name=_('Язык перевода'))
 
     course = None
 
