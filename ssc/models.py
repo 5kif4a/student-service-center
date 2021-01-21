@@ -229,6 +229,9 @@ class Abroad(Person, Application):
     def __str__(self):
         return f'{self.last_name} {self.first_name} {self.patronymic}. ИИН: {self.individual_identification_number}'
 
+    def get_faculty(self):
+        return dict(faculties).get(self.faculty)
+
 
 class Hostel(Person, Application):
     """
@@ -291,6 +294,9 @@ class Hostel(Person, Application):
 
     def __str__(self):
         return f'{self.last_name} {self.first_name} {self.patronymic}. ИИН: {self.individual_identification_number}'
+
+    def get_faculty(self):
+        return dict(faculties).get(self.faculty)
 
 
 # class Duplicate(Person, Application):
@@ -374,6 +380,9 @@ class AcademicLeave(Person, Application):
     def __str__(self):
         return f'{self.last_name} {self.first_name} {self.patronymic}. ИИН: {self.individual_identification_number}'
 
+    def get_faculty(self):
+        return dict(faculties).get(self.faculty)
+
 
 class TransferKSTU(Person, Application):
     """
@@ -439,6 +448,9 @@ class TransferKSTU(Person, Application):
     def __str__(self):
         return f'{self.last_name} {self.first_name} {self.patronymic}. ИИН: {self.individual_identification_number}'
 
+    def get_faculty(self):
+        return dict(faculties).get(self.faculty)
+
 
 class Transfer(Person, Application):
     """
@@ -477,6 +489,9 @@ class Transfer(Person, Application):
 
     def __str__(self):
         return f'{self.last_name} {self.first_name} {self.patronymic}. ИИН: {self.individual_identification_number}'
+
+    def get_faculty(self):
+        return dict(faculties).get(self.faculty)
 
 
 class Recovery(Person, Application):
@@ -522,6 +537,9 @@ class Recovery(Person, Application):
 
     def __str__(self):
         return f'{self.last_name} {self.first_name} {self.patronymic}. ИИН: {self.individual_identification_number}'
+
+    def get_faculty(self):
+        return dict(faculties).get(self.faculty)
 
 
 # class PlaceOfStudy(Person):
@@ -648,6 +666,9 @@ class HostelReferral(Person, Application):
     def __str__(self):
         return f'{self.last_name} {self.first_name} {self.patronymic}. ИИН: {self.individual_identification_number}'
 
+    def get_faculty(self):
+        return dict(faculties).get(self.faculty)
+
 
 HostelReferral._meta.get_field('date_of_application').verbose_name = 'Дата приема заявления'
 
@@ -699,6 +720,9 @@ class AcademicLeaveReturn(Person, Application):
     def __str__(self):
         return f'{self.last_name} {self.first_name} {self.patronymic}. ИИН: {self.individual_identification_number}'
 
+    def get_faculty(self):
+        return dict(faculties).get(self.faculty)
+
 
 class PrivateInformationChange(Person, Application):
     """
@@ -744,6 +768,9 @@ class PrivateInformationChange(Person, Application):
     def __str__(self):
         return f'{self.last_name} {self.first_name} {self.patronymic}. ИИН: {self.individual_identification_number}'
 
+    def get_faculty(self):
+        return dict(faculties).get(self.faculty)
+
 
 class Expulsion(Person, Application):
     """
@@ -768,6 +795,9 @@ class Expulsion(Person, Application):
 
     def __str__(self):
         return f'{self.last_name} {self.first_name} {self.patronymic}. ИИН: {self.individual_identification_number}'
+
+    def get_faculty(self):
+        return dict(faculties).get(self.faculty)
 
 
 class TransferInside(Person, Application):
@@ -798,3 +828,6 @@ class TransferInside(Person, Application):
 
     def __str__(self):
         return f'{self.last_name} {self.first_name} {self.patronymic}. ИИН: {self.individual_identification_number}'
+
+    def get_faculty(self):
+        return dict(faculties).get(self.faculty)
