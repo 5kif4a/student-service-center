@@ -719,7 +719,6 @@ class HostelReferralAdmin(CustomAdmin):
             # Если не завершено - завершаем и отправляем письмо на почту
             else:
                 note = request.POST.get('evict-note')
-                print(note)
 
                 obj.status = 'Выселен'
 
@@ -730,6 +729,7 @@ class HostelReferralAdmin(CustomAdmin):
                 obj.room = None
 
                 obj.date_of_evict = datetime.now()
+                obj.message = note
                 obj.save()
 
                 ctx = {'name': obj.first_name,
