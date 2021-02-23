@@ -341,3 +341,24 @@ class TransferInsideForm(ModelForm):
         self.fields['specialty'].label = 'Образовательная программа/специальность обучения'
         self.fields['specialty_to'].label = 'Образовательная программа/специальность перевода'
         self.fields['status'].required = False
+
+
+class KeyCardForm(ModelForm):
+    """
+    Форма для заявление услуги - "Перевод внутри ВУЗа"
+    """
+    captcha = ReCaptchaField(
+        widget=ReCaptchaV3(
+            attrs={
+                'required_score': 0.85
+            }
+        )
+    )
+
+    class Meta:
+        model = KeyCard
+        fields = "__all__"
+
+    def __init__(self, *args, **kwargs):
+        super(KeyCardForm, self).__init__(*args, **kwargs)
+        self.fields['status'].required = False

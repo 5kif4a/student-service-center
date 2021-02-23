@@ -504,7 +504,8 @@ class Recovery(Person, Application):
 
     specialty_on_previous_university = models.ForeignKey(Specialty, on_delete=models.CASCADE,
                                                          verbose_name=_('Специальность обучения в предыдущем ВУЗе'),
-                                                         related_name='specialty_on_previous_university_recovery', null=True)
+                                                         related_name='specialty_on_previous_university_recovery',
+                                                         null=True)
 
     faculty = models.CharField(max_length=200, choices=faculties, verbose_name=_('Факультет'))
 
@@ -825,6 +826,33 @@ class TransferInside(Person, Application):
     class Meta:
         verbose_name = _('заявление на перевод внутри ВУЗа')
         verbose_name_plural = _('заявления на перевод внутри ВУЗа')
+
+    def __str__(self):
+        return f'{self.last_name} {self.first_name} {self.patronymic}. ИИН: {self.individual_identification_number}'
+
+    def get_faculty(self):
+        return dict(faculties).get(self.faculty)
+
+
+class KeyCard(Person, Application):
+    """
+    Восстановление ключ-карты
+    """
+    id = HashidAutoField(primary_key=True, min_length=16)
+
+    faculty = models.CharField(max_length=200, choices=faculties, verbose_name=_('Факультет'))
+
+    attachment = models.FileField(upload_to='key_card_attachments/',
+                                  verbose_name=_('Квитанция об оплате'),
+                                  validators=[file_size_validator, file_ext_validator])
+
+    address = None
+
+    specialty = None
+
+    class Meta:
+        verbose_name = _('заявка на восстановление ключ-карты в связи с утерей')
+        verbose_name_plural = _('заявки на восстановление ключ-карты в связи с утерей')
 
     def __str__(self):
         return f'{self.last_name} {self.first_name} {self.patronymic}. ИИН: {self.individual_identification_number}'
