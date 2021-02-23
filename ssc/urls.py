@@ -65,6 +65,9 @@ private_information_change_urls = [path('private-information-change', views.Priv
 expulsion_urls = [path('expulsion', views.ExpulsionView.as_view()),
                                    path('expulsion/report/<obj_id>/', views.ExpulsionView.render)]
 
+key_card_urls = [path('key-card', views.KeyCardView.as_view()),
+                  path('key-card/report/<obj_id>/', views.KeyCardView.render)]
+
 urlpatterns = [
                   path('', views.index),
                   url(r'^%s(?P<path>.*)$' % settings.MEDIA_URL[1:], protected_serve,
@@ -84,4 +87,5 @@ urlpatterns = [
               check_hostel_urls + \
               academic_leave_return_urls + \
               private_information_change_urls + \
-              expulsion_urls
+              expulsion_urls + \
+              key_card_urls

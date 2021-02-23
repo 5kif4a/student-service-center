@@ -64,7 +64,7 @@ class TemplateView(View):
         fs = FileSystemStorage()
 
         if form.is_valid():
-            #for _, file in files.items():
+            # for _, file in files.items():
             #    fs.save(file.name, file)
             data = form.save()
 
@@ -419,7 +419,7 @@ def get_notifications(request):
     """
     notifications = Notification.objects.filter(is_showed=False).order_by('-date')
     notifications = serializers.serialize("json", notifications)
-    data = json.loads(notifications, encoding='utf8')
+    data = json.loads(notifications)
     return JsonResponse(data, safe=False)
 
 
@@ -465,7 +465,8 @@ def check_order(request):
                         'academic_leave_return': AcademicLeaveReturn,
                         'private_information_change': PrivateInformationChange,
                         'expulsion': Expulsion,
-                        'transfer-inside': TransferInside}
+                        'transfer-inside': TransferInside,
+                        'key-card': KeyCard}
 
     if request.method == 'GET':
         order_type = request.GET.get('order_type')
@@ -816,3 +817,27 @@ class TransferInsideView(TemplateView):
             return render_pdf('applications/transfer-inside.html', context)
         else:
             return HttpResponse('<center><h1>Заявление не потверждено!</h1></center>')
+
+
+class KeyCardView(TemplateView):
+    """
+    Представления для подачи заявки по услуге
+    "Восстановление ключ-карты в связи с утерей"
+    """
+    form_class = KeyCardForm
+    template_name = 'ssc/key-card.html'
+    context = {'status': statuses.get('key-card')}
+    app_type = 'Восстановление ключ-карты'
+    app_ref = 'key-card'
+
+    @login_required
+    def render(self, obj_id):
+        app = KeyCard.objects.get(id=obj_id)
+        if app.status not in ('Не проверено', 'Отозвано на исправление'):
+            context = {
+                'app': app,
+                'qr_code': generate_qr_code(f'{BASE_URL}/check_order?order_type=key-card&id={obj_id}')
+            }
+            return render_pdf('applications/key-card.html', context)
+        else:
+            return HttpResponse('<center><h1>Заявка не потверждена!</h1></center>')
