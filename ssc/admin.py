@@ -1159,3 +1159,40 @@ class KeyCardAdmin(CustomAdmin):
                 self.message_user(request, f"""Обработка заявки "{obj}" завершена. Письмо отправлено""")
 
         return super().response_change(request, obj)
+
+
+@admin.register(ReferenceStudent)
+class ReferenceStudentAdmin(CustomAdmin):
+    """
+    Админ.панель выдачи транскриптов обучающимся
+    """
+    entity = 'reference-student'
+    mail_template = 'mails/reference-student.html'
+    change_form_template = "custom_admin/change_form.html"
+    # app = 'Ваш приказ готов. Вы можете получить его в КарТУ, 1 корпус, кабинет № 109.'
+    list_per_page = 15
+    list_filter = ('date_of_application', 'status', 'is_signed')
+    list_display = ('last_name', 'first_name', 'patronymic', 'date_of_application', 'status',
+                    'print')
+    search_fields = ('last_name', 'first_name', 'patronymic', 'address',
+                     'individual_identification_number')
+
+    def response_change(self, request, obj):
+        # Завершение обработки заявления
+        if "_finish" in request.POST:
+            # Если завершено - выдаем сообщение, что заявление уже завершено
+            if obj.status == 'Завершено':
+                self.message_user(request, f"{obj} обработка завершена")
+            # Если не завершено - завершаем и отправляем письмо на почту
+            else:
+                obj.status = 'Завершено'
+                obj.save()
+
+                ctx = {'name': obj.first_name, }
+                to = (obj.email,)
+
+                send_email("mails/ready/reference-student.html", ctx, to)
+
+                self.message_user(request, f"""Обработка заявки "{obj}" завершена. Письмо отправлено""")
+
+        return super().response_change(request, obj)

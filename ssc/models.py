@@ -859,3 +859,28 @@ class KeyCard(Person, Application):
 
     def get_faculty(self):
         return dict(faculties).get(self.faculty)
+
+
+class ReferenceStudent(Person, Application):
+    """
+    Выдача транскрипта обучающимся
+    """
+    id = HashidAutoField(primary_key=True, min_length=16)
+
+    faculty = models.CharField(max_length=200, choices=faculties, verbose_name=_('Факультет'))
+
+    is_signed = models.BooleanField(verbose_name="С подписью ректора")
+
+    address = None
+
+    specialty = None
+
+    class Meta:
+        verbose_name = _('заявка на выдачу транскрипта обучающимся в КарТУ')
+        verbose_name_plural = _('заявки на выдачу транскрипта обучающимся в КарТУ')
+
+    def __str__(self):
+        return f'{self.last_name} {self.first_name} {self.patronymic}. ИИН: {self.individual_identification_number}'
+
+    def get_faculty(self):
+        return dict(faculties).get(self.faculty)
