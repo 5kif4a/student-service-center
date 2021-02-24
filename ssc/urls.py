@@ -68,6 +68,9 @@ expulsion_urls = [path('expulsion', views.ExpulsionView.as_view()),
 key_card_urls = [path('key-card', views.KeyCardView.as_view()),
                   path('key-card/report/<obj_id>/', views.KeyCardView.render)]
 
+reference_student_urls = [path('reference-student', views.ReferenceStudentView.as_view()),
+                 path('reference-student/report/<obj_id>/', views.ReferenceStudentView.render)]
+
 urlpatterns = [
                   path('', views.index),
                   url(r'^%s(?P<path>.*)$' % settings.MEDIA_URL[1:], protected_serve,
@@ -88,4 +91,5 @@ urlpatterns = [
               academic_leave_return_urls + \
               private_information_change_urls + \
               expulsion_urls + \
-              key_card_urls
+              key_card_urls + \
+              reference_student_urls

@@ -345,7 +345,7 @@ class TransferInsideForm(ModelForm):
 
 class KeyCardForm(ModelForm):
     """
-    Форма для заявление услуги - "Перевод внутри ВУЗа"
+    Форма для заявление услуги - "Выдача ключ-карты"
     """
     captcha = ReCaptchaField(
         widget=ReCaptchaV3(
@@ -361,4 +361,25 @@ class KeyCardForm(ModelForm):
 
     def __init__(self, *args, **kwargs):
         super(KeyCardForm, self).__init__(*args, **kwargs)
+        self.fields['status'].required = False
+
+
+class ReferenceStudentForm(ModelForm):
+    """
+    Форма для заявление услуги - "Выдача транскрипта обучающимся"
+    """
+    captcha = ReCaptchaField(
+        widget=ReCaptchaV3(
+            attrs={
+                'required_score': 0.85
+            }
+        )
+    )
+
+    class Meta:
+        model = ReferenceStudent
+        fields = "__all__"
+
+    def __init__(self, *args, **kwargs):
+        super(ReferenceStudentForm, self).__init__(*args, **kwargs)
         self.fields['status'].required = False

@@ -466,7 +466,8 @@ def check_order(request):
                         'private_information_change': PrivateInformationChange,
                         'expulsion': Expulsion,
                         'transfer-inside': TransferInside,
-                        'key-card': KeyCard}
+                        'key-card': KeyCard,
+                        'reference-student': ReferenceStudent}
 
     if request.method == 'GET':
         order_type = request.GET.get('order_type')
@@ -832,12 +833,37 @@ class KeyCardView(TemplateView):
 
     @login_required
     def render(self, obj_id):
-        app = KeyCard.objects.get(id=obj_id)
+        app = ReferenceStudent.objects.get(id=obj_id)
+        print(app.is_signed)
         if app.status not in ('Не проверено', 'Отозвано на исправление'):
             context = {
                 'app': app,
                 'qr_code': generate_qr_code(f'{BASE_URL}/check_order?order_type=key-card&id={obj_id}')
             }
             return render_pdf('applications/key-card.html', context)
+        else:
+            return HttpResponse('<center><h1>Заявка не потверждена!</h1></center>')
+
+
+class ReferenceStudentView(TemplateView):
+    """
+    Представления для подачи заявки по услуге
+    "Восстановление ключ-карты в связи с утерей"
+    """
+    form_class = ReferenceStudentForm
+    template_name = 'ssc/reference-student.html'
+    context = {'status': statuses.get('reference-student')}
+    app_type = 'Выдача трансприкта обучающимся'
+    app_ref = 'reference-student'
+
+    @login_required
+    def render(self, obj_id):
+        app = ReferenceStudent.objects.get(id=obj_id)
+        if app.status not in ('Не проверено', 'Отозвано на исправление'):
+            context = {
+                'app': app,
+                'qr_code': generate_qr_code(f'{BASE_URL}/check_order?order_type=reference-student&id={obj_id}')
+            }
+            return render_pdf('applications/reference-student.html', context)
         else:
             return HttpResponse('<center><h1>Заявка не потверждена!</h1></center>')
