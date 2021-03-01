@@ -652,6 +652,8 @@ class HostelReferral(Person, Application):
 
     group = models.CharField(max_length=50, blank=True, verbose_name=_('Группа'))
 
+    is_registered = models.BooleanField(verbose_name="Временная регистрация", default=False)
+
     message = models.CharField(max_length=500, blank=True, verbose_name=_('Отправленный ответ'))
 
     date_of_referral = models.DateTimeField(blank=True, null=True, verbose_name=_('Дата выдачи направления'))

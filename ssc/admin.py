@@ -613,12 +613,12 @@ class HostelReferralAdmin(CustomAdmin):
         ('date_of_application', DateRangeFilter), ('date_of_referral', DateRangeFilter),
         ('date_of_evict', DateRangeFilter),
         'is_serpin', 'room__hostel', 'faculty', 'course', 'status',
-        CategoryFilter)
+        CategoryFilter, 'is_registered')
     list_display = (
         'last_name', 'first_name', 'patronymic', 'individual_identification_number', 'faculty', 'course',
         'date_of_application',
         'status',
-        'room', 'print')
+        'room', 'is_registered', 'print')
     search_fields = ('last_name', 'first_name', 'patronymic', 'specialty__name',
                      'individual_identification_number', 'room__number', 'room__hostel')
     autocomplete_fields = ('specialty', 'room')
