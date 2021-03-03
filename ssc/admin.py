@@ -606,6 +606,7 @@ class HostelReferralAdmin(CustomAdmin):
     entity = 'hostel_referral'
     mail_template = 'mails/hostel_referral.html'
     change_form_template = "custom_admin/hostel_referral.html"
+    change_list_template = "custom_admin/hostel_referral_list.html"
     app = 'Ваше направление в общежитие готово.'
     service_name = "Предоставление общежития обучающимся в высших учебных заведениях"
     list_per_page = 15
