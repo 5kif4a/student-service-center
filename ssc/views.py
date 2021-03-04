@@ -986,8 +986,7 @@ class KeyCardView(TemplateView):
 
     @login_required
     def render(self, obj_id):
-        app = ReferenceStudent.objects.get(id=obj_id)
-        print(app.is_signed)
+        app = KeyCard.objects.get(id=obj_id)
         if app.status not in ('Не проверено', 'Отозвано на исправление'):
             context = {
                 'app': app,
