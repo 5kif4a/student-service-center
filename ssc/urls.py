@@ -54,8 +54,7 @@ hostel_referral_urls = [path('hostel_referral/report/<obj_id>', views.HostelRefe
 
 check_hostel_urls = [path('check_hostel', views.check_hostel),
                      path('hostel_space', views.hostel_space),
-                     path('hostel_referral_list', views.hostel_referral_list),
-                     path('hostel_referral_excel', views.hostel_referral_excel)]
+                     path('hostel_referral_list', views.hostel_referral_list)]
 
 academic_leave_return_urls = [path('academic-leave-return', views.AcademicLeaveReturnView.as_view()),
                        path('academic-leave-return/report/<obj_id>/', views.AcademicLeaveReturnView.render)]

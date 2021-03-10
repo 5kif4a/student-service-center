@@ -1,6 +1,6 @@
 {% extends 'admin/change_list.html' %}
 {% block object-tools %}
-<form action="/hostel_referral_excel" method="POST">
+<form action="excel_export/" method="POST">
     {% csrf_token %}
     <input type="submit" value="Экспорт отчета в Excel" />
 </form>

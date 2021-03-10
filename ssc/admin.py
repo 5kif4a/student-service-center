@@ -1,3 +1,5 @@
+import xlsxwriter
+from django.conf.urls import url
 from django.contrib import admin
 from django.db.models import Max
 from django.utils.html import format_html
@@ -826,6 +828,93 @@ document.getElementById('postPopulate').submit();">
             else:
                 kwargs["queryset"] = HostelRoom.objects.filter(free_space__gt=0)
         return super().formfield_for_foreignkey(db_field, request, **kwargs)
+
+    def get_urls(self):
+        urls = super(HostelReferralAdmin, self).get_urls()
+        custom_urls = [url('^excel_export/$', self.excel_export, name='excel_export'),]
+        return custom_urls + urls
+
+    def excel_export(self, request):
+        output = io.BytesIO()
+
+        workbook = xlsxwriter.Workbook(output)
+        worksheet = workbook.add_worksheet()
+        worksheet.set_column("A:A", 10)
+        worksheet.set_column("B:C", 35)
+        worksheet.set_column("D:F", 15)
+        worksheet.set_column("G:L", 35)
+
+        header_style = workbook.add_format({'bold': True,
+                                            'font_size': 14,
+                                            'font_name': 'Times New Roman',
+                                            'align': 'center'})
+
+        table_style = workbook.add_format({'font_size': 14,
+                                           'font_name': 'Times New Roman',
+                                           'align': 'center',
+                                           'border': 2,
+                                           'valign': 'vcenter'})
+
+        table_header_style = workbook.add_format({'font_size': 14,
+                                                  'font_name': 'Times New Roman',
+                                                  'align': 'center',
+                                                  'border': 2,
+                                                  'valign': 'vcenter',
+                                                  'bold': True})
+
+        workbook.formats[0].set_font_size(14)
+        workbook.formats[0].set_font_name("Times New Roman")
+
+        worksheet.merge_range("A1:F1", "Списки студентов по заселению в общежитиях", header_style)
+
+        worksheet.write(3, 0, "№", table_header_style)
+        worksheet.write(3, 1, "ФИО", table_header_style)
+        worksheet.write(3, 2, "ИИН", table_header_style)
+        worksheet.write(3, 3, "Факультет", table_header_style)
+        worksheet.write(3, 4, "Курс", table_header_style)
+        worksheet.write(3, 5, "Группа", table_header_style)
+        worksheet.write(3, 6, "Статус", table_header_style)
+        worksheet.write(3, 7, "Общежитие", table_header_style)
+        worksheet.write(3, 8, "Номер комнаты", table_header_style)
+        worksheet.write(3, 9, "Участие в программе Серпын", table_header_style)
+        worksheet.write(3, 10, "Категория приоритета", table_header_style)
+        worksheet.write(3, 11, "Временная регистрация", table_header_style)
+
+        row_num = 4
+
+        for referral in HostelReferral.objects.all():
+            worksheet.write(row_num, 0, row_num - 3, table_style)
+            worksheet.write(row_num, 1, referral.last_name + " " + referral.first_name + " " + referral.patronymic,
+                            table_style)
+            worksheet.write(row_num, 2, referral.individual_identification_number, table_style)
+            worksheet.write(row_num, 3, referral.faculty, table_style)
+            worksheet.write(row_num, 4, referral.course, table_style)
+            worksheet.write(row_num, 5, referral.group, table_style)
+            worksheet.write(row_num, 6, referral.status, table_style)
+            if referral.status in ('Одобрено', 'Заселен'):
+                worksheet.write(row_num, 7, referral.room.hostel, table_style)
+                worksheet.write(row_num, 8, referral.room.number, table_style)
+            else:
+                worksheet.write(row_num, 7, '-', table_style)
+                worksheet.write(row_num, 8, '-', table_style)
+            worksheet.write(row_num, 9, referral.is_serpin, table_style)
+            worksheet.write(row_num, 10, CategoryFilter.to_representation(referral), table_style)
+            worksheet.write(row_num, 11, referral.is_registered, table_style)
+            row_num += 1
+
+        worksheet.autofilter(3, 3, row_num, 11)
+
+        workbook.close()
+        output.seek(0)
+
+        filename = 'referral_list.xlsx'
+        response = HttpResponse(
+            output,
+            content_type='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+        )
+        response['Content-Disposition'] = 'attachment; filename=%s' % filename
+
+        return response
 
 
 @admin.register(AcademicLeaveReturn)
