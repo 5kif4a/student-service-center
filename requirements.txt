@@ -7,7 +7,7 @@ django-recaptcha==2.0.6
 hashids==1.2.0
 mysqlclient==1.4.6
 pdfkit==0.6.1
-Pillow==7.1.0
+Pillow==8.1.1
 pypng==0.0.20
 PyQRCode==1.2.1
 pytz==2019.3
