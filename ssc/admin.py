@@ -162,7 +162,22 @@ class CustomAdmin(admin.ModelAdmin):
                 "recovery": "[obj.iin_attachment_front.path, obj.iin_attachment_back.path, obj.attachment.path, "
                             "obj.certificate.path] ",
 
-                "hostel_referral": "[obj.iin_attachment_front.path, obj.iin_attachment_back.path, obj.attachmentProperty.path]"
+                "hostel_referral": "[obj.iin_attachment_front.path, obj.iin_attachment_back.path, "
+                                   "obj.attachmentProperty.path]",
+
+                "academic-leave-return": "[obj.iin_attachment_front.path, obj.iin_attachment_back.path, "
+                                         "obj.attachment.path]",
+
+                "private-information-change": "[obj.iin_attachment_front.path, obj.iin_attachment_back.path, "
+                                              "obj.attachment.path]",
+
+                "expulsion": "[]",
+
+                "transfer-inside": "[]",
+
+                "key-card": "[obj.attachment.path]",
+
+                "reference-student": "[]"
             }
 
             if obj.__class__ is Hostel or obj.__class__ is HostelReferral:
@@ -183,15 +198,18 @@ class CustomAdmin(admin.ModelAdmin):
                     filenames_dict["hostel_referral"] = filenames_dict["hostel_referral"][0:-1] + \
                                                         ", obj.attachmentKandas.path]"
 
-            if obj.__class__ is AcademicLeave or obj.__class__ is Recovery:
+            if obj.__class__ is AcademicLeave or obj.__class__ is Recovery or obj.__class__ is PrivateInformationChange:
                 if not obj.attachment:
                     filenames_dict["academic-leave"] = "[obj.iin_attachment_front.path, obj.iin_attachment_back.path]"
+                    filenames_dict[
+                        "private-information-change"] = "[obj.iin_attachment_front.path, obj.iin_attachment_back.path]"
                     filenames_dict["recovery"] = "[obj.iin_attachment_front.path, obj.iin_attachment_back.path, " \
                                                  "obj.certificate.path] "
 
             # UNSAFE CODE BEGIN
             filenames_as_str = filenames_dict.get(self.entity)
-            filenames = eval(filenames_as_str)
+            if filenames_as_str is not None:
+                filenames = eval(filenames_as_str)
             # UNSAFE CODE END
             if self.entity == "transfer-kstu":
                 if obj.grant:
@@ -831,7 +849,7 @@ document.getElementById('postPopulate').submit();">
 
     def get_urls(self):
         urls = super(HostelReferralAdmin, self).get_urls()
-        custom_urls = [url('^excel_export/$', self.excel_export, name='excel_export'),]
+        custom_urls = [url('^excel_export/$', self.excel_export, name='excel_export'), ]
         return custom_urls + urls
 
     def excel_export(self, request):
@@ -1073,7 +1091,7 @@ class PrivateInformationChangeAdmin(CustomAdmin):
 @admin.register(Expulsion)
 class ExpulsionAdmin(CustomAdmin):
     """
-    Админ.панель смены персональных данных
+    Админ.панель отчисления
     """
     entity = 'expulsion'
     mail_template = 'mails/expulsion.html'
