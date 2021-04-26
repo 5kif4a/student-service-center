@@ -1,6 +1,9 @@
+import urllib.request
+
 import xlsxwriter
 from django.conf.urls import url
 from django.contrib import admin
+from django.db import transaction
 from django.db.models import Max
 from django.utils.html import format_html
 from rangefilter.filter import DateRangeFilter
@@ -63,6 +66,14 @@ class RectorAdmin(admin.ModelAdmin):
     Админ.панель для списка ректоров
     """
     list_display = get_model_fields(Rector)
+
+
+@admin.register(Stuff)
+class RectorAdmin(admin.ModelAdmin):
+    """
+    Админ.панель для списка сотрудников, на чье имя заявления
+    """
+    list_display = get_model_fields(Stuff)
 
 
 class CustomAdmin(admin.ModelAdmin):
@@ -705,9 +716,7 @@ class HostelReferralAdmin(CustomAdmin):
                        'referral_url': f'https://{BASE_URL}/{self.entity}/report/{obj.id}'}
                 to = (request.POST.get('email', ''),)
 
-                # uploaded_file = request.FILES['scanned_file']
-                # send_email_with_attachment("mails/ready/hostel_referral.html", ctx, to, uploaded_file)
-                send_email("mails/hostel_referral.html", ctx, to)
+                transaction.on_commit(lambda: download_referral_and_send(ctx, to))
 
                 self.message_user(request, f"""{obj} подтверждено""")
 

@@ -96,6 +96,25 @@ class Rector(models.Model):
         verbose_name_plural = _('Ректоры')
 
 
+class Stuff(models.Model):
+    """
+    Сотрудники, на чье имя оформляется услуга
+    """
+    application_type = models.CharField(max_length=100, verbose_name=_('Тип заявления'), choices=APPLICATIONS_TYPES,
+                                        unique=True)
+
+    position = models.CharField(max_length=50, verbose_name=_('Должность (в род. падеже)'))
+
+    name = models.CharField(max_length=100, verbose_name=_('ФИО сотрудника (в род. падеже)'))
+
+    class Meta:
+        verbose_name = _('Сотрудник')
+        verbose_name_plural = _('Сотрудники')
+
+    def __str__(self):
+        return f'{self.application_type}'
+
+
 class Student(models.Model):
     """
     Студент

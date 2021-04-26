@@ -2,11 +2,13 @@ import io
 import logging
 import mimetypes
 import os
+import urllib
 import zipfile
 from datetime import datetime
 
 import pdfkit
 import pyqrcode
+from django.core.files.storage import default_storage
 from django.core.mail import EmailMessage
 from django.http import HttpResponse
 from django.template.loader import render_to_string
@@ -70,8 +72,9 @@ foundation_types = [('на платной основе', 'на платной о
                     ('на основе образовательного гранта', 'на основе образовательного гранта')]
 
 information_change_reasons = [('в связи со сменой удостоверения личности', 'в связи со сменой удостоверения личности'),
-                     ('в связи с вступлением в брак и сменой удостоверения личности', 'в связи с вступлением в брак и '
-                                                                                      'сменой удостоверения личности')]
+                              ('в связи с вступлением в брак и сменой удостоверения личности',
+                               'в связи с вступлением в брак и '
+                               'сменой удостоверения личности')]
 
 faculties = [('горный', 'Горный'),
              ('машиностроительный', 'Машиностроительный'),
@@ -115,7 +118,7 @@ APPLICATIONS_TYPES = [('Академическая мобильность', 'А�
                       ('Отчисление', 'Отчисление'),
                       ('Перевод внутри ВУЗа', 'Перевод внутри ВУЗа'),
                       ('Восстановление ключ-карты', 'Восстановление ключ-карты'),
-                      ('Выдача трансприкта обучающимся', 'Выдача трансприкта обучающимся')
+                      ('Выдача транскрипта обучающимся', 'Выдача транскрипта обучающимся')
                       ]
 
 languages_from = [('с русского языка', 'с русского языка'),
@@ -180,7 +183,26 @@ def send_email_with_attachment(mail_template, context, to, file):
     msg.send()
 
 
+# отправка письма с файлом
+def send_email_with_attachment_file(mail_template, context, to, file):
+    message = render_to_string(mail_template, context)
+    msg = EmailMessage(subject='Центр обслуживания студентов КарТУ', body=message, to=to)
+    msg.content_subtype = 'html'
+    msg.attach_file(file)
+    msg.send()
+
+
 # Генерация QR кода - альтернатива подписи, как верификация пользователя услуги
 def generate_qr_code(url):
     qr = pyqrcode.create(url)
     return qr.png_as_base64_str(scale=4)
+
+
+def download_referral_and_send(ctx, to):
+    url = ctx['referral_url']
+    response = urllib.request.urlopen(url)
+    file = default_storage.open("hostel_referral.pdf", "wb")
+    file.write(response.read())
+    file.close()
+    send_email_with_attachment_file("mails/hostel_referral.html", ctx, to, "media/hostel_referral.pdf")
+    default_storage.delete("hostel_referral.pdf")

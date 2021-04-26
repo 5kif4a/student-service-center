@@ -112,7 +112,8 @@ class AbroadView(TemplateView):
         app = Abroad.objects.get(id=obj_id)
         if app.status not in ('Не проверено', 'Отозвано на исправление'):
             context = {
-                'rector_name': rector_name,
+                'stuff_position': Stuff.objects.get(application_type='Академическая мобильность').position,
+                'stuff_name': Stuff.objects.get(application_type='Академическая мобильность').name,
                 'app': app,
                 'qr_code': generate_qr_code(f'{BASE_URL}/check_order?order_type=abroad&id={obj_id}')
             }
@@ -173,7 +174,8 @@ class HostelView(TemplateView):
                 kandas = True
 
             context = {
-                'rector_name': rector_name,
+                'stuff_position': Stuff.objects.get(application_type='Общежитие').position,
+                'stuff_name': Stuff.objects.get(application_type='Общежитие').name,
                 'app': app,
                 'qr_code': generate_qr_code(f'{BASE_URL}/check_order?order_type=hostel&id={obj_id}'),
                 'death': death,
@@ -209,7 +211,8 @@ class DuplicateView(TemplateView):
     #     app = Duplicate.objects.get(id=obj_id)
     #     if app.status not in ('Не проверено', 'Отозвано на исправление'):
     #         context = {
-    #             'rector_name': rector_name,
+    #             'stuff_position': Stuff.objects.get(application_type='Дубликаты документов').position,
+    #             'stuff_name': Stuff.objects.get(application_type='Дубликаты документов').name,
     #             'app': app,
     #             'qr_code': generate_qr_code('http://www.kstu.kz/')
     #         }
@@ -242,7 +245,8 @@ class AcademicLeaveView(TemplateView):
             }
 
             context = {
-                'rector_name': rector_name,
+                'stuff_position': Stuff.objects.get(application_type='Академический отпуск').position,
+                'stuff_name': Stuff.objects.get(application_type='Академический отпуск').name,
                 'app': app,
                 'qr_code': generate_qr_code(f'{BASE_URL}/check_order?order_type=academic_leave&id={obj_id}'),
                 'document': documents[app.reason]
@@ -272,7 +276,8 @@ class ReferenceView(TemplateView):
         app = Reference.objects.get(id=obj_id)
         if app.status not in ('Не проверено', 'Отозвано на исправление'):
             context = {
-                'rector_name': rector_name,
+                'stuff_position': Stuff.objects.get(application_type='Академическая справка').position,
+                'stuff_name': Stuff.objects.get(application_type='Академическая справка').name,
                 'app': app,
                 'qr_code': generate_qr_code(f'{BASE_URL}/check_order?order_type=reference&id={obj_id}')
             }
@@ -305,7 +310,8 @@ class TransferView(TemplateView):
         app = Transfer.objects.get(id=obj_id)
         if app.status not in ('Не проверено', 'Отозвано на исправление'):
             context = {
-                'rector_name': rector_name,
+                'stuff_position': Stuff.objects.get(application_type='Перевод в другой ВУЗ').position,
+                'stuff_name': Stuff.objects.get(application_type='Перевод в другой ВУЗ').name,
                 'app': app,
                 'qr_code': generate_qr_code(f'{BASE_URL}/check_order?order_type=transfer&id={obj_id}')
             }
@@ -331,7 +337,8 @@ class TransferKSTUView(TemplateView):
         app = TransferKSTU.objects.get(id=obj_id)
         if app.status not in ('Не проверено', 'Отозвано на исправление'):
             context = {
-                'rector_name': rector_name,
+                'stuff_position': Stuff.objects.get(application_type='Перевод в КарТУ').position,
+                'stuff_name': Stuff.objects.get(application_type='Перевод в КарТУ').name,
                 'app': app,
                 'qr_code': generate_qr_code(f'{BASE_URL}/check_order?order_type=transfer_kstu&id={obj_id}')
             }
@@ -357,7 +364,8 @@ class RecoveryView(TemplateView):
         app = Recovery.objects.get(id=obj_id)
         if app.status not in ('Не проверено', 'Отозвано на исправление'):
             context = {
-                'rector_name': rector_name,
+                'stuff_position': Stuff.objects.get(application_type='Восстановление в число обучающихся').position,
+                'stuff_name': Stuff.objects.get(application_type='Восстановление в число обучающихся').name,
                 'app': app,
                 'qr_code': generate_qr_code(f'{BASE_URL}/check_order?order_type=recovery&id={obj_id}')
             }
@@ -730,7 +738,8 @@ class AcademicLeaveReturnView(TemplateView):
             }
 
             context = {
-                'rector_name': rector_name,
+                'stuff_position': Stuff.objects.get(application_type='Возвращение из акадического отпуска').position,
+                'stuff_name': Stuff.objects.get(application_type='Возвращение из акадического отпуска').name,
                 'app': app,
                 'qr_code': generate_qr_code(f'{BASE_URL}/check_order?order_type=academic_leave_return&id={obj_id}'),
                 'document': documents[app.reason]
@@ -757,7 +766,8 @@ class PrivateInformationChangeView(TemplateView):
         app = PrivateInformationChange.objects.get(id=obj_id)
         if app.status not in ('Не проверено', 'Отозвано на исправление'):
             context = {
-                'rector_name': rector_name,
+                'stuff_position': Stuff.objects.get(application_type='Изменение персональных данных').position,
+                'stuff_name': Stuff.objects.get(application_type='Изменение персональных данных').name,
                 'app': app,
                 'qr_code': generate_qr_code(f'{BASE_URL}/check_order?order_type=private_information_change&id={obj_id}')
             }
@@ -783,7 +793,8 @@ class ExpulsionView(TemplateView):
         app = Expulsion.objects.get(id=obj_id)
         if app.status not in ('Не проверено', 'Отозвано на исправление'):
             context = {
-                'rector_name': rector_name,
+                'stuff_position': Stuff.objects.get(application_type='Отчисление').position,
+                'stuff_name': Stuff.objects.get(application_type='Отчисление').name,
                 'app': app,
                 'qr_code': generate_qr_code(f'{BASE_URL}/check_order?order_type=expulsion&id={obj_id}')
             }
@@ -809,7 +820,8 @@ class TransferInsideView(TemplateView):
         app = TransferInside.objects.get(id=obj_id)
         if app.status not in ('Не проверено', 'Отозвано на исправление'):
             context = {
-                'rector_name': rector_name,
+                'stuff_position': Stuff.objects.get(application_type='Перевод внутри ВУЗа').position,
+                'stuff_name': Stuff.objects.get(application_type='Перевод внутри ВУЗа').name,
                 'app': app,
                 'qr_code': generate_qr_code(f'{BASE_URL}/check_order?order_type=transfer-inside&id={obj_id}')
             }
@@ -850,7 +862,7 @@ class ReferenceStudentView(TemplateView):
     form_class = ReferenceStudentForm
     template_name = 'ssc/reference-student.html'
     context = {'status': statuses.get('reference-student')}
-    app_type = 'Выдача трансприкта обучающимся'
+    app_type = 'Выдача транскрипта обучающимся'
     app_ref = 'reference-student'
 
     @login_required
@@ -864,3 +876,11 @@ class ReferenceStudentView(TemplateView):
             return render_pdf('applications/reference-student.html', context)
         else:
             return HttpResponse('<center><h1>Заявка не потверждена!</h1></center>')
+
+
+def init(request):
+    for obj in Notification.objects.filter(application_type='Выдача трансприкта обучающимся'):
+        obj.application_type = 'Выдача транскрипта обучающимся'
+        obj.save()
+
+    return HttpResponseRedirect('/admin')
