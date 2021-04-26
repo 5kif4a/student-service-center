@@ -876,11 +876,3 @@ class ReferenceStudentView(TemplateView):
             return render_pdf('applications/reference-student.html', context)
         else:
             return HttpResponse('<center><h1>Заявка не потверждена!</h1></center>')
-
-
-def init(request):
-    for obj in Notification.objects.filter(application_type='Выдача трансприкта обучающимся'):
-        obj.application_type = 'Выдача транскрипта обучающимся'
-        obj.save()
-
-    return HttpResponseRedirect('/admin')

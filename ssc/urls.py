@@ -71,7 +71,6 @@ key_card_urls = [path('key-card', views.KeyCardView.as_view()),
 reference_student_urls = [path('reference-student', views.ReferenceStudentView.as_view()),
                  path('reference-student/report/<obj_id>/', views.ReferenceStudentView.render)]
 
-init_url = [path('init', views.init)]
 
 urlpatterns = [
                   path('', views.index),
@@ -94,4 +93,4 @@ urlpatterns = [
               private_information_change_urls + \
               expulsion_urls + \
               key_card_urls + \
-              reference_student_urls + init_url
+              reference_student_urls
