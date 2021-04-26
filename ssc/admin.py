@@ -716,7 +716,9 @@ class HostelReferralAdmin(CustomAdmin):
                        'referral_url': f'https://{BASE_URL}/{self.entity}/report/{obj.id}'}
                 to = (request.POST.get('email', ''),)
 
-                transaction.on_commit(lambda: download_referral_and_send(ctx, to))
+                send_email("mails/hostel_referral.html", ctx, to)
+
+                #transaction.on_commit(lambda: download_referral_and_send(ctx, to))
 
                 self.message_user(request, f"""{obj} подтверждено""")
 
