@@ -905,3 +905,36 @@ class ReferenceStudent(Person, Application):
 
     def get_faculty(self):
         return dict(faculties).get(self.faculty)
+
+
+class KeyCardFirst(Person, Application):
+    """
+    Получение ключ-карты
+    """
+    id = HashidAutoField(primary_key=True, min_length=16)
+
+    faculty = models.CharField(max_length=200, choices=faculties, verbose_name=_('Факультет'))
+
+    reason = models.CharField(max_length=100, choices=key_card_first_reasons, default='в связи c восстановлением в '
+                                                                                          'число студентов',
+                              verbose_name=_('Причина'))
+
+    attachment = models.FileField(upload_to='key_card_first_attachments/',
+                                  verbose_name=_('Скан заявления о восстановлении/переводе'),
+                                  validators=[file_size_validator, file_ext_validator])
+
+    address = None
+
+    specialty = None
+
+    group = None
+
+    class Meta:
+        verbose_name = _('заявка на получение ключ-карты при восстановлении и переводе из другого ВУЗа')
+        verbose_name_plural = _('заявки на получение ключ-карты при восстановлении и переводе из другого ВУЗа')
+
+    def __str__(self):
+        return f'{self.last_name} {self.first_name} {self.patronymic}. ИИН: {self.individual_identification_number}'
+
+    def get_faculty(self):
+        return dict(faculties).get(self.faculty)

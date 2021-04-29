@@ -57,20 +57,23 @@ check_hostel_urls = [path('check_hostel', views.check_hostel),
                      path('hostel_referral_list', views.hostel_referral_list)]
 
 academic_leave_return_urls = [path('academic-leave-return', views.AcademicLeaveReturnView.as_view()),
-                       path('academic-leave-return/report/<obj_id>/', views.AcademicLeaveReturnView.render)]
+                              path('academic-leave-return/report/<obj_id>/', views.AcademicLeaveReturnView.render)]
 
 private_information_change_urls = [path('private-information-change', views.PrivateInformationChangeView.as_view()),
-                              path('private-information-change/report/<obj_id>/', views.PrivateInformationChangeView.render)]
+                                   path('private-information-change/report/<obj_id>/',
+                                        views.PrivateInformationChangeView.render)]
 
 expulsion_urls = [path('expulsion', views.ExpulsionView.as_view()),
-                                   path('expulsion/report/<obj_id>/', views.ExpulsionView.render)]
+                  path('expulsion/report/<obj_id>/', views.ExpulsionView.render)]
 
 key_card_urls = [path('key-card', views.KeyCardView.as_view()),
-                  path('key-card/report/<obj_id>/', views.KeyCardView.render)]
+                 path('key-card/report/<obj_id>/', views.KeyCardView.render)]
 
 reference_student_urls = [path('reference-student', views.ReferenceStudentView.as_view()),
-                 path('reference-student/report/<obj_id>/', views.ReferenceStudentView.render)]
+                          path('reference-student/report/<obj_id>/', views.ReferenceStudentView.render)]
 
+key_card_first_urls = [path('key-card-first', views.KeyCardFirstView.as_view()),
+                       path('key-card-first/report/<obj_id>/', views.KeyCardFirstView.render)]
 
 urlpatterns = [
                   path('', views.index),
@@ -93,4 +96,5 @@ urlpatterns = [
               private_information_change_urls + \
               expulsion_urls + \
               key_card_urls + \
-              reference_student_urls
+              reference_student_urls + \
+              key_card_first_urls

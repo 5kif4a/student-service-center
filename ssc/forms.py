@@ -383,3 +383,24 @@ class ReferenceStudentForm(ModelForm):
     def __init__(self, *args, **kwargs):
         super(ReferenceStudentForm, self).__init__(*args, **kwargs)
         self.fields['status'].required = False
+
+
+class KeyCardFirstForm(ModelForm):
+    """
+    Форма для заявление услуги - "Выдача ключ-карты"
+    """
+    captcha = ReCaptchaField(
+        widget=ReCaptchaV3(
+            attrs={
+                'required_score': 0.85
+            }
+        )
+    )
+
+    class Meta:
+        model = KeyCardFirst
+        fields = "__all__"
+
+    def __init__(self, *args, **kwargs):
+        super(KeyCardFirstForm, self).__init__(*args, **kwargs)
+        self.fields['status'].required = False

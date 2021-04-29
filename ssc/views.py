@@ -384,7 +384,7 @@ class HostelReferralView(TemplateView):
     template_name = 'ssc/hostel_referral.html'
     context = {}
     app_type = 'Направление'
-    app_ref = 'hostel_referral'
+    app_ref = 'hostelreferral'
 
     def render(self, obj_id):
         app = HostelReferral.objects.get(id=obj_id)
@@ -473,7 +473,8 @@ def check_order(request):
                         'expulsion': Expulsion,
                         'transfer-inside': TransferInside,
                         'key-card': KeyCard,
-                        'reference-student': ReferenceStudent}
+                        'reference-student': ReferenceStudent,
+                        'key-card-first': KeyCardFirst}
 
     if request.method == 'GET':
         order_type = request.GET.get('order_type')
@@ -813,7 +814,7 @@ class TransferInsideView(TemplateView):
     template_name = 'ssc/transfer-inside.html'
     context = {'status': statuses.get('transfer-inside')}
     app_type = 'Перевод внутри ВУЗа'
-    app_ref = 'transfer-inside'
+    app_ref = 'transferinside'
 
     @login_required
     def render(self, obj_id):
@@ -839,7 +840,7 @@ class KeyCardView(TemplateView):
     template_name = 'ssc/key-card.html'
     context = {'status': statuses.get('key-card')}
     app_type = 'Восстановление ключ-карты'
-    app_ref = 'key-card'
+    app_ref = 'keycard'
 
     @login_required
     def render(self, obj_id):
@@ -863,7 +864,7 @@ class ReferenceStudentView(TemplateView):
     template_name = 'ssc/reference-student.html'
     context = {'status': statuses.get('reference-student')}
     app_type = 'Выдача транскрипта обучающимся'
-    app_ref = 'reference-student'
+    app_ref = 'referencestudent'
 
     @login_required
     def render(self, obj_id):
@@ -874,5 +875,29 @@ class ReferenceStudentView(TemplateView):
                 'qr_code': generate_qr_code(f'{BASE_URL}/check_order?order_type=reference-student&id={obj_id}')
             }
             return render_pdf('applications/reference-student.html', context)
+        else:
+            return HttpResponse('<center><h1>Заявка не потверждена!</h1></center>')
+
+
+class KeyCardFirstView(TemplateView):
+    """
+    Представления для подачи заявки по услуге
+    "Получение ключ-карты при переводе/восстановлении"
+    """
+    form_class = KeyCardFirstForm
+    template_name = 'ssc/key-card-first.html'
+    context = {'status': statuses.get('key-card-first')}
+    app_type = 'Получение ключ-карты'
+    app_ref = 'keycardfirst'
+
+    @login_required
+    def render(self, obj_id):
+        app = KeyCardFirst.objects.get(id=obj_id)
+        if app.status not in ('Не проверено', 'Отозвано на исправление'):
+            context = {
+                'app': app,
+                'qr_code': generate_qr_code(f'{BASE_URL}/check_order?order_type=key-card-first&id={obj_id}')
+            }
+            return render_pdf('applications/key-card-first.html', context)
         else:
             return HttpResponse('<center><h1>Заявка не потверждена!</h1></center>')
