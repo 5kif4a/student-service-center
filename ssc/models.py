@@ -915,9 +915,7 @@ class KeyCardFirst(Person, Application):
 
     faculty = models.CharField(max_length=200, choices=faculties, verbose_name=_('Факультет'))
 
-    reason = models.CharField(max_length=100, choices=key_card_first_reasons, default='в связи c восстановлением в '
-                                                                                          'число студентов',
-                              verbose_name=_('Причина'))
+    reason = models.CharField(max_length=100, choices=key_card_first_reasons, verbose_name=_('Причина'))
 
     attachment = models.FileField(upload_to='key_card_first_attachments/',
                                   verbose_name=_('Скан заявления о восстановлении/переводе'),
