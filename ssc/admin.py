@@ -628,7 +628,8 @@ class HostelRoomAdmin(admin.ModelAdmin):
     def changeform_view(self, request, *args, **kwargs):
         if not request.user.is_superuser:
             self.readonly_fields = ('number', 'hostel', 'all_space', 'free_space')
-        else self.readonly_fields = ()
+        else: 
+            self.readonly_fields = ()
         return super(HostelRoomAdmin, self).changeform_view(request, *args, **kwargs)
 
 
