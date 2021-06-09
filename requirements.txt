@@ -1,5 +1,5 @@
 certifi==2020.4.5.1
-Django==2.2.17
+Django==2.2.22
 django-crispy-forms==1.8.1
 django-environ==0.4.5
 django-hashid-field==3.0.0
