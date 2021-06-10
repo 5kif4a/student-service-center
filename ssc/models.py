@@ -185,6 +185,12 @@ class Reference(Person, Application):
                                  blank=True, null=True,
                                  validators=course_validator)
 
+    specialty = models.ForeignKey(Specialty, on_delete=models.CASCADE,
+                                  verbose_name=_('Шифр и название образовательной программы/специальности'))
+
+    specialty_another = models.CharField(max_length=100, verbose_name=_("Шифр и название для другой специальности (вне "
+                                                                        "списка)"), null=True, blank=True)
+
     # group = models.CharField(max_length=50,
     #                          blank=True, null=True,
     #                          verbose_name=_('Группа'))
