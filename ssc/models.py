@@ -289,8 +289,8 @@ class Hostel(Person, Application):
                                                 'сторона'),
                                             validators=[file_size_validator])
 
-    attachmentProperty = models.FileField(upload_to='hostel_attachments/',
-                                          verbose_name=_('Справка об отсутствии (наличии) недвижимого имущества'),
+    attachmentProperty = models.FileField(upload_to='hostel_attachments/', blank=True, null=True,
+                                          verbose_name=_('Паспорт вакцинации'),
                                           validators=[file_size_validator, file_ext_validator])
 
     attachmentDeath = models.FileField(upload_to='hostel_attachments/', blank=True, null=True, verbose_name=_(
