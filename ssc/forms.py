@@ -114,7 +114,7 @@ class HostelForm(ModelForm):
         self.fields['place_of_arrival'].label = 'Келген жері (мекен-жайы)'
         self.fields['iin_attachment_front'].label = 'Жеке басын куәландыратын құжаттың көшірмесін бекіту-алдыңғы жағы'
         self.fields['iin_attachment_back'].label = 'Жеке басын куәландыратын құжаттың көшірмесін бекіту-артқы жағы'
-        self.fields['attachmentProperty'].label = 'Жылжымайтын мүліктің жоқ (бар) екендігі туралы анықтама'
+        self.fields['attachmentProperty'].label = 'Вакцинация паспорты'
         self.fields[
             'attachmentDeath'].label = 'Екі немесе жалғыз ата-ананың қайтыс болуы туралы куәлік немесе балалар үйінен анықтама'
         self.fields['attachmentLarge'].label = 'Отбасында 4 және одан да көп баланың болуы туралы анықтама'

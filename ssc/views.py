@@ -156,10 +156,14 @@ class HostelView(TemplateView):
         app = Hostel.objects.get(id=obj_id)
         if app.status not in ('Не проверено', 'Отозвано на исправление'):
 
+            vac = False
             death = False
             large = False
             disabled = False
             kandas = False
+
+            if app.attachmentProperty:
+                vac = True
 
             if app.attachmentDeath:
                 death = True
