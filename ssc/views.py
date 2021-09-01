@@ -595,7 +595,7 @@ def hostel_space(request):
             if room.all_space - room.free_space == 1 and space_count == 3:
                 free_space[room.hostel] += 2
             if room.all_space - room.free_space == 2 and space_count == 3:
-                free_space += 1
+                free_space[room.hostel] += 1
         else:
             all_space[room.hostel] = space_count
             free_space[room.hostel] = 0
@@ -606,7 +606,7 @@ def hostel_space(request):
             if room.all_space - room.free_space == 1 and space_count == 3:
                 free_space[room.hostel] = 2
             if room.all_space - room.free_space == 2 and space_count == 3:
-                free_space = 1
+                free_space[room.hostel] = 1
 
         # overall_space += room.all_space
         # overall_free_space += room.free_space
