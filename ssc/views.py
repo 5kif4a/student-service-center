@@ -586,7 +586,7 @@ def hostel_space(request):
         if room.all_space > 5:
             space_count = 3
             
-        if room.hostel = 'Общежитие №3' and room.number in (404, 405, 406, 407, 408, 409, 410, 411, 412, 413, 414, 421, 306, 220):
+        if room.hostel == 'Общежитие №3' and room.number in (404, 405, 406, 407, 408, 409, 410, 411, 412, 413, 414, 421, 306, 220):
             space_count = 3
 
         if room.hostel in all_space.keys():
