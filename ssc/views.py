@@ -588,6 +588,9 @@ def hostel_space(request):
             
         if room.hostel == 'Общежитие №3' and room.all_space == 4:
             space_count = 3
+            
+        if room.hostel == 'Общежитие «Студенттер үйi»' and room.all_space == 4:
+            space_count = 3
 
         if room.hostel in all_space.keys():
             all_space[room.hostel] += space_count
