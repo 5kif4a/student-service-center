@@ -163,7 +163,7 @@ class CustomAdmin(admin.ModelAdmin):
                 "abroad": "[obj.passport.path, obj.recommendation_letter.path, obj.transcript.path, "
                           "obj.certificate.path]",
 
-                "hostel": "[obj.iin_attachment_front.path, obj.iin_attachment_back.path, obj.attachmentProperty.path]",
+                "hostel": "[obj.iin_attachment_front.path, obj.iin_attachment_back.path]",
 
                 "transfer": "[]",
 
@@ -173,8 +173,7 @@ class CustomAdmin(admin.ModelAdmin):
                 "recovery": "[obj.iin_attachment_front.path, obj.iin_attachment_back.path, obj.attachment.path, "
                             "obj.certificate.path] ",
 
-                "hostel_referral": "[obj.iin_attachment_front.path, obj.iin_attachment_back.path, "
-                                   "obj.attachmentProperty.path]",
+                "hostel_referral": "[obj.iin_attachment_front.path, obj.iin_attachment_back.path]",
 
                 "academic-leave-return": "[obj.iin_attachment_front.path, obj.iin_attachment_back.path, "
                                          "obj.attachment.path]",
@@ -194,6 +193,11 @@ class CustomAdmin(admin.ModelAdmin):
             }
 
             if obj.__class__ is Hostel or obj.__class__ is HostelReferral:
+                if obj.attachmentProperty:
+                    filenames_dict["hostel"] = filenames_dict["hostel"][0:-1] + ",obj.attachmentProperty.path]"
+                    filenames_dict["hostel_referral"] = filenames_dict["hostel_referral"][0:-1] + \
+                                                        ", obj.attachmentProperty.path]"
+                
                 if obj.attachmentDeath:
                     filenames_dict["hostel"] = filenames_dict["hostel"][0:-1] + ",obj.attachmentDeath.path]"
                     filenames_dict["hostel_referral"] = filenames_dict["hostel_referral"][0:-1] + \
