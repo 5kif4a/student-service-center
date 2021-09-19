@@ -161,7 +161,6 @@ class HostelView(TemplateView):
             large = False
             disabled = False
             kandas = False
-            attachmentProperty = False
 
             if app.attachmentProperty:
                 vac = True
@@ -177,9 +176,6 @@ class HostelView(TemplateView):
 
             if app.attachmentKandas:
                 kandas = True
-                
-            if app.attachmentProperty:
-                attachmentProperty = True
 
             context = {
                 'stuff_position': Stuff.objects.get(application_type='Общежитие').position,
@@ -190,7 +186,7 @@ class HostelView(TemplateView):
                 'large': large,
                 'disabled': disabled,
                 'kandas': kandas,
-                'attachmentProperty': attachmentProperty
+                'vac': vac
             }
             return render_pdf('applications/hostel.html', context)
         else:
