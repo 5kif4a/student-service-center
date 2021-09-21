@@ -592,7 +592,7 @@ def hostel_space(request):
             
         if room.hostel == 'Общежитие «Студенттер үйi»' and room.all_space == 4:
             space_count = 3
-        if room.hostel == 'Общежитие «Студенттер үйi»' and (room.number == 235 or room.number == 403):
+        if room.hostel == 'Общежитие «Студенттер үйi»' and (room.number == 235 or room.number == 403 or room.number == 203):
             space_count = 2
         if room.hostel == 'Общежитие Жилищный комплекс «Армандастар Ордасы»' and room.all_space >= 3:
             space_count = 3
