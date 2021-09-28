@@ -177,7 +177,7 @@ def send_email(mail_template, context, to):
     message = render_to_string(mail_template, context)
     msg = EmailMessage(subject='Центр обслуживания студентов КарТУ', body=message, to=to)
     msg.content_subtype = 'html'
-    msg.send()
+    #msg.send()
 
 
 # отправка письма с файлом
@@ -186,7 +186,7 @@ def send_email_with_attachment(mail_template, context, to, file):
     msg = EmailMessage(subject='Центр обслуживания студентов КарТУ', body=message, to=to)
     msg.content_subtype = 'html'
     msg.attach(file.name, file.file.getvalue(), mimetypes.guess_type(file.name)[0])
-    msg.send()
+    #msg.send()
 
 
 # отправка письма с файлом
