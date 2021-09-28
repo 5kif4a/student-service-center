@@ -195,7 +195,7 @@ def send_email_with_attachment_file(mail_template, context, to, file):
     msg = EmailMessage(subject='Центр обслуживания студентов КарТУ', body=message, to=to)
     msg.content_subtype = 'html'
     msg.attach_file(file)
-    msg.send()
+    #msg.send()
 
 
 # Генерация QR кода - альтернатива подписи, как верификация пользователя услуги
