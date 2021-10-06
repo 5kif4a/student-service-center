@@ -12,8 +12,10 @@ class CategoryFilter(SimpleListFilter):
         return categories
 
     def queryset(self, request, queryset):
-        if self.value() == 'Category1':
-            return queryset.filter(Q(attachmentDeath__gt='') | Q(attachmentDisabled__gt=''))
+        if self.value() == 'Category1.1':
+            return queryset.filter(Q(attachmentDisabled__gt=''))
+        if self.value() == 'Category1.2':
+            return queryset.filter(Q(attachmentDeath__gt=''))
         if self.value() == 'Category2':
             return queryset.filter(Q(attachmentKandas__gt=''))
         if self.value() == 'Category3':
@@ -25,12 +27,14 @@ class CategoryFilter(SimpleListFilter):
                                    & Q(attachmentLarge='') & Q(is_serpin=False))
 
     def to_representation(obj):
-        if obj.attachmentDeath != '' or obj.attachmentDisabled != '':
+        if obj.attachmentDisabled != '':
             return categories[0][1]
-        if obj.attachmentKandas != '':
+        if obj.attachmentDeath != '':
             return categories[1][1]
-        if obj.is_serpin:
+        if obj.attachmentKandas != '':
             return categories[2][1]
-        if obj.attachmentLarge != '':
+        if obj.is_serpin:
             return categories[3][1]
-        return categories[4][1]
+        if obj.attachmentLarge != '':
+            return categories[4][1]
+        return categories[5][1]

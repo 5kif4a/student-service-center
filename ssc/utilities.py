@@ -133,7 +133,8 @@ languages_from = [('с русского языка', 'с русского язы
 languages_to = [('на русский язык', 'на русский язык'),
                 ('на государственный язык', 'на государственный язык')]
 
-categories = [('Category1', 'Категория 1 (Инвалиды и сироты)'),
+categories = [('Category1.1', 'Категория 1(Инвалиды)'),
+              ('Category1.2', 'Категория 1(Сироты)'),
               ('Category2', 'Категория 2 (Кандас)'),
               ('Category3', 'Категория 3 (Серпын)'),
               ('Category4', 'Категория 4 (Многодетные)'),
@@ -177,7 +178,10 @@ def send_email(mail_template, context, to):
     message = render_to_string(mail_template, context)
     msg = EmailMessage(subject='Центр обслуживания студентов КарТУ', body=message, to=to)
     msg.content_subtype = 'html'
-    #msg.send()
+    try:
+        msg.send()
+    except:
+        pass
 
 
 # отправка письма с файлом
@@ -186,7 +190,10 @@ def send_email_with_attachment(mail_template, context, to, file):
     msg = EmailMessage(subject='Центр обслуживания студентов КарТУ', body=message, to=to)
     msg.content_subtype = 'html'
     msg.attach(file.name, file.file.getvalue(), mimetypes.guess_type(file.name)[0])
-    #msg.send()
+    try:
+        msg.send()
+    except:
+        pass
 
 
 # отправка письма с файлом
@@ -195,7 +202,10 @@ def send_email_with_attachment_file(mail_template, context, to, file):
     msg = EmailMessage(subject='Центр обслуживания студентов КарТУ', body=message, to=to)
     msg.content_subtype = 'html'
     msg.attach_file(file)
-    #msg.send()
+    try:
+        msg.send()
+    except:
+        pass
 
 
 # Генерация QR кода - альтернатива подписи, как верификация пользователя услуги

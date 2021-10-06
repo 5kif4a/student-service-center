@@ -47,13 +47,13 @@ class TemplateView(View):
     def post(self, request):
         ctx = {}
         to = (request.POST.get('email', ''),)
-        try:
-            send_email("mails/email_verification.html", ctx, to)
-        except:
-            form = self.form_class()
-            self.context['form'] = form
-            messages.info(request, 'Вы ввели несуществующий email')
-            return render(request, self.template_name, self.context)
+        # try:
+        #     send_email("mails/email_verification.html", ctx, to)
+        # except:
+        #     form = self.form_class()
+        #     self.context['form'] = form
+        #     messages.info(request, 'Вы ввели несуществующий email')
+        #     return render(request, self.template_name, self.context)
 
         form = self.form_class(request.POST, request.FILES)
         self.context['form'] = form
