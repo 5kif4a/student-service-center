@@ -572,7 +572,12 @@ def hostel_space(request):
 
     overall_space = 0
     overall_free_space = 0
-
+    
+    #TODO:
+    #Этот код является хотфиксом в условиях ограничений
+    #В будущем требуется либо раскоментировать закоментированный, а остальной удалить
+    #Либо требуется полный рефакторинг 
+    
     for room in HostelRoom.objects.all():
         # if room.hostel in all_space.keys():
         #   all_space[room.hostel] += room.all_space
@@ -598,6 +603,8 @@ def hostel_space(request):
             space_count = 3
         if room.hostel == 'Общежитие Жилищный комплекс «Армандастар Ордасы»' and room.all_space == 2:
             space_count = 2
+        if room.hostel == 'Общежитие №3' and room.number = 321:
+            space_count = 4
 
         if room.hostel in all_space.keys():
             all_space[room.hostel] += space_count
@@ -609,6 +616,8 @@ def hostel_space(request):
                 free_space[room.hostel] += 2
             if room.all_space - room.free_space == 2 and space_count == 3:
                 free_space[room.hostel] += 1
+            if space_count == 4:
+                free_space[room.hostel] += room.free_space - 2
         else:
             all_space[room.hostel] = space_count
             free_space[room.hostel] = 0
@@ -620,6 +629,8 @@ def hostel_space(request):
                 free_space[room.hostel] = 2
             if room.all_space - room.free_space == 2 and space_count == 3:
                 free_space[room.hostel] = 1
+            if space_count == 4:
+                free_space[room.hostel] = room.free_space - 2
 
         # overall_space += room.all_space
         # overall_free_space += room.free_space
