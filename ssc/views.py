@@ -603,7 +603,7 @@ def hostel_space(request):
             space_count = 3
         if room.hostel == 'Общежитие Жилищный комплекс «Армандастар Ордасы»' and room.all_space == 2:
             space_count = 2
-        if room.hostel == 'Общежитие №3' and room.number = 321:
+        if room.hostel == 'Общежитие №3' and room.number == 321:
             space_count = 4
 
         if room.hostel in all_space.keys():
