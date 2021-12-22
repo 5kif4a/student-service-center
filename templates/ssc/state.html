@@ -1,0 +1,141 @@
+{% extends "ssc/../base.html" %}
+{% load static %}
+{% block content %}
+    <div class="container">
+        <h1 class="text-center p-3">Государственные услуги</h1>
+        <h5 class="text-center">Государственные услуги оказываются в соответствии с действующими Правилами и стандартами государственных услуг.</h5>
+        <div class="row py-2">
+            <div class="card item w-100">
+                <div class="row no-gutters">
+                    <div class="col-xs-4 col-md-2 d-flex align-items-center justify-content-center">
+                        <img src="{% static 'img/bachelor.svg' %}" class="p-2" width="150" height="150" alt="...">
+                    </div>
+                    <div class="col-xs-8 col-md-10">
+                        <div class="card-body">
+                            <a href="/bachelor" class="card-link stretched-link">
+                                <h5 class="card-title">Прием документов и зачисление в высшие учебные заведения для
+                                    обучения по образовательным программам высшего образования</h5>
+                            </a>
+                            <hr>
+                            {#                        <p class="card-text text-muted">Неавтоматизированная услуга <i class="fab fa-dev"></i></p>#}
+                            <p class="card-text text-muted">Автоматизированная услуга <i class="fas fa-cogs"></i></p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row py-2">
+            <div class="card item w-100">
+                <div class="row no-gutters">
+                    <div class="col-xs-4 col-md-2 d-flex align-items-center justify-content-center">
+                        <img src="{% static 'img/postgraduate.svg' %}" class="p-2" width="150" height="150" alt="...">
+                    </div>
+                    <div class="col-xs-8 col-md-10">
+                        <div class="card-body">
+                            <a href="/postgraduate" class="card-link stretched-link">
+                                <h5 class="card-title">Прием документов и зачисление в высшие учебные заведения для
+                                    обучения по образовательным программам послевузовского образования</h5>
+                            </a>
+                            <hr>
+                            {#                        <p class="card-text text-muted">Неавтоматизированная услуга <i class="fab fa-dev"></i></p>#}
+                            <p class="card-text text-muted">Автоматизированная услуга <i class="fas fa-cogs"></i></p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row py-2">
+            <div class="card item w-100">
+                <div class="row no-gutters">
+                    <div class="col-xs-4 col-md-2 d-flex align-items-center justify-content-center">
+                        <img src="{% static 'img/abroad.svg' %}" class="p-2" width="150" height="150" alt="...">
+                    </div>
+                    <div class="col-xs-8 col-md-10">
+                        <div class="card-body">
+                            <a href="/abroad" class="card-link stretched-link">
+                                <h5 class="card-title">Прием документов для участия в конкурсе на обучение за рубежом в
+                                    рамках
+                                    академической мобильности</h5>
+                            </a>
+                            <hr>
+                            <p class="card-text text-muted">Автоматизированная услуга <i class="fas fa-cogs"></i></p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row py-2">
+            <div class="card item w-100">
+                <div class="row no-gutters">
+                    <div class="col-xs-4 col-md-2 d-flex align-items-center justify-content-center">
+                        <img src="{% static 'img/duplicate.svg' %}" class="p-2" width="150" height="150" alt="...">
+                    </div>
+                    <div class="col-xs-8 col-md-10">
+                        <div class="card-body">
+                            <a href="/duplicate" class="card-link stretched-link">
+                                <h5 class="card-title">Выдача дубликатов документов о высшем и послевузовском
+                                    образовании</h5>
+                            </a>
+                            <hr>
+                            <p class="card-text text-muted">Автоматизированная услуга <i class="fas fa-cogs"></i></p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row py-2">
+            <div class="card item w-100">
+                <div class="row no-gutters">
+                    <div class="col-xs-4 col-md-2 d-flex align-items-center justify-content-center">
+                        <img src="{% static 'img/hostel.svg' %}" class="p-2" width="150" height="150" alt="...">
+                    </div>
+                    <div class="col-xs-8 col-md-10">
+                        <div class="card-body">
+                            <a href="https://www.kstu.kz/obshhezhitie/" class="card-link stretched-link">
+                                <h5 class="card-title">Предоставление общежития в высших учебных заведениях</h5>
+                            </a>
+                            <hr>
+                            <p class="card-text text-muted">Автоматизированная услуга <i class="fas fa-cogs"></i></p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row py-2">
+            <div class="card item w-100">
+                <div class="row no-gutters">
+                    <div class="col-xs-4 col-md-2 d-flex align-items-center justify-content-center">
+                        <img src="{% static 'img/food.png' %}" class="p-2" width="150" height="150" alt="...">
+                    </div>
+                    <div class="col-xs-8 col-md-10">
+                        <div class="card-body">
+                            <a href="https://egov.kz/cms/ru/online-services/for_citizen?filter=services" class="card-link stretched-link">
+                                <h5 class="card-title">Предоставление бесплатного питания отдельным категориям граждан, а также лицам, находящимся под опекой (попечительством) и патронатом, обучающимся и воспитанникам организаций технического и профессионального, послесреднего и высшего образования</h5>
+                            </a>
+                            <hr>
+                            <p class="card-text text-muted">Автоматизированная услуга <i class="fas fa-cogs"></i></p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row py-2">
+            <div class="card item w-100">
+                <div class="row no-gutters">
+                    <div class="col-xs-4 col-md-2 d-flex align-items-center justify-content-center">
+                        <img src="{% static 'img/certificate.svg' %}" class="p-2" width="150" height="150" alt="...">
+                    </div>
+                    <div class="col-xs-8 col-md-10">
+                        <div class="card-body">
+                            <a href="/certificate" class="card-link stretched-link">
+                                <h5 class="card-title">Выдача сертификата о сдаче единого национального тестирования</h5>
+                            </a>
+                            <hr>
+                            <p class="card-text text-muted">Автоматизированная услуга <i class="fas fa-cogs"></i></p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

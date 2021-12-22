@@ -95,6 +95,30 @@ def postgraduate(request):
     return render(request, 'ssc/postgraduate.html', context)
 
 
+def about(request):
+    return render(request, 'ssc/about.html')
+
+
+def state(request):
+    return render(request, 'ssc/state.html')
+
+
+def education(request):
+    return render(request, 'ssc/education.html')
+
+
+def online(request):
+    return render(request, 'ssc/online.html')
+
+
+def self(request):
+    return render(request, 'ssc/self.html')
+
+
+def stuff(request):
+    return render(request, 'ssc/stuff.html')
+
+
 class AbroadView(TemplateView):
     """
     Представления для подачи заявления по услуге
@@ -572,12 +596,12 @@ def hostel_space(request):
 
     overall_space = 0
     overall_free_space = 0
-    
-    #TODO:
-    #Этот код является хотфиксом в условиях ограничений
-    #В будущем требуется либо раскоментировать закоментированный, а остальной удалить
-    #Либо требуется полный рефакторинг 
-    
+
+    # TODO:
+    # Этот код является хотфиксом в условиях ограничений
+    # В будущем требуется либо раскоментировать закоментированный, а остальной удалить
+    # Либо требуется полный рефакторинг
+
     for room in HostelRoom.objects.all():
         # if room.hostel in all_space.keys():
         #   all_space[room.hostel] += room.all_space
@@ -591,13 +615,14 @@ def hostel_space(request):
             space_count = 2
         if room.all_space > 5:
             space_count = 3
-            
+
         if room.hostel == 'Общежитие №3' and room.all_space == 4:
             space_count = 3
-            
+
         if room.hostel == 'Общежитие «Студенттер үйi»' and room.all_space == 4:
             space_count = 3
-        if room.hostel == 'Общежитие «Студенттер үйi»' and (room.number == 235 or room.number == 403 or room.number == 203):
+        if room.hostel == 'Общежитие «Студенттер үйi»' and (
+                room.number == 235 or room.number == 403 or room.number == 203):
             space_count = 2
         if room.hostel == 'Общежитие Жилищный комплекс «Армандастар Ордасы»' and room.all_space >= 3:
             space_count = 3

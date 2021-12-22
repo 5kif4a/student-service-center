@@ -1,0 +1,23 @@
+{% extends "ssc/../base.html" %}
+{% load static %}
+{% block content %}
+
+<style>
+  .image {
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+    width: 50%;
+    margin-bottom: 5px;
+    margin-top: 5px;
+  }
+</style>
+
+<div class="container">
+  <h1 class="text-center p-3">Подача онлайн-заявки</h1>
+  <p><b>Подаются онлайн-заявки на оказание услуг через сайт университета https://www.kstu.kz/ в разделе «Быстрые ссылки – Студенту – ЦОС - Список услуг»,</b> а также в государственную корпорацию (ЦОН) либо направляют заявку через веб-портал «Электронного Правительства РК» https://egov.kz.</p>
+
+  <img src="{% static 'img/online.png' %}" class="image">
+
+</div>
+{% endblock %}

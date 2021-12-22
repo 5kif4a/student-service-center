@@ -75,6 +75,13 @@ reference_student_urls = [path('reference-student', views.ReferenceStudentView.a
 key_card_first_urls = [path('key-card-first', views.KeyCardFirstView.as_view()),
                        path('key-card-first/report/<obj_id>/', views.KeyCardFirstView.render)]
 
+util_urls = [path('about', views.about),
+             path('state', views.state),
+             path('education', views.education),
+             path('online', views.online),
+             path('self', views.self),
+             path('stuff', views.stuff)]
+
 urlpatterns = [
                   path('', views.index),
                   url(r'^%s(?P<path>.*)$' % settings.MEDIA_URL[1:], protected_serve,
@@ -97,4 +104,5 @@ urlpatterns = [
               expulsion_urls + \
               key_card_urls + \
               reference_student_urls + \
-              key_card_first_urls
+              key_card_first_urls + \
+              util_urls
