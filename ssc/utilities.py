@@ -180,8 +180,8 @@ def send_email(mail_template, context, to):
     msg.content_subtype = 'html'
     try:
         msg.send()
-    except:
-        pass
+    except Exception as e:
+        logger.exception(e)
 
 
 # отправка письма с файлом
@@ -192,8 +192,8 @@ def send_email_with_attachment(mail_template, context, to, file):
     msg.attach(file.name, file.file.getvalue(), mimetypes.guess_type(file.name)[0])
     try:
         msg.send()
-    except:
-        pass
+    except Exception as e:
+        logger.exception(e)
 
 
 # отправка письма с файлом
@@ -204,8 +204,8 @@ def send_email_with_attachment_file(mail_template, context, to, file):
     msg.attach_file(file)
     try:
         msg.send()
-    except:
-        pass
+    except Exception as e:
+        logger.exception(e)
 
 
 # Генерация QR кода - альтернатива подписи, как верификация пользователя услуги
