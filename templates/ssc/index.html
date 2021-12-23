@@ -6,68 +6,71 @@
         border: 1px solid #ccc;
         background-color: white;
         padding: 5px;
-        margin: 10px;
+        margin-top: 5px;
+        margin-bottom: 5px;
+        margin-left: auto;
+        margin-right: auto;
         text-align: center;
     }
 
     .card-img-top {
         display: block;
-        margin-left: auto;
-        margin-right: auto;
+        margin: auto;
     }
-
+    
     .row{
         margin: auto;
     }
 </style>
 
     <div class="container">
-        <h1 class="text-center p-3">Центр обслуживания студентов</h1>
-        <div class="row w-75" >
-            <div class="card" style="width: 11rem;">
-                <img class="card-img-top w-75" src="{% static 'img/book.png' %}" alt="Card image cap">
+        <h1 class="text-center p-2">Центр обслуживания студентов</h1>
+        <div class="row w-75">
+            <div class="card mx-auto" style="width: 15rem;">
+                <img class="card-img-top w-50" src="{% static 'img/book.png' %}" alt="Card image cap">
                 <div class="card-body">
-                    <h5 class="card-title">О Центре</h5>
+                    <h4 class="card-title">О Центре</h4>
                 </div>
                 <a href="/about" class="card-link stretched-link"></a>
             </div>
 
-            <div class="card" style="width: 11rem;">
-                <img class="card-img-top w-75" src="{% static 'img/state.png' %}" alt="Card image cap">
+            <div class="card" style="width: 15rem;">
+                <img class="card-img-top w-50" src="{% static 'img/state.png' %}" alt="Card image cap">
                 <div class="card-body">
-                    <h5 class="card-title">Гос. услуги</h5>
+                    <h4 class="card-title">Государственные услуги</h4>
                 </div>
                 <a href="/state" class="card-link stretched-link"></a>
             </div>
 
-            <div class="card" style="width: 11rem;">
-                <img class="card-img-top w-75" src="{% static 'img/earth.png' %}" alt="Card image cap">
+            <div class="card" style="width: 15rem;">
+                <img class="card-img-top w-50" src="{% static 'img/earth.png' %}" alt="Card image cap">
                 <div class="card-body">
-                    <h6 class="card-title">Учебно-образовательные услуги</h6>
+                    <h4 class="card-title">Учебно-образовательные услуги</h4>
                 </div>
                 <a href="/education" class="card-link stretched-link"></a>
             </div>
 
-            <div class="card" style="width: 11rem;">
-                <img class="card-img-top w-75" src="{% static 'img/computer.png' %}" alt="Card image cap">
+            <div class="card" style="width: 15rem;">
+                <img class="card-img-top w-50" src="{% static 'img/computer.png' %}" alt="Card image cap">
                 <div class="card-body">
-                    <h5 class="card-title">Подача онлайн-заявки</h5>
+                    <h4 class="card-title">Подача онлайн-заявки</h4>
+                    <h4 class="card-text">Список услуг</h4>
                 </div>
                 <a href="/online" class="card-link stretched-link"></a>
             </div>
 
-            <div class="card" style="width: 11rem;">
-                <img class="card-img-top w-75" src="{% static 'img/chemistry.png' %}" alt="Card image cap">
+            <div class="card" style="width: 15rem;">
+                <img class="card-img-top w-50" src="{% static 'img/student.png' %}" alt="Card image cap">
                 <div class="card-body">
-                    <h6 class="card-title">Уголок самообслуживания</h6>
+                    <h4 class="card-title">Уголок самообслуживания</h4>
                 </div>
                 <a href="/self" class="card-link stretched-link"></a>
             </div>
 
-            <div class="card" style="width: 11rem;">
-                <img class="card-img-top w-75" src="{% static 'img/professor.png' %}" alt="Card image cap">
+            <div class="card" style="width: 15rem;">
+                <img class="card-img-top w-50" src="{% static 'img/stuff.png' %}" alt="Card image cap">
                 <div class="card-body">
-                    <h5 class="card-title">Сотрудники</h5>
+                    <h4 class="card-title">Сотрудники</h4>
                 </div>
                 <a href="/stuff" class="card-link stretched-link"></a>
             </div>

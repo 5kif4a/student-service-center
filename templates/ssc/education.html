@@ -1,210 +1,27 @@
 {% extends "ssc/../base.html" %}
 {% load static %}
 {% block content %}
+<style>
+    p {
+        font-size: 11pt;
+    }
+</style>
     <div class="container">
         <h1 class="text-center p-3">Учебно-образовательные услуги</h1>
         <h5 class="text-center">Учебно-образовательные услуги обучающимся оказываются с соблюдением Порядка оказания учебно-образовательных услуг, утвержденного в университете.</h5>
-        <div class="row py-2">
-            <div class="card item w-100">
-                <div class="row no-gutters">
-                    <div class="col-xs-4 col-md-2 d-flex align-items-center justify-content-center">
-                        <img src="{% static 'img/reference.svg' %}" class="p-2" width="150" height="150" alt="...">
-                    </div>
-                    <div class="col-xs-8 col-md-10">
-                        <div class="card-body">
-                            <a href="/reference" class="card-link stretched-link">
-                                <h5 class="card-title">Транскрипт для обучавшихся в КарТУ</h5>
-                            </a>
-                            <hr>
-                            <p class="card-text text-muted">Автоматизированная услуга <i class="fas fa-cogs"></i></p>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="row py-2">
-            <div class="card item w-100">
-                <div class="row no-gutters">
-                    <div class="col-xs-4 col-md-2 d-flex align-items-center justify-content-center">
-                        <img src="{% static 'img/reference-student.svg' %}" class="p-2" width="150" height="150" alt="...">
-                    </div>
-                    <div class="col-xs-8 col-md-10">
-                        <div class="card-body">
-                            <a href="/reference-student" class="card-link mt-auto stretched-link">
-                                <h5 class="card-title">Транскрипт для обучающихся в КарТУ</h5>
-                            </a>
-                            <hr>
-                            <p class="card-text text-muted">Автоматизированная услуга <i class="fas fa-cogs"></i></p>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="row py-2">
-            <div class="card item w-100">
-                <div class="row no-gutters">
-                    <div class="col-xs-4 col-md-2 d-flex align-items-center justify-content-center">
-                        <img src="{% static 'img/leave.svg' %}" class="p-2" width="150" height="150" alt="...">
-                    </div>
-                    <div class="col-xs-8 col-md-10">
-                        <div class="card-body">
-                            <a href="/academic-leave" class="card-link mt-auto stretched-link">
-                                <h5 class="card-title">Предоставление и продление академического отпуска</h5>
-                            </a>
-                            <hr>
-                            <p class="card-text text-muted">Автоматизированная услуга <i class="fas fa-cogs"></i></p>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="row py-2">
-            <div class="card item w-100">
-                <div class="row no-gutters">
-                    <div class="col-xs-4 col-md-2 d-flex align-items-center justify-content-center">
-                        <img src="{% static 'img/leave-return.svg' %}" class="p-2" width="150" height="150" alt="...">
-                    </div>
-                    <div class="col-xs-8 col-md-10">
-                        <div class="card-body">
-                            <a href="/academic-leave-return" class="card-link mt-auto stretched-link">
-                                <h5 class="card-title">Возвращение из академического отпуска</h5>
-                            </a>
-                            <hr>
-                            <p class="card-text text-muted">Автоматизированная услуга <i class="fas fa-cogs"></i></p>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="row py-2">
-            <div class="card item w-100">
-                <div class="row no-gutters">
-                    <div class="col-xs-4 col-md-2 d-flex align-items-center justify-content-center">
-                        <img src="{% static 'img/transfer-and-recovery.svg' %}" class="p-2" width="150" height="150"
-                             alt="...">
-                    </div>
-                    <div class="col-xs-8 col-md-10">
-                        <div class="card-body">
-                            <a href="/transfer-and-recovery" class="card-link mt-auto stretched-link">
-                                <h5 class="card-title">Перевод и восстановление</h5>
-                            </a>
-                            <hr>
-                            <p class="card-text text-muted">Автоматизированная услуга <i class="fas fa-cogs"></i></p>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="row py-2">
-            <div class="card item w-100">
-                <div class="row no-gutters">
-                    <div class="col-xs-4 col-md-2 d-flex align-items-center justify-content-center">
-                        <img src="{% static 'img/expulsion.svg' %}" class="p-2" width="150" height="150"
-                             alt="...">
-                    </div>
-                    <div class="col-xs-8 col-md-10">
-                        <div class="card-body">
-                            <a href="/expulsion" class="card-link mt-auto stretched-link">
-                                <h5 class="card-title">Отчисление по собственному желанию</h5>
-                            </a>
-                            <hr>
-                            <p class="card-text text-muted">Автоматизированная услуга <i class="fas fa-cogs"></i></p>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="row py-2">
-            <div class="card item w-100">
-                <div class="row no-gutters">
-                    <div class="col-xs-4 col-md-2 d-flex align-items-center justify-content-center">
-                        <img src="{% static 'img/private-information-change.svg' %}" class="p-2" width="150" height="150"
-                             alt="...">
-                    </div>
-                    <div class="col-xs-8 col-md-10">
-                        <div class="card-body">
-                            <a href="/private-information-change" class="card-link mt-auto stretched-link">
-                                <h5 class="card-title">Изменение персональных данных</h5>
-                            </a>
-                            <hr>
-                            <p class="card-text text-muted">Автоматизированная услуга <i class="fas fa-cogs"></i></p>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="row py-2">
-            <div class="card item w-100">
-                <div class="row no-gutters">
-                    <div class="col-xs-4 col-md-2 d-flex align-items-center justify-content-center">
-                        <img src="{% static 'img/place-of-study.svg' %}" class="p-2" width="150" height="150" alt="...">
-                    </div>
-                    <div class="col-xs-8 col-md-10">
-                        <div class="card-body">
-                            <a href="http://cabinet.kstu.kz/" class="card-link mt-auto stretched-link">
-                                <h5 class="card-title">Выдача справки с места учебы (Форма 10)</h5>
-                            </a>
-                            <hr>
-                            <p class="card-text text-muted">Автоматизированная услуга <i class="fas fa-cogs"></i></p>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="row py-2">
-            <div class="card item w-100">
-                <div class="row no-gutters">
-                    <div class="col-xs-4 col-md-2 d-flex align-items-center justify-content-center">
-                        <img src="{% static 'img/key-card.svg' %}" class="p-2" width="150" height="150" alt="...">
-                    </div>
-                    <div class="col-xs-8 col-md-10">
-                        <div class="card-body">
-                            <a href="/key-card" class="card-link mt-auto stretched-link">
-                                <h5 class="card-title">Восстановление ключ-карты при утере</h5>
-                            </a>
-                            <hr>
-                            <p class="card-text text-muted">Автоматизированная услуга <i class="fas fa-cogs"></i></p>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="row py-2">
-            <div class="card item w-100">
-                <div class="row no-gutters">
-                    <div class="col-xs-4 col-md-2 d-flex align-items-center justify-content-center">
-                        <img src="{% static 'img/key-card-first.svg' %}" class="p-2" width="150" height="150" alt="...">
-                    </div>
-                    <div class="col-xs-8 col-md-10">
-                        <div class="card-body">
-                            <a href="/key-card-first" class="card-link mt-auto stretched-link">
-                                <h5 class="card-title">Получение ключ-карты при восстановлении и переводе из другого ВУЗа</h5>
-                            </a>
-                            <hr>
-                            <p class="card-text text-muted">Автоматизированная услуга <i class="fas fa-cogs"></i></p>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-<!--        <div class="row py-2">-->
-<!--            <div class="card item w-100">-->
-<!--                <div class="row no-gutters">-->
-<!--                    <div class="col-xs-4 col-md-2 d-flex align-items-center justify-content-center">-->
-<!--                        <img src="{% static 'img/egov.svg' %}" class="p-2" width="150" height="150" alt="...">-->
-<!--                    </div>-->
-<!--                    <div class="col-xs-8 col-md-10">-->
-<!--                        <div class="card-body">-->
-<!--                            <a href="https://egov.kz/cms/ru/online-services/for_citizen?filter=services"-->
-<!--                               class="card-link stretched-link">-->
-<!--                                <h5 class="card-title">Услуги Egov</h5>-->
-<!--                            </a>-->
-<!--                            <hr>-->
-<!--                            <p class="card-text text-muted">Автоматизированная услуга <i class="fab fa-dev"></i></p>-->
-<!--                        </div>-->
-<!--                    </div>-->
-<!--                </div>-->
-<!--            </div>-->
-<!--        </div>-->
+        <br>
+        <ul class="border border-dark">
+            <li><p>Транскрипт обучавшихся в КарТУ</p></li>
+            <li><p>Транскрипт обучающихся в КарТУ</p></li>
+            <li><p>Предоставление и продление академического отпуска</p></li>
+            <li><p>Возвращение из академического отпуска</p></li>
+            <li><p>Перевод и восстановление (в другой ВУЗ, в КарТУ, в число обучающихся)</p></li>
+            <li><p>Перевод внутри ВУЗа</p></li>
+            <li><p>Отчисление по собственному желанию</p></li>
+            <li><p>Изменение персональных данных</p></li>
+            <li><p>Выдача справки с места учебы (ф.10)</p></li>
+            <li><p>Восстановление ключ-карты при утере</p></li>
+            <li><p>Получение ключ-карты при восстановлении и переводе из другого ВУЗа</p></li>
+        </ul>
     </div>
 {% endblock %}
