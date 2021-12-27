@@ -1,0 +1,35 @@
+{% extends "ssc/en/base.html" %}
+{% load static %}
+{% block content %}
+
+<style>
+  .image {
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+    margin-bottom: 5px;
+    margin-top: 5px;
+  }
+</style>
+
+<div class="container">
+  <h1 class="text-center p-3">Employees</h1>
+  <h3 class="text-center p-2">Gabaidulina Tatyana Iosifovna</h3>
+  <h3 class="text-center p-2">Head of the Student Service Center</h3>
+  <h6 class="text-center p-1">N. Nazarbayev Ave., No. 56/1, building I, room 109</h6>
+  <h6 class="text-center p-1">Tel.: 56-59-32 (int.2023)</h6>
+  <h6 class="text-center p-1">8-701-551-06-27</h6>
+  <h6 class="text-center p-1"><a href="mailto:kargtu.cos@mail.ru">kargtu.cos@mail.ru</a></h6>
+
+  <br>
+
+  <img src="{% static 'img/stuff.jpg' %}" class="image" height="250px">
+  <h3 class="text-center p-2">Tolegenova Zhadyra Nurahmetovna</h3>
+  <h3 class="text-center p-2">Specialist of the Student Service Center</h3>
+  <h6 class="text-center p-1">N. Nazarbayev Ave., No. 56/1, building I, room 109</h6>
+  <h6 class="text-center p-1">Tel.: 56-59-32 (int.2023)</h6>
+  <h6 class="text-center p-1">8-778-960-44-20</h6>
+  <h6 class="text-center p-1"><a href="mailto:kargtu.cos@mail.ru">kargtu.cos@mail.ru</a></h6>
+
+</div>
+{% endblock %}

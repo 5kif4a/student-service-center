@@ -26,6 +26,11 @@ except:
 
 # главная страница
 def index(request):
+    if request.GET.__contains__('lang'):
+        if request.GET.__getitem__('lang') == 'kz':
+            return render(request, 'ssc/kz/index.html')
+        if request.GET.__getitem__('lang') == 'en':
+            return render(request, 'ssc/en/index.html')
     return render(request, 'ssc/index.html')
 
 
@@ -96,14 +101,29 @@ def postgraduate(request):
 
 
 def about(request):
+    if request.GET.__contains__('lang'):
+        if request.GET.__getitem__('lang') == 'kz':
+            return render(request, 'ssc/kz/about.html')
+        if request.GET.__getitem__('lang') == 'en':
+            return render(request, 'ssc/en/about.html')
     return render(request, 'ssc/about.html')
 
 
 def state(request):
+    if request.GET.__contains__('lang'):
+        if request.GET.__getitem__('lang') == 'kz':
+            return render(request, 'ssc/kz/state.html')
+        if request.GET.__getitem__('lang') == 'en':
+            return render(request, 'ssc/en/state.html')
     return render(request, 'ssc/state.html')
 
 
 def education(request):
+    if request.GET.__contains__('lang'):
+        if request.GET.__getitem__('lang') == 'kz':
+            return render(request, 'ssc/kz/education.html')
+        if request.GET.__getitem__('lang') == 'en':
+            return render(request, 'ssc/en/education.html')
     return render(request, 'ssc/education.html')
 
 
@@ -112,10 +132,20 @@ def online(request):
 
 
 def self(request):
+    if request.GET.__contains__('lang'):
+        if request.GET.__getitem__('lang') == 'kz':
+            return render(request, 'ssc/kz/self.html')
+        if request.GET.__getitem__('lang') == 'en':
+            return render(request, 'ssc/en/self.html')
     return render(request, 'ssc/self.html')
 
 
 def stuff(request):
+    if request.GET.__contains__('lang'):
+        if request.GET.__getitem__('lang') == 'kz':
+            return render(request, 'ssc/kz/stuff.html')
+        if request.GET.__getitem__('lang') == 'en':
+            return render(request, 'ssc/en/stuff.html')
     return render(request, 'ssc/stuff.html')
 
 

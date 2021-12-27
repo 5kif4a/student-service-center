@@ -1,0 +1,24 @@
+{% extends "ssc/en/base.html" %}
+{% load static %}
+{% block content %}
+<div class="container">
+  <h1 class="text-center p-3">Self-service room</h1>
+  <p>The presence of a self-service room in the SSC permits students, the teaching
+    staff and University employees to receive the necessary certificates such as: the
+    presence or absence of real estate, no criminal record, from anti-tuberculosis,
+    neuropsychiatric organizations, vaccination passport and others.</p>
+  <p>The SSC employees provide on a constant basis practical and informational-
+    advisory assistance to students and employees when submitting applications,
+    receiving EDS, certificates, and register them in the mobile citizens database
+    through the website <a href="https://egov.kz">https://egov.kz</a>.</p>
+  <div class="row">
+    <div class="col-md w-25">
+      <img src="{% static 'img/self1.jpg' %}">
+    </div>
+    <div class="col-md w-25">
+      <img src="{% static 'img/self2.jpg' %}">
+    </div>
+  </div>
+
+</div>
+{% endblock %}
