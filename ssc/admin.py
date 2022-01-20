@@ -653,7 +653,7 @@ class HostelReferralAdmin(CustomAdmin):
         ('date_of_application', DateRangeFilter), ('date_of_referral', DateRangeFilter),
         ('date_of_evict', DateRangeFilter),
         'is_serpin', 'room__hostel', 'faculty', 'course', 'status',
-        CategoryFilter, 'is_registered')
+        CategoryFilter, 'is_registered', 'is_resettlement')
     list_display = (
         'last_name', 'first_name', 'patronymic', 'individual_identification_number', 'faculty', 'course',
         'date_of_application',
