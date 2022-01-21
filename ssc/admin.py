@@ -271,7 +271,7 @@ class ReferenceAdmin(CustomAdmin):
     list_filter = ('date_of_application', 'receipt_year', 'exclude_year', 'education_form', 'course', 'status')
     list_display = ('last_name', 'first_name', 'patronymic', 'specialty', 'date_of_application', 'status',
                     'print')
-    search_fields = ('last_name', 'first_name', 'patronymic', 'address', 'specialty__name',
+    search_fields = ('last_name', 'first_name', 'patronymic', 'specialty__name',
                      'individual_identification_number')
     autocomplete_fields = ('specialty',)
 
@@ -291,7 +291,7 @@ class AcademicLeaveAdmin(CustomAdmin):
     list_display = (
         'last_name', 'first_name', 'patronymic', 'specialty', 'is_prolongation', 'date_of_application', 'status',
         'print')
-    search_fields = ('last_name', 'first_name', 'patronymic', 'address', 'specialty__name',
+    search_fields = ('last_name', 'first_name', 'patronymic', 'specialty__name',
                      'individual_identification_number', 'number')
     autocomplete_fields = ('specialty',)
 
@@ -527,7 +527,7 @@ class TransferKSTUAdmin(CustomAdmin):
     list_filter = (
         'date_of_application', 'faculty', 'course', 'foundation_on_previous_university', 'foundation_in_kstu', 'status')
     list_display = ('last_name', 'first_name', 'patronymic', 'date_of_application', 'status', 'print')
-    search_fields = ('last_name', 'first_name', 'patronymic', 'address',
+    search_fields = ('last_name', 'first_name', 'patronymic',
                      'specialty_on_previous_university__name', 'transfer_specialty__name',
                      'individual_identification_number', 'university')
     autocomplete_fields = ('specialty_on_previous_university', 'transfer_specialty')
@@ -547,7 +547,7 @@ class RecoveryAdmin(CustomAdmin):
     list_per_page = 15
     list_filter = ('date_of_application', 'faculty', 'course', 'status')
     list_display = ('last_name', 'first_name', 'patronymic', 'date_of_application', 'status', 'print')
-    search_fields = ('last_name', 'first_name', 'patronymic', 'address', 'specialty__name',
+    search_fields = ('last_name', 'first_name', 'patronymic', 'specialty__name',
                      'individual_identification_number', 'university')
     autocomplete_fields = ('specialty',)
     readonly_fields = ('id_card_front', 'id_card_back')
@@ -967,7 +967,7 @@ class AcademicLeaveReturnAdmin(CustomAdmin):
     list_filter = ('date_of_application', 'status')
     list_display = ('last_name', 'first_name', 'patronymic', 'specialty', 'date_of_application', 'status',
                     'print')
-    search_fields = ('last_name', 'first_name', 'patronymic', 'address', 'specialty__name',
+    search_fields = ('last_name', 'first_name', 'patronymic', 'specialty__name',
                      'individual_identification_number')
     autocomplete_fields = ('specialty',)
 
@@ -1046,7 +1046,7 @@ class PrivateInformationChangeAdmin(CustomAdmin):
     list_filter = ('date_of_application', 'status')
     list_display = ('last_name', 'first_name', 'patronymic', 'specialty', 'date_of_application', 'status',
                     'print')
-    search_fields = ('last_name', 'first_name', 'patronymic', 'address', 'specialty__name',
+    search_fields = ('last_name', 'first_name', 'patronymic', 'specialty__name',
                      'individual_identification_number')
     autocomplete_fields = ('specialty',)
 
@@ -1120,7 +1120,7 @@ class ExpulsionAdmin(CustomAdmin):
     list_filter = ('date_of_application', 'status')
     list_display = ('last_name', 'first_name', 'patronymic', 'specialty', 'date_of_application', 'status',
                     'print')
-    search_fields = ('last_name', 'first_name', 'patronymic', 'address', 'specialty__name',
+    search_fields = ('last_name', 'first_name', 'patronymic', 'specialty__name',
                      'individual_identification_number')
     autocomplete_fields = ('specialty',)
 
@@ -1192,7 +1192,7 @@ class TransferInsideAdmin(CustomAdmin):
     list_filter = ('date_of_application', 'status')
     list_display = ('last_name', 'first_name', 'patronymic', 'specialty', 'date_of_application', 'status',
                     'print')
-    search_fields = ('last_name', 'first_name', 'patronymic', 'address', 'specialty__name',
+    search_fields = ('last_name', 'first_name', 'patronymic', 'specialty__name',
                      'individual_identification_number')
     autocomplete_fields = ('specialty',)
 
@@ -1264,7 +1264,7 @@ class KeyCardAdmin(CustomAdmin):
     list_filter = ('date_of_application', 'status')
     list_display = ('last_name', 'first_name', 'patronymic', 'date_of_application', 'status',
                     'print')
-    search_fields = ('last_name', 'first_name', 'patronymic', 'address',
+    search_fields = ('last_name', 'first_name', 'patronymic',
                      'individual_identification_number')
 
     def response_change(self, request, obj):
@@ -1301,7 +1301,7 @@ class ReferenceStudentAdmin(CustomAdmin):
     list_filter = ('date_of_application', 'status', 'is_signed')
     list_display = ('last_name', 'first_name', 'patronymic', 'date_of_application', 'status',
                     'print')
-    search_fields = ('last_name', 'first_name', 'patronymic', 'address',
+    search_fields = ('last_name', 'first_name', 'patronymic',
                      'individual_identification_number')
 
     def response_change(self, request, obj):
@@ -1338,7 +1338,7 @@ class KeyCardFirstAdmin(CustomAdmin):
     list_filter = ('date_of_application', 'status')
     list_display = ('last_name', 'first_name', 'patronymic', 'date_of_application', 'status',
                     'print')
-    search_fields = ('last_name', 'first_name', 'patronymic', 'address',
+    search_fields = ('last_name', 'first_name', 'patronymic',
                      'individual_identification_number')
 
     def response_change(self, request, obj):
