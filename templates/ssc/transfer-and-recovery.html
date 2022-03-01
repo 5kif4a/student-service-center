@@ -1,6 +1,5 @@
 {% extends "ssc/service_wrapper.html" %}
 {% load crispy_forms_tags %}
-{% load static %}
 {% block content %}
 <div class="container">
 {% block description %}
@@ -24,8 +23,6 @@
         </div>
         <div class="col-md-9 mb-2">
             <!--<p class="h3 text-center text-danger">Внимание! Доступ к услуге будет открыт в каникулярное время. (зимних и летних каникул)</p>-->
-            <a class="btn btn-outline-primary btn-lg btn-block" role="button" href="#" data-toggle="modal" data-target="#rules">Процедура оказания услуги</a>
-            <br>
             <a href="/transfer" class="btn btn-outline-primary btn-lg btn-block" role="button">Форма заявления на перевод в другой ВУЗ</a>
             <a href="/transfer-kstu" class="btn btn-outline-primary btn-lg btn-block" role="button">Форма заявления на перевод в КарТУ</a>
             <a href="/recovery" class="btn btn-outline-primary btn-lg btn-block" role="button">Форма заявления на восстановление в число обучающихся</a>
@@ -34,23 +31,5 @@
     </div>
 </div>
 {% endblock description %}
-</div>
-<div class="modal fade bd-example-modal-lg" id="rules" tabindex="-1" role="dialog" aria-labelledby="rulesTitle" aria-hidden="true">
-    <div class="modal-dialog modal-lg" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="rulesTitle">Процедура оказания услуги</h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
-            </div>
-            <div class="modal-body" style="width:100%; height:75vh;">
-                <object type="application/pdf" data="{% static 'manual/5.pdf' %}" width="100%" height="100%">Не поддерживается</object>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-dismiss="modal">Закрыть</button>
-            </div>
-        </div>
-    </div>
 </div>
 {% endblock content%}
