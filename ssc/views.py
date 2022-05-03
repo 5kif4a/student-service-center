@@ -633,71 +633,71 @@ def hostel_space(request):
     # Либо требуется полный рефакторинг
 
     for room in HostelRoom.objects.all():
-        # if room.hostel in all_space.keys():
-        #   all_space[room.hostel] += room.all_space
-        #    free_space[room.hostel] += room.free_space
-        # else:
-        #   all_space[room.hostel] = room.all_space
-        #   free_space[room.hostel] = room.free_space
-
-        space_count = 1
-        if room.all_space > 2:
-            space_count = 2
-        if room.all_space > 5:
-            space_count = 3
-
-        if room.hostel == 'Общежитие №3' and room.all_space == 4:
-            space_count = 3
-
-        if room.hostel == 'Общежитие «Студенттер үйi»' and room.all_space == 4:
-            space_count = 3
-        if room.hostel == 'Общежитие «Студенттер үйi»' and (
-                room.number == 235 or room.number == 403 or room.number == 203):
-            space_count = 2
-        if room.hostel == 'Общежитие Жилищный комплекс «Армандастар Ордасы»' and room.all_space >= 3:
-            space_count = 3
-        if room.hostel == 'Общежитие Жилищный комплекс «Армандастар Ордасы»' and room.all_space == 2:
-            space_count = 2
-        if room.hostel == 'Общежитие №3' and room.number == 321:
-            space_count = 4
-
         if room.hostel in all_space.keys():
-            all_space[room.hostel] += space_count
-            if room.all_space == room.free_space:
-                free_space[room.hostel] += space_count
-            if room.all_space - room.free_space == 1 and space_count == 2:
-                free_space[room.hostel] += 1
-            if room.all_space - room.free_space == 1 and space_count == 3:
-                free_space[room.hostel] += 2
-            if room.all_space - room.free_space == 2 and space_count == 3:
-                free_space[room.hostel] += 1
-            if space_count == 4:
-                free_space[room.hostel] += room.free_space - 2
+            all_space[room.hostel] += room.all_space
+            free_space[room.hostel] += room.free_space
         else:
-            all_space[room.hostel] = space_count
-            free_space[room.hostel] = 0
-            if room.all_space == room.free_space:
-                free_space[room.hostel] = space_count
-            if room.all_space - room.free_space == 1 and space_count == 2:
-                free_space[room.hostel] = 1
-            if room.all_space - room.free_space == 1 and space_count == 3:
-                free_space[room.hostel] = 2
-            if room.all_space - room.free_space == 2 and space_count == 3:
-                free_space[room.hostel] = 1
-            if space_count == 4:
-                free_space[room.hostel] = room.free_space - 2
+            all_space[room.hostel] = room.all_space
+            free_space[room.hostel] = room.free_space
 
-        # overall_space += room.all_space
-        # overall_free_space += room.free_space
-        overall_space += space_count
-        if room.all_space == room.free_space:
-            overall_free_space += space_count
-        if room.all_space - room.free_space == 1 and space_count == 2:
-            overall_free_space += 1
-        if room.all_space - room.free_space == 1 and space_count == 3:
-            overall_free_space += 2
-        if room.all_space - room.free_space == 2 and space_count == 3:
-            overall_free_space += 1
+        # space_count = 1
+        # if room.all_space > 2:
+        #     space_count = 2
+        # if room.all_space > 5:
+        #     space_count = 3
+        #
+        # if room.hostel == 'Общежитие №3' and room.all_space == 4:
+        #     space_count = 3
+        #
+        # if room.hostel == 'Общежитие «Студенттер үйi»' and room.all_space == 4:
+        #     space_count = 3
+        # if room.hostel == 'Общежитие «Студенттер үйi»' and (
+        #         room.number == 235 or room.number == 403 or room.number == 203):
+        #     space_count = 2
+        # if room.hostel == 'Общежитие Жилищный комплекс «Армандастар Ордасы»' and room.all_space >= 3:
+        #     space_count = 3
+        # if room.hostel == 'Общежитие Жилищный комплекс «Армандастар Ордасы»' and room.all_space == 2:
+        #     space_count = 2
+        # if room.hostel == 'Общежитие №3' and room.number == 321:
+        #     space_count = 4
+        #
+        # if room.hostel in all_space.keys():
+        #     all_space[room.hostel] += space_count
+        #     if room.all_space == room.free_space:
+        #         free_space[room.hostel] += space_count
+        #     if room.all_space - room.free_space == 1 and space_count == 2:
+        #         free_space[room.hostel] += 1
+        #     if room.all_space - room.free_space == 1 and space_count == 3:
+        #         free_space[room.hostel] += 2
+        #     if room.all_space - room.free_space == 2 and space_count == 3:
+        #         free_space[room.hostel] += 1
+        #     if space_count == 4:
+        #         free_space[room.hostel] += room.free_space - 2
+        # else:
+        #     all_space[room.hostel] = space_count
+        #     free_space[room.hostel] = 0
+        #     if room.all_space == room.free_space:
+        #         free_space[room.hostel] = space_count
+        #     if room.all_space - room.free_space == 1 and space_count == 2:
+        #         free_space[room.hostel] = 1
+        #     if room.all_space - room.free_space == 1 and space_count == 3:
+        #         free_space[room.hostel] = 2
+        #     if room.all_space - room.free_space == 2 and space_count == 3:
+        #         free_space[room.hostel] = 1
+        #     if space_count == 4:
+        #         free_space[room.hostel] = room.free_space - 2
+
+        overall_space += room.all_space
+        overall_free_space += room.free_space
+        # overall_space += space_count
+        # if room.all_space == room.free_space:
+        #     overall_free_space += space_count
+        # if room.all_space - room.free_space == 1 and space_count == 2:
+        #     overall_free_space += 1
+        # if room.all_space - room.free_space == 1 and space_count == 3:
+        #     overall_free_space += 2
+        # if room.all_space - room.free_space == 2 and space_count == 3:
+        #     overall_free_space += 1
 
     time = timezone.localtime(timezone.now())
     time = time.strftime("%d/%m/%Y, %H:%M")
