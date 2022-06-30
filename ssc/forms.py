@@ -98,6 +98,9 @@ class HostelForm(ModelForm):
         self.fields['status'].required = False
         self.fields['place_of_arrival'].label = 'Место прибытия (адрес прописки/проживания) (Область, район, ' \
                                                 'нас. пункт, улица, дом, квартира) '
+        self.fields[
+            'attachmentDeath'].label = 'Копия свидетельства о смерти обоих или единственного родителя ' \
+                                       '(для детей сирот), либо справка из детского дома'
 
     def localize(self):
         self.fields['last_name'].label = 'Тегі'
