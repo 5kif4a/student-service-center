@@ -1,4 +1,3 @@
-import xlsxwriter
 from django.contrib import messages
 from django.shortcuts import render, render_to_response
 from django.contrib.sites.shortcuts import get_current_site
@@ -6,6 +5,7 @@ from django.utils import timezone, dateformat
 from django.views import View
 from django.http import JsonResponse, HttpResponseRedirect
 from django.core import serializers
+from django.db.models import Q
 from ssc.forms import *
 from ssc.models import *
 from ssc.utilities import *
@@ -27,6 +27,11 @@ except:
 
 # главная страница
 def index(request):
+    if request.GET.__contains__('lang'):
+        if request.GET.__getitem__('lang') == 'kz':
+            return render(request, 'ssc/kz/index.html')
+        if request.GET.__getitem__('lang') == 'en':
+            return render(request, 'ssc/en/index.html')
     return render(request, 'ssc/index.html')
 
 
@@ -46,6 +51,16 @@ class TemplateView(View):
         return render(request, self.template_name, self.context)
 
     def post(self, request):
+        ctx = {}
+        to = (request.POST.get('email', ''),)
+        # try:
+        #     send_email("mails/email_verification.html", ctx, to)
+        # except:
+        #     form = self.form_class()
+        #     self.context['form'] = form
+        #     messages.info(request, 'Вы ввели несуществующий email')
+        #     return render(request, self.template_name, self.context)
+
         form = self.form_class(request.POST, request.FILES)
         self.context['form'] = form
 
@@ -53,8 +68,8 @@ class TemplateView(View):
         fs = FileSystemStorage()
 
         if form.is_valid():
-            for _, file in files.items():
-                fs.save(file.name, file)
+            # for _, file in files.items():
+            #    fs.save(file.name, file)
             data = form.save()
 
             # создаем уведомление
@@ -86,6 +101,55 @@ def postgraduate(request):
     return render(request, 'ssc/postgraduate.html', context)
 
 
+def about(request):
+    if request.GET.__contains__('lang'):
+        if request.GET.__getitem__('lang') == 'kz':
+            return render(request, 'ssc/kz/about.html')
+        if request.GET.__getitem__('lang') == 'en':
+            return render(request, 'ssc/en/about.html')
+    return render(request, 'ssc/about.html')
+
+
+def state(request):
+    if request.GET.__contains__('lang'):
+        if request.GET.__getitem__('lang') == 'kz':
+            return render(request, 'ssc/kz/state.html')
+        if request.GET.__getitem__('lang') == 'en':
+            return render(request, 'ssc/en/state.html')
+    return render(request, 'ssc/state.html')
+
+
+def education(request):
+    if request.GET.__contains__('lang'):
+        if request.GET.__getitem__('lang') == 'kz':
+            return render(request, 'ssc/kz/education.html')
+        if request.GET.__getitem__('lang') == 'en':
+            return render(request, 'ssc/en/education.html')
+    return render(request, 'ssc/education.html')
+
+
+def online(request):
+    return render(request, 'ssc/online.html')
+
+
+def self(request):
+    if request.GET.__contains__('lang'):
+        if request.GET.__getitem__('lang') == 'kz':
+            return render(request, 'ssc/kz/self.html')
+        if request.GET.__getitem__('lang') == 'en':
+            return render(request, 'ssc/en/self.html')
+    return render(request, 'ssc/self.html')
+
+
+def stuff(request):
+    if request.GET.__contains__('lang'):
+        if request.GET.__getitem__('lang') == 'kz':
+            return render(request, 'ssc/kz/stuff.html')
+        if request.GET.__getitem__('lang') == 'en':
+            return render(request, 'ssc/en/stuff.html')
+    return render(request, 'ssc/stuff.html')
+
+
 class AbroadView(TemplateView):
     """
     Представления для подачи заявления по услуге
@@ -103,7 +167,8 @@ class AbroadView(TemplateView):
         app = Abroad.objects.get(id=obj_id)
         if app.status not in ('Не проверено', 'Отозвано на исправление'):
             context = {
-                'rector_name': rector_name,
+                'stuff_position': Stuff.objects.get(application_type='Академическая мобильность').position,
+                'stuff_name': Stuff.objects.get(application_type='Академическая мобильность').name,
                 'app': app,
                 'qr_code': generate_qr_code(f'{BASE_URL}/check_order?order_type=abroad&id={obj_id}')
             }
@@ -141,47 +206,19 @@ class HostelView(TemplateView):
         self.context['form'] = form
         return render(request, self.template_name, self.context)
 
-    def post(self, request):
-        form = self.form_class(request.POST, request.FILES)
-
-        if request.GET.__contains__('lang'):
-            if request.GET.__getitem__('lang') == 'kz':
-                self.template_name = "ssc/hostel_kz.html"
-                form.localize()
-
-        self.context['form'] = form
-
-        files = request.FILES
-        fs = FileSystemStorage()
-
-        if form.is_valid():
-            for _, file in files.items():
-                fs.save(file.name, file)
-            data = form.save()
-
-            # создаем уведомление
-            base_url = get_current_site(request)
-            url_for_app = f'{base_url}/admin/ssc/{self.app_ref}/{data.id}/change/'
-
-            n = Notification(application_type=self.app_type, url_for_application=url_for_app)
-            n.save()
-
-            return render(request, 'ssc/complete.html')
-
-        if DEBUG:
-            print(form.errors)
-
-        return render(request, self.template_name, self.context)
-
     @login_required
     def render(self, obj_id):
         app = Hostel.objects.get(id=obj_id)
         if app.status not in ('Не проверено', 'Отозвано на исправление'):
 
+            vac = False
             death = False
             large = False
             disabled = False
             kandas = False
+
+            if app.attachmentProperty:
+                vac = True
 
             if app.attachmentDeath:
                 death = True
@@ -196,13 +233,15 @@ class HostelView(TemplateView):
                 kandas = True
 
             context = {
-                'rector_name': rector_name,
+                'stuff_position': Stuff.objects.get(application_type='Общежитие').position,
+                'stuff_name': Stuff.objects.get(application_type='Общежитие').name,
                 'app': app,
                 'qr_code': generate_qr_code(f'{BASE_URL}/check_order?order_type=hostel&id={obj_id}'),
                 'death': death,
                 'large': large,
                 'disabled': disabled,
-                'kandas': kandas
+                'kandas': kandas,
+                'vac': vac
             }
             return render_pdf('applications/hostel.html', context)
         else:
@@ -232,7 +271,8 @@ class DuplicateView(TemplateView):
     #     app = Duplicate.objects.get(id=obj_id)
     #     if app.status not in ('Не проверено', 'Отозвано на исправление'):
     #         context = {
-    #             'rector_name': rector_name,
+    #             'stuff_position': Stuff.objects.get(application_type='Дубликаты документов').position,
+    #             'stuff_name': Stuff.objects.get(application_type='Дубликаты документов').name,
     #             'app': app,
     #             'qr_code': generate_qr_code('http://www.kstu.kz/')
     #         }
@@ -244,7 +284,7 @@ class DuplicateView(TemplateView):
 class AcademicLeaveView(TemplateView):
     """
     Представления для подачи заявления по услуге
-    "Предоставление академических отпусков обучающимся в организациях образования"
+    "Предоставление и продление академических отпусков обучающимся в организациях образования"
     Государственная услуга
     """
     form_class = AcademicLeaveForm
@@ -257,12 +297,24 @@ class AcademicLeaveView(TemplateView):
     def render(self, obj_id):
         app = AcademicLeave.objects.get(id=obj_id)
         if app.status not in ('Не проверено', 'Отозвано на исправление'):
-            context = {
-                'rector_name': rector_name,
-                'app': app,
-                'qr_code': generate_qr_code(f'{BASE_URL}/check_order?order_type=academic_leave&id={obj_id}')
+
+            documents = {
+                'по состоянию здоровья': 'Справка ВКК',
+                'с призывом на воинскую службу': 'Справка из военкомата о призыве',
+                'с рождением ребенка': 'Копия свидетельства о рождении ребенка'
             }
-            return render_pdf('applications/academic-leave.html', context)
+
+            context = {
+                'stuff_position': Stuff.objects.get(application_type='Академический отпуск').position,
+                'stuff_name': Stuff.objects.get(application_type='Академический отпуск').name,
+                'app': app,
+                'qr_code': generate_qr_code(f'{BASE_URL}/check_order?order_type=academic_leave&id={obj_id}'),
+                'document': documents[app.reason]
+            }
+            if not app.is_prolongation:
+                return render_pdf('applications/academic-leave.html', context)
+            else:
+                return render_pdf('applications/academic-leave-prolongation.html', context)
         else:
             return HttpResponse('<center><h1>Заявление не потверждено!</h1></center>')
 
@@ -284,7 +336,8 @@ class ReferenceView(TemplateView):
         app = Reference.objects.get(id=obj_id)
         if app.status not in ('Не проверено', 'Отозвано на исправление'):
             context = {
-                'rector_name': rector_name,
+                'stuff_position': Stuff.objects.get(application_type='Академическая справка').position,
+                'stuff_name': Stuff.objects.get(application_type='Академическая справка').name,
                 'app': app,
                 'qr_code': generate_qr_code(f'{BASE_URL}/check_order?order_type=reference&id={obj_id}')
             }
@@ -317,7 +370,8 @@ class TransferView(TemplateView):
         app = Transfer.objects.get(id=obj_id)
         if app.status not in ('Не проверено', 'Отозвано на исправление'):
             context = {
-                'rector_name': rector_name,
+                'stuff_position': Stuff.objects.get(application_type='Перевод в другой ВУЗ').position,
+                'stuff_name': Stuff.objects.get(application_type='Перевод в другой ВУЗ').name,
                 'app': app,
                 'qr_code': generate_qr_code(f'{BASE_URL}/check_order?order_type=transfer&id={obj_id}')
             }
@@ -343,7 +397,8 @@ class TransferKSTUView(TemplateView):
         app = TransferKSTU.objects.get(id=obj_id)
         if app.status not in ('Не проверено', 'Отозвано на исправление'):
             context = {
-                'rector_name': rector_name,
+                'stuff_position': Stuff.objects.get(application_type='Перевод в КарТУ').position,
+                'stuff_name': Stuff.objects.get(application_type='Перевод в КарТУ').name,
                 'app': app,
                 'qr_code': generate_qr_code(f'{BASE_URL}/check_order?order_type=transfer_kstu&id={obj_id}')
             }
@@ -369,7 +424,8 @@ class RecoveryView(TemplateView):
         app = Recovery.objects.get(id=obj_id)
         if app.status not in ('Не проверено', 'Отозвано на исправление'):
             context = {
-                'rector_name': rector_name,
+                'stuff_position': Stuff.objects.get(application_type='Восстановление в число обучающихся').position,
+                'stuff_name': Stuff.objects.get(application_type='Восстановление в число обучающихся').name,
                 'app': app,
                 'qr_code': generate_qr_code(f'{BASE_URL}/check_order?order_type=recovery&id={obj_id}')
             }
@@ -388,7 +444,7 @@ class HostelReferralView(TemplateView):
     template_name = 'ssc/hostel_referral.html'
     context = {}
     app_type = 'Направление'
-    app_ref = 'hostel_referral'
+    app_ref = 'hostelreferral'
 
     def render(self, obj_id):
         app = HostelReferral.objects.get(id=obj_id)
@@ -429,7 +485,7 @@ def get_notifications(request):
     """
     notifications = Notification.objects.filter(is_showed=False).order_by('-date')
     notifications = serializers.serialize("json", notifications)
-    data = json.loads(notifications, encoding='utf8')
+    data = json.loads(notifications)
     return JsonResponse(data, safe=False)
 
 
@@ -617,7 +673,14 @@ def check_order(request):
                         'transfer_kstu': TransferKSTU,
                         'transfer': Transfer,
                         'recovery': Recovery,
-                        'hostel_referral': HostelReferral}
+                        'hostel_referral': HostelReferral,
+                        'academic_leave_return': AcademicLeaveReturn,
+                        'private_information_change': PrivateInformationChange,
+                        'expulsion': Expulsion,
+                        'transfer-inside': TransferInside,
+                        'key-card': KeyCard,
+                        'reference-student': ReferenceStudent,
+                        'key-card-first': KeyCardFirst}
 
     if request.method == 'GET':
         order_type = request.GET.get('order_type')
@@ -711,48 +774,88 @@ def hostel_space(request):
     overall_space = 0
     overall_free_space = 0
 
+    # TODO:
+    # Этот код является хотфиксом в условиях ограничений
+    # В будущем требуется либо раскоментировать закоментированный, а остальной удалить
+    # Либо требуется полный рефакторинг
+
     for room in HostelRoom.objects.all():
-        # if room.hostel in all_space.keys():
-        #   all_space[room.hostel] += room.all_space
-        #    free_space[room.hostel] += room.free_space
-        # else:
-        #   all_space[room.hostel] = room.all_space
-        #   free_space[room.hostel] = room.free_space
-
-        if room.hostel == 'Общежитие №3':
-            continue
-
         if room.hostel in all_space.keys():
-            all_space[room.hostel] += 1
-            if room.all_space == room.free_space:
-                free_space[room.hostel] += 1
+            all_space[room.hostel] += room.all_space
+            free_space[room.hostel] += room.free_space
         else:
-            all_space[room.hostel] = 1
-            free_space[room.hostel] = 0
-            if room.all_space == room.free_space:
-                free_space[room.hostel] += 1
+            all_space[room.hostel] = room.all_space
+            free_space[room.hostel] = room.free_space
 
-        # overall_space += room.all_space
-        # overall_free_space += room.free_space
-        overall_space += 1
-        if room.all_space == room.free_space:
-            overall_free_space += 1
+        # space_count = 1
+        # if room.all_space > 2:
+        #     space_count = 2
+        # if room.all_space > 5:
+        #     space_count = 3
+        #
+        # if room.hostel == 'Общежитие №3' and room.all_space == 4:
+        #     space_count = 3
+        #
+        # if room.hostel == 'Общежитие «Студенттер үйi»' and room.all_space == 4:
+        #     space_count = 3
+        # if room.hostel == 'Общежитие «Студенттер үйi»' and (
+        #         room.number == 235 or room.number == 403 or room.number == 203):
+        #     space_count = 2
+        # if room.hostel == 'Общежитие Жилищный комплекс «Армандастар Ордасы»' and room.all_space >= 3:
+        #     space_count = 3
+        # if room.hostel == 'Общежитие Жилищный комплекс «Армандастар Ордасы»' and room.all_space == 2:
+        #     space_count = 2
+        # if room.hostel == 'Общежитие №3' and room.number == 321:
+        #     space_count = 4
+        #
+        # if room.hostel in all_space.keys():
+        #     all_space[room.hostel] += space_count
+        #     if room.all_space == room.free_space:
+        #         free_space[room.hostel] += space_count
+        #     if room.all_space - room.free_space == 1 and space_count == 2:
+        #         free_space[room.hostel] += 1
+        #     if room.all_space - room.free_space == 1 and space_count == 3:
+        #         free_space[room.hostel] += 2
+        #     if room.all_space - room.free_space == 2 and space_count == 3:
+        #         free_space[room.hostel] += 1
+        #     if space_count == 4:
+        #         free_space[room.hostel] += room.free_space - 2
+        # else:
+        #     all_space[room.hostel] = space_count
+        #     free_space[room.hostel] = 0
+        #     if room.all_space == room.free_space:
+        #         free_space[room.hostel] = space_count
+        #     if room.all_space - room.free_space == 1 and space_count == 2:
+        #         free_space[room.hostel] = 1
+        #     if room.all_space - room.free_space == 1 and space_count == 3:
+        #         free_space[room.hostel] = 2
+        #     if room.all_space - room.free_space == 2 and space_count == 3:
+        #         free_space[room.hostel] = 1
+        #     if space_count == 4:
+        #         free_space[room.hostel] = room.free_space - 2
+
+        overall_space += room.all_space
+        overall_free_space += room.free_space
+        # overall_space += space_count
+        # if room.all_space == room.free_space:
+        #     overall_free_space += space_count
+        # if room.all_space - room.free_space == 1 and space_count == 2:
+        #     overall_free_space += 1
+        # if room.all_space - room.free_space == 1 and space_count == 3:
+        #     overall_free_space += 2
+        # if room.all_space - room.free_space == 2 and space_count == 3:
+        #     overall_free_space += 1
 
     time = timezone.localtime(timezone.now())
     time = time.strftime("%d/%m/%Y, %H:%M")
 
     result = []
+
     for hostel in all_space:
         result.append({'hostel': hostel,
                        'all_space': all_space[hostel],
                        'taken_space': all_space[hostel] - free_space[hostel],
                        'free_space': free_space[hostel]})
-
-    # Временно, пока 3 общежитие не работает
-    result.append({'hostel': 'Общежитие №3',
-                   'all_space': '-',
-                   'taken_space': '-',
-                   'free_space': '-'})
 
     result.append({'hostel': 'Итого',
                    'all_space': overall_space,
@@ -761,7 +864,7 @@ def hostel_space(request):
 
     context = {'result': result,
                'time': time}
-    return render_to_response(template, context)
+    return render(request, template, context)
 
 
 def hostel_referral_list(request):
@@ -839,4 +942,192 @@ def hostel_referral_list(request):
     context = {'hostel_three': hostel_three,
                'hostel_armandastar': hostel_armandastar,
                'hostel_uyi': hostel_uyi}
-    return render_to_response(template, context)
+    return render(request, template, context)
+
+
+class AcademicLeaveReturnView(TemplateView):
+    """
+    Представления для подачи заявления по услуге
+    "Возвращение из академических отпусков обучающихся в организациях образования"
+    Государственная услуга
+    """
+    form_class = AcademicLeaveReturnForm
+    template_name = 'ssc/academic-leave-return.html'
+    context = {'status': statuses.get('academic-leave-return')}
+    app_type = 'Возвращение из акадического отпуска'
+    app_ref = 'academicleavereturn'
+
+    @login_required
+    def render(self, obj_id):
+        app = AcademicLeaveReturn.objects.get(id=obj_id)
+        if app.status not in ('Не проверено', 'Отозвано на исправление'):
+
+            documents = {
+                'по состоянию здоровья': 'Справка ВКК',
+                'с призывом на воинскую службу': 'Копия военного билета',
+                'с рождением ребенка': 'Копия свидетельства о рождении ребенка'
+            }
+
+            context = {
+                'stuff_position': Stuff.objects.get(application_type='Возвращение из акадического отпуска').position,
+                'stuff_name': Stuff.objects.get(application_type='Возвращение из акадического отпуска').name,
+                'app': app,
+                'qr_code': generate_qr_code(f'{BASE_URL}/check_order?order_type=academic_leave_return&id={obj_id}'),
+                'document': documents[app.reason]
+            }
+            return render_pdf('applications/academic-leave-return.html', context)
+        else:
+            return HttpResponse('<center><h1>Заявление не потверждено!</h1></center>')
+
+
+class PrivateInformationChangeView(TemplateView):
+    """
+    Представления для подачи заявления по услуге
+    "Изменение персональных данных об обучающихся в организациях образования"
+    Государственная услуга
+    """
+    form_class = PrivateInformationChangeForm
+    template_name = 'ssc/private-information-change.html'
+    context = {'status': statuses.get('private-information-change')}
+    app_type = 'Изменение персональных данных'
+    app_ref = 'privateinformationchange'
+
+    @login_required
+    def render(self, obj_id):
+        app = PrivateInformationChange.objects.get(id=obj_id)
+        if app.status not in ('Не проверено', 'Отозвано на исправление'):
+            context = {
+                'stuff_position': Stuff.objects.get(application_type='Изменение персональных данных').position,
+                'stuff_name': Stuff.objects.get(application_type='Изменение персональных данных').name,
+                'app': app,
+                'qr_code': generate_qr_code(f'{BASE_URL}/check_order?order_type=private_information_change&id={obj_id}')
+            }
+            return render_pdf('applications/private-information-change.html', context)
+        else:
+            return HttpResponse('<center><h1>Заявление не потверждено!</h1></center>')
+
+
+class ExpulsionView(TemplateView):
+    """
+    Представления для подачи заявления по услуге
+    "Отчисление обучающихся в организациях образования"
+    Государственная услуга
+    """
+    form_class = ExpulsionForm
+    template_name = 'ssc/expulsion.html'
+    context = {'status': statuses.get('expulsion')}
+    app_type = 'Отчисление'
+    app_ref = 'expulsion'
+
+    @login_required
+    def render(self, obj_id):
+        app = Expulsion.objects.get(id=obj_id)
+        if app.status not in ('Не проверено', 'Отозвано на исправление'):
+            context = {
+                'stuff_position': Stuff.objects.get(application_type='Отчисление').position,
+                'stuff_name': Stuff.objects.get(application_type='Отчисление').name,
+                'app': app,
+                'qr_code': generate_qr_code(f'{BASE_URL}/check_order?order_type=expulsion&id={obj_id}')
+            }
+            return render_pdf('applications/expulsion.html', context)
+        else:
+            return HttpResponse('<center><h1>Заявление не потверждено!</h1></center>')
+
+
+class TransferInsideView(TemplateView):
+    """
+    Представления для подачи заявления по услуге
+    "Перевод обучающихся внутри организации образования"
+    Государственная услуга
+    """
+    form_class = TransferInsideForm
+    template_name = 'ssc/transfer-inside.html'
+    context = {'status': statuses.get('transfer-inside')}
+    app_type = 'Перевод внутри ВУЗа'
+    app_ref = 'transferinside'
+
+    @login_required
+    def render(self, obj_id):
+        app = TransferInside.objects.get(id=obj_id)
+        if app.status not in ('Не проверено', 'Отозвано на исправление'):
+            context = {
+                'stuff_position': Stuff.objects.get(application_type='Перевод внутри ВУЗа').position,
+                'stuff_name': Stuff.objects.get(application_type='Перевод внутри ВУЗа').name,
+                'app': app,
+                'qr_code': generate_qr_code(f'{BASE_URL}/check_order?order_type=transfer-inside&id={obj_id}')
+            }
+            return render_pdf('applications/transfer-inside.html', context)
+        else:
+            return HttpResponse('<center><h1>Заявление не потверждено!</h1></center>')
+
+
+class KeyCardView(TemplateView):
+    """
+    Представления для подачи заявки по услуге
+    "Восстановление ключ-карты в связи с утерей"
+    """
+    form_class = KeyCardForm
+    template_name = 'ssc/key-card.html'
+    context = {'status': statuses.get('key-card')}
+    app_type = 'Восстановление ключ-карты'
+    app_ref = 'keycard'
+
+    @login_required
+    def render(self, obj_id):
+        app = KeyCard.objects.get(id=obj_id)
+        if app.status not in ('Не проверено', 'Отозвано на исправление'):
+            context = {
+                'app': app,
+                'qr_code': generate_qr_code(f'{BASE_URL}/check_order?order_type=key-card&id={obj_id}')
+            }
+            return render_pdf('applications/key-card.html', context)
+        else:
+            return HttpResponse('<center><h1>Заявка не потверждена!</h1></center>')
+
+
+class ReferenceStudentView(TemplateView):
+    """
+    Представления для подачи заявки по услуге
+    "Восстановление ключ-карты в связи с утерей"
+    """
+    form_class = ReferenceStudentForm
+    template_name = 'ssc/reference-student.html'
+    context = {'status': statuses.get('reference-student')}
+    app_type = 'Выдача транскрипта обучающимся'
+    app_ref = 'referencestudent'
+
+    @login_required
+    def render(self, obj_id):
+        app = ReferenceStudent.objects.get(id=obj_id)
+        if app.status not in ('Не проверено', 'Отозвано на исправление'):
+            context = {
+                'app': app,
+                'qr_code': generate_qr_code(f'{BASE_URL}/check_order?order_type=reference-student&id={obj_id}')
+            }
+            return render_pdf('applications/reference-student.html', context)
+        else:
+            return HttpResponse('<center><h1>Заявка не потверждена!</h1></center>')
+
+
+class KeyCardFirstView(TemplateView):
+    """
+    Представления для подачи заявки по услуге
+    "Получение ключ-карты при переводе/восстановлении"
+    """
+    form_class = KeyCardFirstForm
+    template_name = 'ssc/key-card-first.html'
+    context = {'status': statuses.get('key-card-first')}
+    app_type = 'Получение ключ-карты'
+    app_ref = 'keycardfirst'
+
+    @login_required
+    def render(self, obj_id):
+        app = KeyCardFirst.objects.get(id=obj_id)
+        if app.status not in ('Не проверено', 'Отозвано на исправление'):
+            context = {
+                'app': app,
+                'qr_code': generate_qr_code(f'{BASE_URL}/check_order?order_type=key-card-first&id={obj_id}')
+            }
+            return render_pdf('applications/key-card-first.html', context)
+        else:
+            return HttpResponse('<center><h1>Заявка не потверждена!</h1></center>')

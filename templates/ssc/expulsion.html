@@ -1,0 +1,84 @@
+{% extends "ssc/service_wrapper.html" %}
+{% load crispy_forms_tags %}
+{% block content %}
+    <div class="container">
+        {% block description %}
+            <h3 class="text-center p-3">Отчисление по собственному желанию</h3>
+            <div class="alert alert-info text-center"><h5>Статус услуги: {% if status %}Автоматизирована
+                <i class="fas fa-cogs fa-lg"></i>{% else %}в процессе разработки
+                <i class="fab fa-dev fa-lg"></i>{% endif %}</h5></div>
+            <div class="container">
+                <div class="row text-break">
+                    <div class="col m-2 border border-info">
+                        <ul class="list-group list-group-flush">
+                            <li class="list-group-item"><b>Государственный орган:</b> Министерство образования и науки
+                                РК
+                            </li>
+                            <li class="list-group-item"><b>Получатели услуги:</b> Физические лица</li>
+                            <li class="list-group-item"><b>Место предоставления услуги:</b>
+                                <ul class="list-unstyled">
+                                    <li><a href="https://egov.kz/cms/ru/articles/professional_education/2Fvusi_rk"
+                                           target="_blank">Организации высшего и послевузовского образования</a></li>
+                                </ul>
+                            </li>
+                            <li class="list-group-item"><b>Стоимость услуги:</b> Бесплатно</li>
+                            <li class="list-group-item"><b>Полное наименование услуги:</b> Отчисление по собственному желанию</li>
+                        </ul>
+                    </div>
+                    {% block form %}
+                        <div class="col-md-9 mb-2">
+                            <form class="p-2 border border-primary" method="post" enctype="multipart/form-data">
+                                <h4 class="text-center">Форма заявления</h4>
+                                {% csrf_token %}
+                                <div class="form-group">
+                                    <div class="form-row">
+                                        <div class="form-group col-sm">
+                                            {{ form.last_name|as_crispy_field }}
+                                        </div>
+                                        <div class="form-group col-sm">
+                                            {{ form.first_name|as_crispy_field }}
+                                        </div>
+                                        <div class="form-group col-sm">
+                                            {{ form.patronymic|as_crispy_field }}
+                                        </div>
+                                        <div class="form-group col-sm">
+                                            {{ form.individual_identification_number|as_crispy_field }}
+                                        </div>
+                                    </div>
+                                    <div class="form-row align-items-end">
+                                        <div class="form-group col-sm">
+                                            {{ form.course|as_crispy_field }}
+                                        </div>
+                                        <div class="form-group col-sm">
+                                            {{ form.group|as_crispy_field }}
+                                        </div>
+                                        <div class="form-group col-sm">
+                                            {{ form.email|as_crispy_field }}
+                                        </div>
+                                        <div class="form-group col-sm">
+                                            {{ form.phone_number|as_crispy_field }}
+                                        </div>
+                                    </div>
+                                    <div class="form-row align-items-end">
+                                        <div class="form-group col-sm">
+                                            {{ form.specialty|as_crispy_field }}
+                                        </div>
+                                        <div class="form-group col-sm">
+                                            {{ form.faculty|as_crispy_field }}
+                                        </div>
+                                        <div class="form-group col-sm">
+                                            {{ form.foundation_type|as_crispy_field }}
+                                        </div>
+                                    </div>
+                                    {{ form.captcha }}
+                                    <p class="text-muted">* - обязательные поля для заполнения</p>
+                                    <button type="submit" class="btn btn-success mt-1">Отправить заявку</button>
+                                </div>
+                            </form>
+                        </div>
+                    {% endblock %}
+                </div>
+            </div>
+            </div>
+        {% endblock description %}
+{% endblock content %}

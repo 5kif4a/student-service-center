@@ -1,0 +1,79 @@
+{% extends "ssc/kz/base.html" %}
+{% load static %}
+{% block content %}
+<style>
+    .card {
+        border: 1px solid #ccc;
+        background-color: white;
+        padding: 5px;
+        margin-top: 5px;
+        margin-bottom: 5px;
+        margin-left: auto;
+        margin-right: auto;
+        text-align: center;
+    }
+
+    .card-img-top {
+        display: block;
+        margin: auto;
+    }
+    
+    .row{
+        margin: auto;
+    }
+</style>
+
+    <div class="container">
+        <h1 class="text-center p-2">Студенттерге қызмет көрсету орталығы</h1>
+        <div class="row w-75">
+            <div class="card mx-auto" style="width: 15rem;">
+                <img class="card-img-top w-50" src="{% static 'img/book.png' %}" alt="Card image cap">
+                <div class="card-body">
+                    <h4 class="card-title">Орталық туралы</h4>
+                </div>
+                <a href="/about?lang=kz" class="card-link stretched-link"></a>
+            </div>
+
+            <div class="card" style="width: 15rem;">
+                <img class="card-img-top w-50" src="{% static 'img/state.png' %}" alt="Card image cap">
+                <div class="card-body">
+                    <h4 class="card-title">Мемлекеттік қызметтер</h4>
+                </div>
+                <a href="/state?lang=kz" class="card-link stretched-link"></a>
+            </div>
+
+            <div class="card" style="width: 15rem;">
+                <img class="card-img-top w-50" src="{% static 'img/earth.png' %}" alt="Card image cap">
+                <div class="card-body">
+                    <h4 class="card-title">Оқу-білім беру қызметтері</h4>
+                </div>
+                <a href="/education?lang=kz" class="card-link stretched-link"></a>
+            </div>
+
+            <div class="card" style="width: 15rem;">
+                <img class="card-img-top w-50" src="{% static 'img/computer.png' %}" alt="Card image cap">
+                <div class="card-body">
+                    <h4 class="card-title">Онлайн өтінім беру</h4>
+                    <h4 class="card-text">Қызметтер тізімі</h4>
+                </div>
+                <a href="/online" class="card-link stretched-link"></a>
+            </div>
+
+            <div class="card" style="width: 15rem;">
+                <img class="card-img-top w-50" src="{% static 'img/student.png' %}" alt="Card image cap">
+                <div class="card-body">
+                    <h4 class="card-title">Өзіне-өзі қызмет көрсету бұрышы</h4>
+                </div>
+                <a href="/self?lang=kz" class="card-link stretched-link"></a>
+            </div>
+
+            <div class="card" style="width: 15rem;">
+                <img class="card-img-top w-50" src="{% static 'img/stuff.png' %}" alt="Card image cap">
+                <div class="card-body">
+                    <h4 class="card-title">Қызметкерлер</h4>
+                </div>
+                <a href="/stuff?lang=kz" class="card-link stretched-link"></a>
+            </div>
+        </div>
+    </div>
+{% endblock %}

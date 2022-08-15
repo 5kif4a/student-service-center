@@ -1,0 +1,73 @@
+{% extends "ssc/service_wrapper.html" %}
+{% load crispy_forms_tags %}
+{% block content %}
+    <div class="container">
+        {% block description %}
+            <h3 class="text-center p-3">Перевод внутри ВУЗа</h3>
+            {% block form %}
+                <div class="col">
+                    <form class="p-2 my-2 border border-primary" method="post" enctype="multipart/form-data">
+                        <h4 class="text-center">Форма заявления</h4>
+                        {% csrf_token %}
+                        <div class="form-group">
+                            <div class="form-row">
+                                <div class="form-group col-sm">
+                                    {{ form.last_name|as_crispy_field }}
+                                </div>
+                                <div class="form-group col-sm">
+                                    {{ form.first_name|as_crispy_field }}
+                                </div>
+                                <div class="form-group col-sm">
+                                    {{ form.patronymic|as_crispy_field }}
+                                </div>
+                                <div class="form-group col-sm">
+                                    {{ form.individual_identification_number|as_crispy_field }}
+                                </div>
+                            </div>
+                            <div class="form-row align-items-end">
+                                {#            <div class="form-group col-sm">#}
+                                {#                {{ form.address|as_crispy_field }}#}
+                                {#            </div>#}
+                                <div class="form-group col-sm">
+                                    {{ form.email|as_crispy_field }}
+                                </div>
+                                <div class="form-group col-sm">
+                                    {{ form.phone_number|as_crispy_field }}
+                                </div>
+                                <div class="form-group col-sm">
+                                    {{ form.specialty|as_crispy_field }}
+                                </div>
+                            </div>
+                            <div class="form-row align-items-end">
+                                <div class="form-group col-sm">
+                                    {{ form.faculty|as_crispy_field }}
+                                </div>
+                                <div class="form-group col-sm">
+                                    {{ form.foundation_type|as_crispy_field }}
+                                </div>
+                                <div class="form-group col-sm">
+                                    {{ form.group|as_crispy_field }}
+                                </div>
+                            </div>
+                            <div class="form-row align-items-end">
+                                <div class="form-group col-sm">
+                                    {{ form.specialty_to|as_crispy_field }}
+                                </div>
+                                <div class="form-group col-sm">
+                                    {{ form.language_from|as_crispy_field }}
+                                </div>
+                                <div class="form-group col-sm">
+                                    {{ form.language_to|as_crispy_field }}
+                                </div>
+                            </div>
+                            {{ form.captcha }}
+                            <p class="text-muted">* - обязательные поля для заполнения</p>
+                            <button type="submit" class="btn btn-success mt-1">Отправить заявку</button>
+                        </div>
+                    </form>
+                </div>
+            {% endblock %}
+        {% endblock description %}
+    </div>
+{% endblock content %}
+

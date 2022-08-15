@@ -3,7 +3,7 @@
 {% block content %}
 <div class="container">
 {% block description %}
-<h3 class="text-center p-3">Перевод и восстановление обучающихся в высших учебных заведениях</h3>
+<h3 class="text-center p-3">Перевод и восстановление</h3>
 <div class="alert alert-info text-center"><h5>Статус услуги: {% if status %}Автоматизирована <i class="fas fa-cogs fa-lg"></i>{% else %}в процессе разработки <i class="fab fa-dev fa-lg"></i>{% endif %}</h5></div>
 <div class="container">
     <div class="row text-break">
@@ -18,14 +18,15 @@
             </li>
             <li class="list-group-item"><b>Стоимость услуги:</b> Бесплатно</li>
             <li class="list-group-item"><b>Сроки оказания услуги:</b> 1- 5 дней</li>
-            <li class="list-group-item"><b>Полное наименование услуги:</b> Перевод и восстановление обучающихся в высших учебных заведениях</li>
+            <li class="list-group-item"><b>Полное наименование услуги:</b> Перевод и восстановление</li>
         </ul>
         </div>
         <div class="col-md-9 mb-2">
-            <p class="h3 text-center text-danger">Внимание! Доступ к услуге будет открыт в каникулярное время. (зимних и летних каникул)</p>
-            <a href="#" class="btn btn-outline-primary btn-lg btn-block" role="button">Форма заявления на перевод в другой ВУЗ</a>
-            <a href="#" class="btn btn-outline-primary btn-lg btn-block" role="button">Форма заявления на перевод в КарТУ</a>
-            <a href="#" class="btn btn-outline-primary btn-lg btn-block" role="button">Форма заявления на восстановление в число обучающихся</a>
+            <!--<p class="h3 text-center text-danger">Внимание! Доступ к услуге будет открыт в каникулярное время. (зимних и летних каникул)</p>-->
+            <a href="/transfer" class="btn btn-outline-primary btn-lg btn-block" role="button">Форма заявления на перевод в другой ВУЗ</a>
+            <a href="/transfer-kstu" class="btn btn-outline-primary btn-lg btn-block" role="button">Форма заявления на перевод в КарТУ</a>
+            <a href="/recovery" class="btn btn-outline-primary btn-lg btn-block" role="button">Форма заявления на восстановление в число обучающихся</a>
+            <a href="/transfer-inside" class="btn btn-outline-primary btn-lg btn-block" role="button">Форма заявления на перевод внутри ВУЗа</a>
         </div>
     </div>
 </div>

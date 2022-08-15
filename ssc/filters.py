@@ -1,21 +1,21 @@
 from django.contrib.admin import SimpleListFilter
 from django.db.models import Q
 
+from ssc.utilities import categories
+
 
 class CategoryFilter(SimpleListFilter):
     title = 'Категория приоритета'
     parameter_name = 'priority_category'
 
     def lookups(self, request, model_admin):
-        return [('Category1', 'Категория 1 (Инвалиды и сироты)'),
-                ('Category2', 'Категория 2 (Кандас)'),
-                ('Category3', 'Категория 3 (Серпын)'),
-                ('Category4', 'Категория 4 (Многодетные)'),
-                ('NoCategory', 'На общих основаниях')]
+        return categories
 
     def queryset(self, request, queryset):
-        if self.value() == 'Category1':
-            return queryset.filter(Q(attachmentDeath__gt='') | Q(attachmentDisabled__gt=''))
+        if self.value() == 'Category1.1':
+            return queryset.filter(Q(attachmentDisabled__gt=''))
+        if self.value() == 'Category1.2':
+            return queryset.filter(Q(attachmentDeath__gt=''))
         if self.value() == 'Category2':
             return queryset.filter(Q(attachmentKandas__gt=''))
         if self.value() == 'Category3':
@@ -25,3 +25,16 @@ class CategoryFilter(SimpleListFilter):
         if self.value() == 'NoCategory':
             return queryset.filter(Q(attachmentDeath='') & Q(attachmentDisabled='') & Q(attachmentKandas='')
                                    & Q(attachmentLarge='') & Q(is_serpin=False))
+
+    def to_representation(obj):
+        if obj.attachmentDisabled != '':
+            return categories[0][1]
+        if obj.attachmentDeath != '':
+            return categories[1][1]
+        if obj.attachmentKandas != '':
+            return categories[2][1]
+        if obj.is_serpin:
+            return categories[3][1]
+        if obj.attachmentLarge != '':
+            return categories[4][1]
+        return categories[5][1]

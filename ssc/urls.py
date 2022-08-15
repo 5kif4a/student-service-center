@@ -39,9 +39,11 @@ transfer_and_recovery_urls = [path('transfer-and-recovery', views.transfer_and_r
                               path('transfer', views.TransferView.as_view()),
                               path('transfer-kstu', views.TransferKSTUView.as_view()),
                               path('recovery', views.RecoveryView.as_view()),
+                              path('transfer-inside', views.TransferInsideView.as_view()),
                               path('transfer/report/<obj_id>/', views.TransferView.render),
                               path('transfer-kstu/report/<obj_id>/', views.TransferKSTUView.render),
-                              path('recovery/report/<obj_id>/', views.RecoveryView.render)]
+                              path('recovery/report/<obj_id>/', views.RecoveryView.render),
+                              path('transfer-inside/report/<obj_id>/', views.TransferInsideView.render)]
 
 notifications_urls = [path('notifications', views.get_notifications),
                       path('mark_as_read/<obj_id>', views.mark_as_read)]
@@ -53,6 +55,32 @@ hostel_referral_urls = [path('hostel_referral/report/<obj_id>', views.HostelRefe
 check_hostel_urls = [path('check_hostel', views.check_hostel),
                      path('hostel_space', views.hostel_space),
                      path('hostel_referral_list', views.hostel_referral_list)]
+
+academic_leave_return_urls = [path('academic-leave-return', views.AcademicLeaveReturnView.as_view()),
+                              path('academic-leave-return/report/<obj_id>/', views.AcademicLeaveReturnView.render)]
+
+private_information_change_urls = [path('private-information-change', views.PrivateInformationChangeView.as_view()),
+                                   path('private-information-change/report/<obj_id>/',
+                                        views.PrivateInformationChangeView.render)]
+
+expulsion_urls = [path('expulsion', views.ExpulsionView.as_view()),
+                  path('expulsion/report/<obj_id>/', views.ExpulsionView.render)]
+
+key_card_urls = [path('key-card', views.KeyCardView.as_view()),
+                 path('key-card/report/<obj_id>/', views.KeyCardView.render)]
+
+reference_student_urls = [path('reference-student', views.ReferenceStudentView.as_view()),
+                          path('reference-student/report/<obj_id>/', views.ReferenceStudentView.render)]
+
+key_card_first_urls = [path('key-card-first', views.KeyCardFirstView.as_view()),
+                       path('key-card-first/report/<obj_id>/', views.KeyCardFirstView.render)]
+
+util_urls = [path('about', views.about),
+             path('state', views.state),
+             path('education', views.education),
+             path('online', views.online),
+             path('self', views.self),
+             path('stuff', views.stuff)]
 
 urlpatterns = [
                   path('', views.index),
@@ -70,4 +98,11 @@ urlpatterns = [
               notifications_urls + \
               check_order_urls + \
               hostel_referral_urls + \
-              check_hostel_urls
+              check_hostel_urls + \
+              academic_leave_return_urls + \
+              private_information_change_urls + \
+              expulsion_urls + \
+              key_card_urls + \
+              reference_student_urls + \
+              key_card_first_urls + \
+              util_urls

@@ -3,8 +3,7 @@
 {% block content %}
     <div class="container">
         {% block description %}
-            <h3 class="text-center p-3">Предоставление академических отпусков обучающимся в организациях
-                образования</h3>
+            <h3 class="text-center p-3">Предоставление и продление академического отпуска</h3>
             <div class="alert alert-info text-center"><h5>Статус услуги: {% if status %}Автоматизирована
                 <i class="fas fa-cogs fa-lg"></i>{% else %}в процессе разработки
                 <i class="fab fa-dev fa-lg"></i>{% endif %}</h5></div>
@@ -24,8 +23,7 @@
                             </li>
                             <li class="list-group-item"><b>Стоимость услуги:</b> Бесплатно</li>
                             <li class="list-group-item"><b>Сроки оказания услуги:</b> 3 рабочих дня</li>
-                            <li class="list-group-item"><b>Полное наименование услуги:</b> Предоставление академических
-                                отпусков обучающимся в организациях образования
+                            <li class="list-group-item"><b>Полное наименование услуги:</b> Предоставление и продление академического отпуска
                             </li>
                         </ul>
                     </div>
@@ -62,7 +60,7 @@
                                 </tr>
                                 <tr>
                                     <td>Для предоставления академического отпуска студентам-призывникам</td>
-                                    <td>Повестка о призыве на воинскую службу</td>
+                                    <td>Повестка о призыве на воинскую службу / справка с военкомата о призыве</td>
                                 </tr>
                                 </tbody>
                             </table>
@@ -86,13 +84,16 @@
                                     </div>
                                     <div class="form-row align-items-end">
                                         <div class="form-group col-sm">
-                                            {{ form.address|as_crispy_field }}
+                                            {{ form.group|as_crispy_field }}
                                         </div>
                                         <div class="form-group col-sm">
                                             {{ form.email|as_crispy_field }}
                                         </div>
                                         <div class="form-group col-sm">
                                             {{ form.phone_number|as_crispy_field }}
+                                        </div>
+                                        <div class="form-group col-sm">
+                                            {{ form.is_prolongation|as_crispy_field }}
                                         </div>
                                     </div>
                                     <div class="form-row align-items-end">
@@ -101,6 +102,9 @@
                                         </div>
                                         <div class="form-group col-sm">
                                             {{ form.faculty|as_crispy_field }}
+                                        </div>
+                                        <div class="form-group col-sm">
+                                            {{ form.foundation_type|as_crispy_field }}
                                         </div>
                                         <div class="form-group col-sm">
                                             {{ form.reason|as_crispy_field }}
@@ -121,6 +125,7 @@
                                         документов должны быть четкими, видны все данные документа!</p>
                                         <p class="mb-0">Максимальный размер файла прикрепления не должен превышать 5 мегабайт (5
                                             МВ)</p>
+                                        <p class="mb-0">Файлы должны иметь разрешения: ".jpg", ".png" либо ".pdf"</p>
                                     </div>
                                     {{ form.captcha }}
                                     <p class="text-muted">* - обязательные поля для заполнения</p>
@@ -133,5 +138,4 @@
             </div>
             </div>
         {% endblock description %}
-    </div>
 {% endblock content %}

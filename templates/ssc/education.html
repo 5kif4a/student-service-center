@@ -1,0 +1,27 @@
+{% extends "ssc/../base.html" %}
+{% load static %}
+{% block content %}
+<style>
+    p {
+        font-size: 11pt;
+    }
+</style>
+    <div class="container">
+        <h1 class="text-center p-3">Учебно-образовательные услуги</h1>
+        <h5 class="text-center">Учебно-образовательные услуги обучающимся оказываются с соблюдением Порядка оказания учебно-образовательных услуг, утвержденного в университете.</h5>
+        <br>
+        <ul class="border border-dark">
+            <li><a href="{% static 'manual/1.pdf' %}" target="_blank"><p>Транскрипт обучавшихся в КарТУ</p></a></li>
+            <li><a href="{% static 'manual/2.pdf' %}" target="_blank"><p>Транскрипт обучающихся в КарТУ</p></a></li>
+            <li><a href="{% static 'manual/3.pdf' %}" target="_blank"><p>Предоставление и продление академического отпуска</p></a></li>
+            <li><a href="{% static 'manual/4.pdf' %}" target="_blank"><p>Возвращение из академического отпуска</p></a></li>
+            <li><a href="{% static 'manual/5.pdf' %}" target="_blank"><p>Перевод и восстановление (в другой ВУЗ, в КарТУ, в число обучающихся)</p></a></li>
+            <li><a href="{% static 'manual/5.pdf' %}" target="_blank"><p>Перевод внутри ВУЗа</p></a></li>
+            <li><a href="{% static 'manual/8.pdf' %}" target="_blank"><p>Отчисление по собственному желанию</p></a></li>
+            <li><a href="{% static 'manual/6.pdf' %}" target="_blank"><p>Изменение персональных данных</p></a></li>
+            <li><p>Выдача справки с места учебы (ф.10)</p></li>
+            <li><a href="{% static 'manual/9.pdf' %}" target="_blank"><p>Восстановление ключ-карты при утере</p></a></li>
+            <li><p>Получение ключ-карты при восстановлении и переводе из другого ВУЗа</p></li>
+        </ul>
+    </div>
+{% endblock %}

@@ -1,4 +1,9 @@
+import urllib.request
+
+import xlsxwriter
+from django.conf.urls import url
 from django.contrib import admin
+from django.db import transaction
 from django.db.models import Max
 from django.utils.html import format_html
 from rangefilter.filter import DateRangeFilter
@@ -61,6 +66,14 @@ class RectorAdmin(admin.ModelAdmin):
     Админ.панель для списка ректоров
     """
     list_display = get_model_fields(Rector)
+
+
+@admin.register(Stuff)
+class RectorAdmin(admin.ModelAdmin):
+    """
+    Админ.панель для списка сотрудников, на чье имя заявления
+    """
+    list_display = get_model_fields(Stuff)
 
 
 class CustomAdmin(admin.ModelAdmin):
@@ -150,7 +163,7 @@ class CustomAdmin(admin.ModelAdmin):
                 "abroad": "[obj.passport.path, obj.recommendation_letter.path, obj.transcript.path, "
                           "obj.certificate.path]",
 
-                "hostel": "[obj.iin_attachment_front.path, obj.iin_attachment_back.path, obj.attachmentProperty.path]",
+                "hostel": "[obj.iin_attachment_front.path, obj.iin_attachment_back.path]",
 
                 "transfer": "[]",
 
@@ -160,10 +173,31 @@ class CustomAdmin(admin.ModelAdmin):
                 "recovery": "[obj.iin_attachment_front.path, obj.iin_attachment_back.path, obj.attachment.path, "
                             "obj.certificate.path] ",
 
-                "hostel_referral": "[obj.iin_attachment_front.path, obj.iin_attachment_back.path, obj.attachmentProperty.path]"
+                "hostel_referral": "[obj.iin_attachment_front.path, obj.iin_attachment_back.path]",
+
+                "academic-leave-return": "[obj.iin_attachment_front.path, obj.iin_attachment_back.path, "
+                                         "obj.attachment.path]",
+
+                "private-information-change": "[obj.iin_attachment_front.path, obj.iin_attachment_back.path, "
+                                              "obj.attachment.path]",
+
+                "expulsion": "[]",
+
+                "transfer-inside": "[]",
+
+                "key-card": "[obj.attachment.path]",
+
+                "reference-student": "[]",
+
+                "key-card-first": "[obj.attachment.path]"
             }
 
             if obj.__class__ is Hostel or obj.__class__ is HostelReferral:
+                if obj.attachmentProperty:
+                    filenames_dict["hostel"] = filenames_dict["hostel"][0:-1] + ",obj.attachmentProperty.path]"
+                    filenames_dict["hostel_referral"] = filenames_dict["hostel_referral"][0:-1] + \
+                                                        ", obj.attachmentProperty.path]"
+                
                 if obj.attachmentDeath:
                     filenames_dict["hostel"] = filenames_dict["hostel"][0:-1] + ",obj.attachmentDeath.path]"
                     filenames_dict["hostel_referral"] = filenames_dict["hostel_referral"][0:-1] + \
@@ -181,15 +215,18 @@ class CustomAdmin(admin.ModelAdmin):
                     filenames_dict["hostel_referral"] = filenames_dict["hostel_referral"][0:-1] + \
                                                         ", obj.attachmentKandas.path]"
 
-            if obj.__class__ is AcademicLeave or obj.__class__ is Recovery:
+            if obj.__class__ is AcademicLeave or obj.__class__ is Recovery or obj.__class__ is PrivateInformationChange:
                 if not obj.attachment:
                     filenames_dict["academic-leave"] = "[obj.iin_attachment_front.path, obj.iin_attachment_back.path]"
+                    filenames_dict[
+                        "private-information-change"] = "[obj.iin_attachment_front.path, obj.iin_attachment_back.path]"
                     filenames_dict["recovery"] = "[obj.iin_attachment_front.path, obj.iin_attachment_back.path, " \
                                                  "obj.certificate.path] "
 
             # UNSAFE CODE BEGIN
             filenames_as_str = filenames_dict.get(self.entity)
-            filenames = eval(filenames_as_str)
+            if filenames_as_str is not None:
+                filenames = eval(filenames_as_str)
             # UNSAFE CODE END
             if self.entity == "transfer-kstu":
                 if obj.grant:
@@ -234,7 +271,7 @@ class ReferenceAdmin(CustomAdmin):
     list_filter = ('date_of_application', 'receipt_year', 'exclude_year', 'education_form', 'course', 'status')
     list_display = ('last_name', 'first_name', 'patronymic', 'specialty', 'date_of_application', 'status',
                     'print')
-    search_fields = ('last_name', 'first_name', 'patronymic', 'address', 'specialty__name',
+    search_fields = ('last_name', 'first_name', 'patronymic', 'specialty__name',
                      'individual_identification_number')
     autocomplete_fields = ('specialty',)
 
@@ -246,17 +283,19 @@ class AcademicLeaveAdmin(CustomAdmin):
     """
     entity = 'academic-leave'
     mail_template = 'mails/academic-leave.html'
+    mail_template_prolongation = 'mails/academic-leave-prolongation.html'
     change_form_template = "custom_admin/academic-leave.html"
     # app = 'Ваш приказ готов. Вы можете получить его в КарТУ, 1 корпус, кабинет № 109.'
     list_per_page = 15
-    list_filter = ('date_of_application', 'status')
-    list_display = ('last_name', 'first_name', 'patronymic', 'specialty', 'date_of_application', 'status',
-                    'print')
-    search_fields = ('last_name', 'first_name', 'patronymic', 'address', 'specialty__name',
-                     'individual_identification_number')
+    list_filter = ('date_of_application', 'status', 'is_prolongation')
+    list_display = (
+        'last_name', 'first_name', 'patronymic', 'specialty', 'is_prolongation', 'date_of_application', 'status',
+        'print')
+    search_fields = ('last_name', 'first_name', 'patronymic', 'specialty__name',
+                     'individual_identification_number', 'number')
     autocomplete_fields = ('specialty',)
 
-    readonly_fields = ('attachment', 'id_card_front', 'id_card_back')
+    readonly_fields = ('attachment', 'id_card_front', 'id_card_back', 'leave_start', 'leave_end', 'number')
 
     def response_change(self, request, obj):
         # Если заявление заполнено неправильно, отправляем письмо с уведомлением
@@ -289,7 +328,10 @@ class AcademicLeaveAdmin(CustomAdmin):
                 ctx = {'name': request.POST['first_name']}
                 to = (request.POST.get('email', ''),)
 
-                send_email(self.mail_template, ctx, to)
+                if not obj.is_prolongation:
+                    send_email(self.mail_template, ctx, to)
+                else:
+                    send_email(self.mail_template_prolongation, ctx, to)
 
                 self.message_user(request, f"""{obj} подтверждено""")
 
@@ -301,13 +343,20 @@ class AcademicLeaveAdmin(CustomAdmin):
             # Если не завершено - завершаем и отправляем письмо на почту
             else:
                 obj.status = 'Завершено'
+
+                obj.leave_start = request.POST['leave_start']
+                obj.leave_end = request.POST['leave_end']
+                obj.number = request.POST['number']
                 obj.save()
 
-                ctx = {'name': obj.first_name}
+                ctx = {'name': obj.first_name, 'number': obj.number, 'date_start': obj.leave_start,
+                       'date_end': obj.leave_end}
                 to = (obj.email,)
 
-                uploaded_file = request.FILES['scanned_file']
-                send_email_with_attachment("mails/ready/academic-leave.html", ctx, to, uploaded_file)
+                if not obj.is_prolongation:
+                    send_email("mails/ready/academic-leave.html", ctx, to)
+                else:
+                    send_email("mails/ready/academic-leave-prolongation.html", ctx, to)
 
                 self.message_user(request, f"""Обработка заявления "{obj}" завершена. Письмо отправлено""")
 
@@ -346,7 +395,7 @@ class HostelAdmin(CustomAdmin):
     app = 'Ваше заявление принято в работу.'
     service_name = "Предоставление общежития обучающимся в высших учебных заведениях"
     list_per_page = 15
-    list_filter = (('date_of_application', DateRangeFilter), 'faculty', 'course', 'status')
+    list_filter = (('date_of_application', DateRangeFilter), 'faculty', 'course', 'status', CategoryFilter)
     list_display = (
         'last_name', 'first_name', 'patronymic', 'faculty', 'specialty', 'course', 'date_of_application', 'status',
         'print')
@@ -478,7 +527,7 @@ class TransferKSTUAdmin(CustomAdmin):
     list_filter = (
         'date_of_application', 'faculty', 'course', 'foundation_on_previous_university', 'foundation_in_kstu', 'status')
     list_display = ('last_name', 'first_name', 'patronymic', 'date_of_application', 'status', 'print')
-    search_fields = ('last_name', 'first_name', 'patronymic', 'address',
+    search_fields = ('last_name', 'first_name', 'patronymic',
                      'specialty_on_previous_university__name', 'transfer_specialty__name',
                      'individual_identification_number', 'university')
     autocomplete_fields = ('specialty_on_previous_university', 'transfer_specialty')
@@ -498,7 +547,7 @@ class RecoveryAdmin(CustomAdmin):
     list_per_page = 15
     list_filter = ('date_of_application', 'faculty', 'course', 'status')
     list_display = ('last_name', 'first_name', 'patronymic', 'date_of_application', 'status', 'print')
-    search_fields = ('last_name', 'first_name', 'patronymic', 'address', 'specialty__name',
+    search_fields = ('last_name', 'first_name', 'patronymic', 'specialty__name',
                      'individual_identification_number', 'university')
     autocomplete_fields = ('specialty',)
     readonly_fields = ('id_card_front', 'id_card_back')
@@ -580,6 +629,13 @@ class HostelRoomAdmin(admin.ModelAdmin):
     list_filter = ('hostel', 'free_space', 'sex')
     search_fields = ('number', 'hostel', 'free_space', 'sex')
 
+    def changeform_view(self, request, *args, **kwargs):
+        if not request.user.is_superuser:
+            self.readonly_fields = ('number', 'hostel', 'all_space', 'free_space')
+        else: 
+            self.readonly_fields = ()
+        return super(HostelRoomAdmin, self).changeform_view(request, *args, **kwargs)
+
 
 @admin.register(HostelReferral)
 class HostelReferralAdmin(CustomAdmin):
@@ -589,20 +645,26 @@ class HostelReferralAdmin(CustomAdmin):
     entity = 'hostel_referral'
     mail_template = 'mails/hostel_referral.html'
     change_form_template = "custom_admin/hostel_referral.html"
+    change_list_template = "custom_admin/hostel_referral_list.html"
     app = 'Ваше направление в общежитие готово.'
     service_name = "Предоставление общежития обучающимся в высших учебных заведениях"
     list_per_page = 15
-    list_filter = (('date_of_application', DateRangeFilter), ('date_of_referral', DateRangeFilter), ('date_of_evict', DateRangeFilter), 'is_serpin', 'room__hostel', 'faculty', 'course', 'status',
-                   CategoryFilter)
+    list_filter = (
+        ('date_of_application', DateRangeFilter), ('date_of_referral', DateRangeFilter),
+        ('date_of_evict', DateRangeFilter),
+        'is_serpin', 'room__hostel', 'faculty', 'course', 'status',
+        CategoryFilter, 'is_registered', 'is_resettlement')
     list_display = (
         'last_name', 'first_name', 'patronymic', 'individual_identification_number', 'faculty', 'course',
         'date_of_application',
         'status',
-        'room', 'print')
+        'room', 'is_registered', 'print')
     search_fields = ('last_name', 'first_name', 'patronymic', 'specialty__name',
                      'individual_identification_number', 'room__number', 'room__hostel')
-    autocomplete_fields = ('specialty',)
-    readonly_fields = ('id_card_front', 'id_card_back', 'number', 'message', 'appearance_start', 'appearance_end', 'date_of_referral', 'date_of_evict')
+    autocomplete_fields = ('specialty', 'room')
+    readonly_fields = (
+        'id_card_front', 'id_card_back', 'number', 'message', 'appearance_start', 'appearance_end', 'date_of_referral',
+        'date_of_evict')
 
     def response_change(self, request, obj):
 
@@ -662,9 +724,9 @@ class HostelReferralAdmin(CustomAdmin):
                        'referral_url': f'https://{BASE_URL}/{self.entity}/report/{obj.id}'}
                 to = (request.POST.get('email', ''),)
 
-                # uploaded_file = request.FILES['scanned_file']
-                # send_email_with_attachment("mails/ready/hostel_referral.html", ctx, to, uploaded_file)
                 send_email("mails/hostel_referral.html", ctx, to)
+
+                #transaction.on_commit(lambda: download_referral_and_send(ctx, to))
 
                 self.message_user(request, f"""{obj} подтверждено""")
 
@@ -675,7 +737,8 @@ class HostelReferralAdmin(CustomAdmin):
             # Если не завершено - завершаем и отправляем письмо на почту
             else:
                 if obj.status != 'Одобрено':
-                    obj.room.free_space -= 1
+                    if obj.room.free_space > 0:
+                        obj.room.free_space -= 1
                     obj.room.save()
 
                 obj.status = 'Заселен'
@@ -696,15 +759,17 @@ class HostelReferralAdmin(CustomAdmin):
             # Если не завершено - завершаем и отправляем письмо на почту
             else:
                 note = request.POST.get('evict-note')
-                print(note)
 
                 obj.status = 'Выселен'
-                obj.room.free_space += 1
+
+                if obj.room.free_space < obj.room.all_space:
+                    obj.room.free_space += 1
                 obj.room.save()
 
                 obj.room = None
 
                 obj.date_of_evict = datetime.now()
+                obj.message = note
                 obj.save()
 
                 ctx = {'name': obj.first_name,
@@ -800,3 +865,498 @@ document.getElementById('postPopulate').submit();">
             else:
                 kwargs["queryset"] = HostelRoom.objects.filter(free_space__gt=0)
         return super().formfield_for_foreignkey(db_field, request, **kwargs)
+
+    def get_urls(self):
+        urls = super(HostelReferralAdmin, self).get_urls()
+        custom_urls = [url('^excel_export/$', self.excel_export, name='excel_export'), ]
+        return custom_urls + urls
+
+    def excel_export(self, request):
+        output = io.BytesIO()
+
+        workbook = xlsxwriter.Workbook(output)
+        worksheet = workbook.add_worksheet()
+        worksheet.set_column("A:A", 10)
+        worksheet.set_column("B:C", 35)
+        worksheet.set_column("D:F", 15)
+        worksheet.set_column("G:L", 35)
+
+        header_style = workbook.add_format({'bold': True,
+                                            'font_size': 14,
+                                            'font_name': 'Times New Roman',
+                                            'align': 'center'})
+
+        table_style = workbook.add_format({'font_size': 14,
+                                           'font_name': 'Times New Roman',
+                                           'align': 'center',
+                                           'border': 2,
+                                           'valign': 'vcenter'})
+
+        table_header_style = workbook.add_format({'font_size': 14,
+                                                  'font_name': 'Times New Roman',
+                                                  'align': 'center',
+                                                  'border': 2,
+                                                  'valign': 'vcenter',
+                                                  'bold': True})
+
+        workbook.formats[0].set_font_size(14)
+        workbook.formats[0].set_font_name("Times New Roman")
+
+        worksheet.merge_range("A1:F1", "Списки студентов по заселению в общежитиях", header_style)
+
+        worksheet.write(3, 0, "№", table_header_style)
+        worksheet.write(3, 1, "ФИО", table_header_style)
+        worksheet.write(3, 2, "ИИН", table_header_style)
+        worksheet.write(3, 3, "Факультет", table_header_style)
+        worksheet.write(3, 4, "Курс", table_header_style)
+        worksheet.write(3, 5, "Группа", table_header_style)
+        worksheet.write(3, 6, "Статус", table_header_style)
+        worksheet.write(3, 7, "Общежитие", table_header_style)
+        worksheet.write(3, 8, "Номер комнаты", table_header_style)
+        worksheet.write(3, 9, "Участие в программе Серпын", table_header_style)
+        worksheet.write(3, 10, "Категория приоритета", table_header_style)
+        worksheet.write(3, 11, "Временная регистрация", table_header_style)
+
+        row_num = 4
+
+        for referral in HostelReferral.objects.all():
+            worksheet.write(row_num, 0, row_num - 3, table_style)
+            worksheet.write(row_num, 1, referral.last_name + " " + referral.first_name + " " + referral.patronymic,
+                            table_style)
+            worksheet.write(row_num, 2, referral.individual_identification_number, table_style)
+            worksheet.write(row_num, 3, referral.faculty, table_style)
+            worksheet.write(row_num, 4, referral.course, table_style)
+            worksheet.write(row_num, 5, referral.group, table_style)
+            worksheet.write(row_num, 6, referral.status, table_style)
+            if referral.status in ('Одобрено', 'Заселен'):
+                worksheet.write(row_num, 7, referral.room.hostel, table_style)
+                worksheet.write(row_num, 8, referral.room.number, table_style)
+            else:
+                worksheet.write(row_num, 7, '-', table_style)
+                worksheet.write(row_num, 8, '-', table_style)
+            worksheet.write(row_num, 9, referral.is_serpin, table_style)
+            worksheet.write(row_num, 10, CategoryFilter.to_representation(referral), table_style)
+            worksheet.write(row_num, 11, referral.is_registered, table_style)
+            row_num += 1
+
+        worksheet.autofilter(3, 3, row_num, 11)
+
+        workbook.close()
+        output.seek(0)
+
+        filename = 'referral_list.xlsx'
+        response = HttpResponse(
+            output,
+            content_type='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+        )
+        response['Content-Disposition'] = 'attachment; filename=%s' % filename
+
+        return response
+
+
+@admin.register(AcademicLeaveReturn)
+class AcademicLeaveReturnAdmin(CustomAdmin):
+    """
+    Админ.панель вовзращения из академ.отпусков
+    """
+    entity = 'academic-leave-return'
+    mail_template = 'mails/academic-leave-return.html'
+    change_form_template = "custom_admin/academic-leave-return.html"
+    # app = 'Ваш приказ готов. Вы можете получить его в КарТУ, 1 корпус, кабинет № 109.'
+    list_per_page = 15
+    list_filter = ('date_of_application', 'status')
+    list_display = ('last_name', 'first_name', 'patronymic', 'specialty', 'date_of_application', 'status',
+                    'print')
+    search_fields = ('last_name', 'first_name', 'patronymic', 'specialty__name',
+                     'individual_identification_number')
+    autocomplete_fields = ('specialty',)
+
+    readonly_fields = ('attachment', 'id_card_front', 'id_card_back', 'leave_end', 'number')
+
+    def response_change(self, request, obj):
+        # Если заявление заполнено неправильно, отправляем письмо с уведомлением
+        if "_send_for_correction" in request.POST:
+            if obj.status != 'Отозвано на исправление':
+                note = request.POST.get('note')
+
+                obj.status = 'Отозвано на исправление'
+                obj.save()
+
+                ctx = {'name': obj.first_name,
+                       'note': note}
+                to = (obj.email,)
+                send_email('mails/revoke.html', ctx, to)
+                self.message_user(request, f"Письмо с уведомлением отправлено {obj}")
+            else:
+                self.message_user(request, f"Письмо с уведомлением уже отправлено {obj}")
+
+        # Потверждение заявления
+        if "_verify" in request.POST:
+            # Если подтвержден - выдаем сообщение, что заявление уже подтверждено
+            if obj.status == 'Подтверждено':
+                self.message_user(request, f"{obj} уже потвержден")
+            # Если не потверждено - подтверждаем и отправляем письмо на почту
+            else:
+                obj.status = 'Подтверждено'
+                obj.save()
+
+                # отправляем письмо после потверждения заявления
+                ctx = {'name': request.POST['first_name']}
+                to = (request.POST.get('email', ''),)
+
+                send_email(self.mail_template, ctx, to)
+
+                self.message_user(request, f"""{obj} подтверждено""")
+
+        # Завершение обработки заявления
+        if "_finish" in request.POST:
+            # Если завершено - выдаем сообщение, что заявление уже завершено
+            if obj.status == 'Завершено':
+                self.message_user(request, f"{obj} обработка завершена")
+            # Если не завершено - завершаем и отправляем письмо на почту
+            else:
+                obj.status = 'Завершено'
+
+                obj.leave_end = request.POST['leave_end']
+                obj.number = request.POST['number']
+                obj.save()
+
+                date = datetime.strptime(obj.leave_end, '%Y-%m-%d')
+
+                ctx = {'name': obj.first_name, 'number': obj.number, 'date': date.strftime("%d.%m.%Y")}
+                to = (obj.email,)
+
+                send_email("mails/ready/academic-leave-return.html", ctx, to)
+
+                self.message_user(request, f"""Обработка заявления "{obj}" завершена. Письмо отправлено""")
+
+        return super().response_change(request, obj)
+
+
+@admin.register(PrivateInformationChange)
+class PrivateInformationChangeAdmin(CustomAdmin):
+    """
+    Админ.панель смены персональных данных
+    """
+    entity = 'private-information-change'
+    mail_template = 'mails/private-information-change.html'
+    change_form_template = "custom_admin/change_form.html"
+    # app = 'Ваш приказ готов. Вы можете получить его в КарТУ, 1 корпус, кабинет № 109.'
+    list_per_page = 15
+    list_filter = ('date_of_application', 'status')
+    list_display = ('last_name', 'first_name', 'patronymic', 'specialty', 'date_of_application', 'status',
+                    'print')
+    search_fields = ('last_name', 'first_name', 'patronymic', 'specialty__name',
+                     'individual_identification_number')
+    autocomplete_fields = ('specialty',)
+
+    readonly_fields = ('attachment', 'id_card_front', 'id_card_back')
+
+    def response_change(self, request, obj):
+        # Если заявление заполнено неправильно, отправляем письмо с уведомлением
+        if "_send_for_correction" in request.POST:
+            if obj.status != 'Отозвано на исправление':
+                note = request.POST.get('note')
+
+                obj.status = 'Отозвано на исправление'
+                obj.save()
+
+                ctx = {'name': obj.first_name,
+                       'note': note}
+                to = (obj.email,)
+                send_email('mails/revoke.html', ctx, to)
+                self.message_user(request, f"Письмо с уведомлением отправлено {obj}")
+            else:
+                self.message_user(request, f"Письмо с уведомлением уже отправлено {obj}")
+
+        # Потверждение заявления
+        if "_verify" in request.POST:
+            # Если подтвержден - выдаем сообщение, что заявление уже подтверждено
+            if obj.status == 'Подтверждено':
+                self.message_user(request, f"{obj} уже потвержден")
+            # Если не потверждено - подтверждаем и отправляем письмо на почту
+            else:
+                obj.status = 'Подтверждено'
+                obj.save()
+
+                # отправляем письмо после потверждения заявления
+                ctx = {'name': request.POST['first_name']}
+                to = (request.POST.get('email', ''),)
+
+                send_email(self.mail_template, ctx, to)
+
+                self.message_user(request, f"""{obj} подтверждено""")
+
+        # Завершение обработки заявления
+        if "_finish" in request.POST:
+            # Если завершено - выдаем сообщение, что заявление уже завершено
+            if obj.status == 'Завершено':
+                self.message_user(request, f"{obj} обработка завершена")
+            # Если не завершено - завершаем и отправляем письмо на почту
+            else:
+                obj.status = 'Завершено'
+                obj.save()
+
+                ctx = {'name': obj.first_name, }
+                to = (obj.email,)
+
+                send_email("mails/ready/private-information-change.html", ctx, to)
+
+                self.message_user(request, f"""Обработка заявления "{obj}" завершена. Письмо отправлено""")
+
+        return super().response_change(request, obj)
+
+
+@admin.register(Expulsion)
+class ExpulsionAdmin(CustomAdmin):
+    """
+    Админ.панель отчисления
+    """
+    entity = 'expulsion'
+    mail_template = 'mails/expulsion.html'
+    change_form_template = "custom_admin/change_form.html"
+    # app = 'Ваш приказ готов. Вы можете получить его в КарТУ, 1 корпус, кабинет № 109.'
+    list_per_page = 15
+    list_filter = ('date_of_application', 'status')
+    list_display = ('last_name', 'first_name', 'patronymic', 'specialty', 'date_of_application', 'status',
+                    'print')
+    search_fields = ('last_name', 'first_name', 'patronymic', 'specialty__name',
+                     'individual_identification_number')
+    autocomplete_fields = ('specialty',)
+
+    def response_change(self, request, obj):
+        # Если заявление заполнено неправильно, отправляем письмо с уведомлением
+        if "_send_for_correction" in request.POST:
+            if obj.status != 'Отозвано на исправление':
+                note = request.POST.get('note')
+
+                obj.status = 'Отозвано на исправление'
+                obj.save()
+
+                ctx = {'name': obj.first_name,
+                       'note': note}
+                to = (obj.email,)
+                send_email('mails/revoke.html', ctx, to)
+                self.message_user(request, f"Письмо с уведомлением отправлено {obj}")
+            else:
+                self.message_user(request, f"Письмо с уведомлением уже отправлено {obj}")
+
+        # Потверждение заявления
+        if "_verify" in request.POST:
+            # Если подтвержден - выдаем сообщение, что заявление уже подтверждено
+            if obj.status == 'Подтверждено':
+                self.message_user(request, f"{obj} уже потвержден")
+            # Если не потверждено - подтверждаем и отправляем письмо на почту
+            else:
+                obj.status = 'Подтверждено'
+                obj.save()
+
+                # отправляем письмо после потверждения заявления
+                ctx = {'name': request.POST['first_name']}
+                to = (request.POST.get('email', ''),)
+
+                send_email(self.mail_template, ctx, to)
+
+                self.message_user(request, f"""{obj} подтверждено""")
+
+        # Завершение обработки заявления
+        if "_finish" in request.POST:
+            # Если завершено - выдаем сообщение, что заявление уже завершено
+            if obj.status == 'Завершено':
+                self.message_user(request, f"{obj} обработка завершена")
+            # Если не завершено - завершаем и отправляем письмо на почту
+            else:
+                obj.status = 'Завершено'
+                obj.save()
+
+                ctx = {'name': obj.first_name, }
+                to = (obj.email,)
+
+                send_email("mails/ready/expulsion.html", ctx, to)
+
+                self.message_user(request, f"""Обработка заявления "{obj}" завершена. Письмо отправлено""")
+
+        return super().response_change(request, obj)
+
+
+@admin.register(TransferInside)
+class TransferInsideAdmin(CustomAdmin):
+    """
+    Админ.панель перевода внутри ВУЗа
+    """
+    entity = 'transfer-inside'
+    mail_template = 'mails/transfer-inside.html'
+    change_form_template = "custom_admin/change_form.html"
+    # app = 'Ваш приказ готов. Вы можете получить его в КарТУ, 1 корпус, кабинет № 109.'
+    list_per_page = 15
+    list_filter = ('date_of_application', 'status')
+    list_display = ('last_name', 'first_name', 'patronymic', 'specialty', 'date_of_application', 'status',
+                    'print')
+    search_fields = ('last_name', 'first_name', 'patronymic', 'specialty__name',
+                     'individual_identification_number')
+    autocomplete_fields = ('specialty',)
+
+    def response_change(self, request, obj):
+        # Если заявление заполнено неправильно, отправляем письмо с уведомлением
+        if "_send_for_correction" in request.POST:
+            if obj.status != 'Отозвано на исправление':
+                note = request.POST.get('note')
+
+                obj.status = 'Отозвано на исправление'
+                obj.save()
+
+                ctx = {'name': obj.first_name,
+                       'note': note}
+                to = (obj.email,)
+                send_email('mails/revoke.html', ctx, to)
+                self.message_user(request, f"Письмо с уведомлением отправлено {obj}")
+            else:
+                self.message_user(request, f"Письмо с уведомлением уже отправлено {obj}")
+
+        # Потверждение заявления
+        if "_verify" in request.POST:
+            # Если подтвержден - выдаем сообщение, что заявление уже подтверждено
+            if obj.status == 'Подтверждено':
+                self.message_user(request, f"{obj} уже потвержден")
+            # Если не потверждено - подтверждаем и отправляем письмо на почту
+            else:
+                obj.status = 'Подтверждено'
+                obj.save()
+
+                # отправляем письмо после потверждения заявления
+                ctx = {'name': request.POST['first_name']}
+                to = (request.POST.get('email', ''),)
+
+                send_email(self.mail_template, ctx, to)
+
+                self.message_user(request, f"""{obj} подтверждено""")
+
+        # Завершение обработки заявления
+        if "_finish" in request.POST:
+            # Если завершено - выдаем сообщение, что заявление уже завершено
+            if obj.status == 'Завершено':
+                self.message_user(request, f"{obj} обработка завершена")
+            # Если не завершено - завершаем и отправляем письмо на почту
+            else:
+                obj.status = 'Завершено'
+                obj.save()
+
+                ctx = {'name': obj.first_name, }
+                to = (obj.email,)
+
+                send_email("mails/ready/transfer-inside.html", ctx, to)
+
+                self.message_user(request, f"""Обработка заявления "{obj}" завершена. Письмо отправлено""")
+
+        return super().response_change(request, obj)
+
+
+@admin.register(KeyCard)
+class KeyCardAdmin(CustomAdmin):
+    """
+    Админ.панель восстановление ключ-карты
+    """
+    entity = 'key-card'
+    mail_template = 'mails/key-card.html'
+    change_form_template = "custom_admin/change_form.html"
+    # app = 'Ваш приказ готов. Вы можете получить его в КарТУ, 1 корпус, кабинет № 109.'
+    list_per_page = 15
+    list_filter = ('date_of_application', 'status')
+    list_display = ('last_name', 'first_name', 'patronymic', 'date_of_application', 'status',
+                    'print')
+    search_fields = ('last_name', 'first_name', 'patronymic',
+                     'individual_identification_number')
+
+    def response_change(self, request, obj):
+        # Завершение обработки заявления
+        if "_finish" in request.POST:
+            # Если завершено - выдаем сообщение, что заявление уже завершено
+            if obj.status == 'Завершено':
+                self.message_user(request, f"{obj} обработка завершена")
+            # Если не завершено - завершаем и отправляем письмо на почту
+            else:
+                obj.status = 'Завершено'
+                obj.save()
+
+                ctx = {'name': obj.first_name, }
+                to = (obj.email,)
+
+                send_email("mails/ready/key-card.html", ctx, to)
+
+                self.message_user(request, f"""Обработка заявки "{obj}" завершена. Письмо отправлено""")
+
+        return super().response_change(request, obj)
+
+
+@admin.register(ReferenceStudent)
+class ReferenceStudentAdmin(CustomAdmin):
+    """
+    Админ.панель выдачи транскриптов обучающимся
+    """
+    entity = 'reference-student'
+    mail_template = 'mails/reference-student.html'
+    change_form_template = "custom_admin/change_form.html"
+    # app = 'Ваш приказ готов. Вы можете получить его в КарТУ, 1 корпус, кабинет № 109.'
+    list_per_page = 15
+    list_filter = ('date_of_application', 'status', 'is_signed')
+    list_display = ('last_name', 'first_name', 'patronymic', 'date_of_application', 'status',
+                    'print')
+    search_fields = ('last_name', 'first_name', 'patronymic',
+                     'individual_identification_number')
+
+    def response_change(self, request, obj):
+        # Завершение обработки заявления
+        if "_finish" in request.POST:
+            # Если завершено - выдаем сообщение, что заявление уже завершено
+            if obj.status == 'Завершено':
+                self.message_user(request, f"{obj} обработка завершена")
+            # Если не завершено - завершаем и отправляем письмо на почту
+            else:
+                obj.status = 'Завершено'
+                obj.save()
+
+                ctx = {'name': obj.first_name, }
+                to = (obj.email,)
+
+                send_email("mails/ready/reference-student.html", ctx, to)
+
+                self.message_user(request, f"""Обработка заявки "{obj}" завершена. Письмо отправлено""")
+
+        return super().response_change(request, obj)
+
+
+@admin.register(KeyCardFirst)
+class KeyCardFirstAdmin(CustomAdmin):
+    """
+    Админ.панель получение ключ-карты
+    """
+    entity = 'key-card-first'
+    mail_template = 'mails/key-card-first.html'
+    change_form_template = "custom_admin/change_form.html"
+    # app = 'Ваш приказ готов. Вы можете получить его в КарТУ, 1 корпус, кабинет № 109.'
+    list_per_page = 15
+    list_filter = ('date_of_application', 'status')
+    list_display = ('last_name', 'first_name', 'patronymic', 'date_of_application', 'status',
+                    'print')
+    search_fields = ('last_name', 'first_name', 'patronymic',
+                     'individual_identification_number')
+
+    def response_change(self, request, obj):
+        # Завершение обработки заявления
+        if "_finish" in request.POST:
+            # Если завершено - выдаем сообщение, что заявление уже завершено
+            if obj.status == 'Завершено':
+                self.message_user(request, f"{obj} обработка завершена")
+            # Если не завершено - завершаем и отправляем письмо на почту
+            else:
+                obj.status = 'Завершено'
+                obj.save()
+
+                ctx = {'name': obj.first_name, }
+                to = (obj.email,)
+
+                send_email("mails/ready/key-card-first.html", ctx, to)
+
+                self.message_user(request, f"""Обработка заявки "{obj}" завершена. Письмо отправлено""")
+
+        return super().response_change(request, obj)

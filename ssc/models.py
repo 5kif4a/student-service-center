@@ -1,5 +1,4 @@
 from django.db import models
-from django.db.models import Q
 from django.utils.translation import gettext_lazy as _
 from hashid_field import HashidAutoField
 
@@ -71,7 +70,8 @@ class Application(models.Model):
 
     group = models.CharField(max_length=50, verbose_name=_('Группа'))
 
-    specialty = models.ForeignKey(Specialty, on_delete=models.CASCADE, verbose_name=_('Шифр и название специальности'))
+    specialty = models.ForeignKey(Specialty, on_delete=models.CASCADE,
+                                  verbose_name=_('Шифр и название образовательной программы/специальности'))
 
     date_of_application = models.DateTimeField(auto_now_add=True, verbose_name=_('Дата подачи заявления'))
 
@@ -94,6 +94,25 @@ class Rector(models.Model):
     class Meta:
         verbose_name = _('Ректор')
         verbose_name_plural = _('Ректоры')
+
+
+class Stuff(models.Model):
+    """
+    Сотрудники, на чье имя оформляется услуга
+    """
+    application_type = models.CharField(max_length=100, verbose_name=_('Тип заявления'), choices=APPLICATIONS_TYPES,
+                                        unique=True)
+
+    position = models.CharField(max_length=50, verbose_name=_('Должность (в род. падеже)'))
+
+    name = models.CharField(max_length=100, verbose_name=_('ФИО сотрудника (в род. падеже)'))
+
+    class Meta:
+        verbose_name = _('Сотрудник')
+        verbose_name_plural = _('Сотрудники')
+
+    def __str__(self):
+        return f'{self.application_type}'
 
 
 class Student(models.Model):
@@ -166,6 +185,12 @@ class Reference(Person, Application):
                                  blank=True, null=True,
                                  validators=course_validator)
 
+    specialty = models.ForeignKey(Specialty, on_delete=models.CASCADE,
+                                  verbose_name=_('Шифр и название образовательной программы/специальности'))
+
+    specialty_another = models.CharField(max_length=100, verbose_name=_("Шифр и название для другой специальности (вне "
+                                                                        "списка)"), null=True, blank=True)
+
     # group = models.CharField(max_length=50,
     #                          blank=True, null=True,
     #                          verbose_name=_('Группа'))
@@ -229,6 +254,9 @@ class Abroad(Person, Application):
     def __str__(self):
         return f'{self.last_name} {self.first_name} {self.patronymic}. ИИН: {self.individual_identification_number}'
 
+    def get_faculty(self):
+        return dict(faculties).get(self.faculty)
+
 
 class Hostel(Person, Application):
     """
@@ -261,8 +289,8 @@ class Hostel(Person, Application):
                                                 'сторона'),
                                             validators=[file_size_validator])
 
-    attachmentProperty = models.FileField(upload_to='hostel_attachments/',
-                                          verbose_name=_('Справка об отсутствии (наличии) недвижимого имущества'),
+    attachmentProperty = models.FileField(upload_to='hostel_attachments/', blank=True, null=True,
+                                          verbose_name=_('Паспорт вакцинации'),
                                           validators=[file_size_validator, file_ext_validator])
 
     attachmentDeath = models.FileField(upload_to='hostel_attachments/', blank=True, null=True, verbose_name=_(
@@ -281,7 +309,7 @@ class Hostel(Person, Application):
                                         verbose_name=_('Документ о статусе "кандас"'),
                                         validators=[file_size_validator, file_ext_validator])
 
-    message = models.CharField(max_length=200, blank=True, verbose_name=_('Отправленный ответ'))
+    message = models.CharField(max_length=300, blank=True, verbose_name=_('Отправленный ответ'))
 
     address = None
 
@@ -291,6 +319,9 @@ class Hostel(Person, Application):
 
     def __str__(self):
         return f'{self.last_name} {self.first_name} {self.patronymic}. ИИН: {self.individual_identification_number}'
+
+    def get_faculty(self):
+        return dict(faculties).get(self.faculty)
 
 
 # class Duplicate(Person, Application):
@@ -325,12 +356,21 @@ class Hostel(Person, Application):
 
 class AcademicLeave(Person, Application):
     """
-    Предоставление академических отпусков обучающимся в организациях образования
+    Предоставление и продление академических отпусков обучающимся в организациях образования
     Государственная услуга
     """
     id = HashidAutoField(primary_key=True, min_length=16)
 
     faculty = models.CharField(max_length=200, choices=faculties, verbose_name=_('Факультет'))
+
+    foundation_type = models.CharField(max_length=200, choices=foundation_types,
+                                       default='на платной основе',
+                                       verbose_name=_('Основа обучения'))
+
+    reason = models.CharField(max_length=100, choices=academic_leave_reasons, default='состоянием здоровья',
+                              verbose_name=_('Причина'))
+
+    is_prolongation = models.BooleanField(verbose_name="Продление академ. отпуска", default=False)
 
     iin_attachment_front = models.ImageField(upload_to='academic_leave_attachments/',
                                              verbose_name=_(
@@ -347,18 +387,26 @@ class AcademicLeave(Person, Application):
     attachment = models.FileField(upload_to='academic_leave_attachments/', verbose_name=_('Прикрепление'),
                                   validators=[file_size_validator, file_ext_validator])
 
-    reason = models.CharField(max_length=100, choices=academic_leave_reasons, default='состоянием здоровья',
-                              verbose_name=_('Причина'))
+    leave_start = models.DateField(max_length=10, blank=True, verbose_name=_('Начало отпуска'), null=True)
+
+    leave_end = models.DateField(max_length=10, blank=True, verbose_name=_('Конец отпуска'), null=True)
+
+    number = models.IntegerField(max_length=10, blank=True, verbose_name=_('Номер приказа'), null=True)
 
     course = None
-    group = None
+    address = None
 
     class Meta:
-        verbose_name = _('заявление на предоставление академ.отпусков обучающимся в организациях образования')
-        verbose_name_plural = _('заявления на предоставление академ.отпусков обучающимся в организациях образования')
+        verbose_name = _('заявление на предоставление и продление академ.отпуска обучающимся в организациях '
+                         'образования')
+        verbose_name_plural = _('заявления на предоставление и продление академ.отпуска обучающимся в организациях '
+                                'образования')
 
     def __str__(self):
         return f'{self.last_name} {self.first_name} {self.patronymic}. ИИН: {self.individual_identification_number}'
+
+    def get_faculty(self):
+        return dict(faculties).get(self.faculty)
 
 
 class TransferKSTU(Person, Application):
@@ -425,6 +473,9 @@ class TransferKSTU(Person, Application):
     def __str__(self):
         return f'{self.last_name} {self.first_name} {self.patronymic}. ИИН: {self.individual_identification_number}'
 
+    def get_faculty(self):
+        return dict(faculties).get(self.faculty)
+
 
 class Transfer(Person, Application):
     """
@@ -464,6 +515,9 @@ class Transfer(Person, Application):
     def __str__(self):
         return f'{self.last_name} {self.first_name} {self.patronymic}. ИИН: {self.individual_identification_number}'
 
+    def get_faculty(self):
+        return dict(faculties).get(self.faculty)
+
 
 class Recovery(Person, Application):
     """
@@ -472,6 +526,11 @@ class Recovery(Person, Application):
     id = HashidAutoField(primary_key=True, min_length=16)
 
     university = models.CharField(max_length=500, verbose_name=_('Наименование предыдущего ВУЗа)'))
+
+    specialty_on_previous_university = models.ForeignKey(Specialty, on_delete=models.CASCADE,
+                                                         verbose_name=_('Специальность обучения в предыдущем ВУЗе'),
+                                                         related_name='specialty_on_previous_university_recovery',
+                                                         null=True)
 
     faculty = models.CharField(max_length=200, choices=faculties, verbose_name=_('Факультет'))
 
@@ -505,6 +564,9 @@ class Recovery(Person, Application):
     def __str__(self):
         return f'{self.last_name} {self.first_name} {self.patronymic}. ИИН: {self.individual_identification_number}'
 
+    def get_faculty(self):
+        return dict(faculties).get(self.faculty)
+
 
 # class PlaceOfStudy(Person):
 #     """
@@ -517,16 +579,6 @@ class Notification(models.Model):
     """
     Уведомление о заявлениях
     """
-    APPLICATIONS_TYPES = [('Академическая мобильность', 'Академическая мобильность'),
-                          ('Общежитие', 'Общежитие'),
-                          ('Дубликаты документов', 'Дубликаты документов'),
-                          ('Академическая справка', 'Академическая справка'),
-                          ('Академический отпуск', 'Академический отпуск'),
-                          ('Перевод в другой ВУЗ', 'Перевод в другой ВУЗ'),
-                          ('Перевод в КарТУ', 'Перевод в КарТУ'),
-                          ('Восстановление в число обучающихся', 'Восстановление в число обучающихся'),
-                          ]
-
     id = HashidAutoField(primary_key=True, min_length=16)
     date = models.DateTimeField(auto_now_add=True, verbose_name=_('Дата отправки уведомления'))
     application_type = models.CharField(max_length=500, verbose_name=_('Тип заявления'), choices=APPLICATIONS_TYPES)
@@ -561,6 +613,7 @@ class HostelRoom(models.Model):
     class Meta:
         verbose_name = _('Комната в общежитии')
         verbose_name_plural = _('Комнаты в общежитии')
+        ordering = ["hostel", "number"]
 
     def __str__(self):
         return "Комната " + str(self.number) + "\n" + self.hostel + "\n" + self.sex
@@ -600,7 +653,8 @@ class HostelReferral(Person, Application):
                                             validators=[file_size_validator])
 
     attachmentProperty = models.FileField(upload_to='hostel/',
-                                          verbose_name=_('Справка об отсутствии (наличии) недвижимого имущества'),
+                                          blank=True, null=True,
+                                          verbose_name=_('Паспорт вакцинации'),
                                           validators=[file_size_validator, file_ext_validator])
 
     attachmentDeath = models.FileField(upload_to='referral_attachments/', blank=True, null=True, verbose_name=_(
@@ -624,6 +678,10 @@ class HostelReferral(Person, Application):
 
     group = models.CharField(max_length=50, blank=True, verbose_name=_('Группа'))
 
+    is_registered = models.BooleanField(verbose_name="Временная регистрация", default=False)
+
+    is_resettlement = models.BooleanField(verbose_name="Внутреннее переселение", default=False)
+
     message = models.CharField(max_length=500, blank=True, verbose_name=_('Отправленный ответ'))
 
     date_of_referral = models.DateTimeField(blank=True, null=True, verbose_name=_('Дата выдачи направления'))
@@ -639,5 +697,251 @@ class HostelReferral(Person, Application):
     def __str__(self):
         return f'{self.last_name} {self.first_name} {self.patronymic}. ИИН: {self.individual_identification_number}'
 
+    def get_faculty(self):
+        return dict(faculties).get(self.faculty)
+
 
 HostelReferral._meta.get_field('date_of_application').verbose_name = 'Дата приема заявления'
+
+
+class AcademicLeaveReturn(Person, Application):
+    """
+    Возвращение из академических отпусков обучающихся в организациях образования
+    Государственная услуга
+    """
+    id = HashidAutoField(primary_key=True, min_length=16)
+
+    faculty = models.CharField(max_length=200, choices=faculties, verbose_name=_('Факультет'))
+
+    foundation_type = models.CharField(max_length=200, choices=foundation_types,
+                                       default='на платной основе',
+                                       verbose_name=_('Основа обучения'))
+
+    reason = models.CharField(max_length=100, choices=academic_leave_reasons, default='состоянием здоровья',
+                              verbose_name=_('Причина'))
+
+    iin_attachment_front = models.ImageField(upload_to='academic_leave_return_attachments/',
+                                             verbose_name=_(
+                                                 'Прикрепление копии документа, удостоверяющего личность - передняя '
+                                                 'сторона'),
+                                             validators=[file_size_validator])
+
+    iin_attachment_back = models.ImageField(upload_to='academic_leave_return_attachments/',
+                                            verbose_name=_(
+                                                'Прикрепление копии документа, удостоверяющего личность - обратная '
+                                                'сторона'),
+                                            validators=[file_size_validator])
+
+    attachment = models.FileField(upload_to='academic_leave_return_attachments/', verbose_name=_('Прикрепление'),
+                                  validators=[file_size_validator, file_ext_validator])
+
+    leave_end = models.DateField(max_length=10, blank=True, verbose_name=_('Дата выхода из отпуска'), null=True)
+
+    number = models.IntegerField(max_length=10, blank=True, verbose_name=_('Номер приказа'), null=True)
+
+    course = None
+    address = None
+
+    class Meta:
+        verbose_name = _('заявление на возвращение из академ.отпуска обучающихся в организациях '
+                         'образования')
+        verbose_name_plural = _('заявления на возвращение из академ.отпуска обучающихся в организациях '
+                                'образования')
+
+    def __str__(self):
+        return f'{self.last_name} {self.first_name} {self.patronymic}. ИИН: {self.individual_identification_number}'
+
+    def get_faculty(self):
+        return dict(faculties).get(self.faculty)
+
+
+class PrivateInformationChange(Person, Application):
+    """
+    Изменение персональных данных об обучающихся в организациях образования
+    Государственная услуга
+    """
+    id = HashidAutoField(primary_key=True, min_length=16)
+
+    faculty = models.CharField(max_length=200, choices=faculties, verbose_name=_('Факультет'))
+
+    foundation_type = models.CharField(max_length=200, choices=foundation_types,
+                                       default='на платной основе',
+                                       verbose_name=_('Основа обучения'))
+
+    reason = models.CharField(max_length=100, choices=information_change_reasons, default='в связи со сменой '
+                                                                                          'удостоверения личности',
+                              verbose_name=_('Причина'))
+
+    iin_attachment_front = models.ImageField(upload_to='private_information_change_attachments/',
+                                             verbose_name=_(
+                                                 'Прикрепление копии документа, удостоверяющего личность - передняя '
+                                                 'сторона'),
+                                             validators=[file_size_validator])
+
+    iin_attachment_back = models.ImageField(upload_to='private_information_change_attachments/',
+                                            verbose_name=_(
+                                                'Прикрепление копии документа, удостоверяющего личность - обратная '
+                                                'сторона'),
+                                            validators=[file_size_validator])
+
+    attachment = models.FileField(upload_to='private_information_change_attachments/',
+                                  verbose_name=_('Прикрепление копии свидетельства о браке'),
+                                  validators=[file_size_validator, file_ext_validator], blank=True, null=True)
+
+    address = None
+
+    class Meta:
+        verbose_name = _('заявление на изменение персональных данных об обучающихся в организациях '
+                         'образования')
+        verbose_name_plural = _('заявления на изменение персональных данных об обучающихся в организациях '
+                                'образования')
+
+    def __str__(self):
+        return f'{self.last_name} {self.first_name} {self.patronymic}. ИИН: {self.individual_identification_number}'
+
+    def get_faculty(self):
+        return dict(faculties).get(self.faculty)
+
+
+class Expulsion(Person, Application):
+    """
+    Отчисление обучающихся в организациях образования
+    Государственная услуга
+    """
+    id = HashidAutoField(primary_key=True, min_length=16)
+
+    faculty = models.CharField(max_length=200, choices=faculties, verbose_name=_('Факультет'))
+
+    foundation_type = models.CharField(max_length=200, choices=foundation_types,
+                                       default='на платной основе',
+                                       verbose_name=_('Основа обучения'))
+
+    address = None
+
+    class Meta:
+        verbose_name = _('заявление на отчисление обучающихся в организациях '
+                         'образования')
+        verbose_name_plural = _('заявления на отчисление обучающихся в организациях '
+                                'образования')
+
+    def __str__(self):
+        return f'{self.last_name} {self.first_name} {self.patronymic}. ИИН: {self.individual_identification_number}'
+
+    def get_faculty(self):
+        return dict(faculties).get(self.faculty)
+
+
+class TransferInside(Person, Application):
+    """
+    Перевод внутри ВУЗа
+    """
+    id = HashidAutoField(primary_key=True, min_length=16)
+
+    faculty = models.CharField(max_length=200, choices=faculties, verbose_name=_('Факультет'))
+
+    foundation_type = models.CharField(max_length=200, choices=foundation_types, default='на платной основе',
+                                       verbose_name=_('Основа обучения'))
+
+    specialty_to = models.ForeignKey(Specialty, on_delete=models.CASCADE, related_name="Specialty_to",
+                                     verbose_name=_('Шифр и название образовательной программы/специальности перевода'))
+
+    language_from = models.CharField(max_length=200, choices=languages_from, verbose_name=_('Язык обучения'))
+
+    language_to = models.CharField(max_length=200, choices=languages_to, verbose_name=_('Язык перевода'))
+
+    course = None
+
+    address = None
+
+    class Meta:
+        verbose_name = _('заявление на перевод внутри ВУЗа')
+        verbose_name_plural = _('заявления на перевод внутри ВУЗа')
+
+    def __str__(self):
+        return f'{self.last_name} {self.first_name} {self.patronymic}. ИИН: {self.individual_identification_number}'
+
+    def get_faculty(self):
+        return dict(faculties).get(self.faculty)
+
+
+class KeyCard(Person, Application):
+    """
+    Восстановление ключ-карты
+    """
+    id = HashidAutoField(primary_key=True, min_length=16)
+
+    faculty = models.CharField(max_length=200, choices=faculties, verbose_name=_('Факультет'))
+
+    attachment = models.FileField(upload_to='key_card_attachments/',
+                                  verbose_name=_('Квитанция об оплате'),
+                                  validators=[file_size_validator, file_ext_validator])
+
+    address = None
+
+    specialty = None
+
+    class Meta:
+        verbose_name = _('заявка на восстановление ключ-карты в связи с утерей')
+        verbose_name_plural = _('заявки на восстановление ключ-карты в связи с утерей')
+
+    def __str__(self):
+        return f'{self.last_name} {self.first_name} {self.patronymic}. ИИН: {self.individual_identification_number}'
+
+    def get_faculty(self):
+        return dict(faculties).get(self.faculty)
+
+
+class ReferenceStudent(Person, Application):
+    """
+    Выдача транскрипта обучающимся
+    """
+    id = HashidAutoField(primary_key=True, min_length=16)
+
+    faculty = models.CharField(max_length=200, choices=faculties, verbose_name=_('Факультет'))
+
+    is_signed = models.BooleanField(verbose_name="С подписью ректора")
+
+    address = None
+
+    specialty = None
+
+    class Meta:
+        verbose_name = _('заявка на выдачу транскрипта обучающимся в КарТУ')
+        verbose_name_plural = _('заявки на выдачу транскрипта обучающимся в КарТУ')
+
+    def __str__(self):
+        return f'{self.last_name} {self.first_name} {self.patronymic}. ИИН: {self.individual_identification_number}'
+
+    def get_faculty(self):
+        return dict(faculties).get(self.faculty)
+
+
+class KeyCardFirst(Person, Application):
+    """
+    Получение ключ-карты
+    """
+    id = HashidAutoField(primary_key=True, min_length=16)
+
+    faculty = models.CharField(max_length=200, choices=faculties, verbose_name=_('Факультет'))
+
+    reason = models.CharField(max_length=100, choices=key_card_first_reasons, verbose_name=_('Причина'))
+
+    attachment = models.FileField(upload_to='key_card_first_attachments/',
+                                  verbose_name=_('Скан заявления о восстановлении/переводе'),
+                                  validators=[file_size_validator, file_ext_validator])
+
+    address = None
+
+    specialty = None
+
+    group = None
+
+    class Meta:
+        verbose_name = _('заявка на получение ключ-карты при восстановлении и переводе из другого ВУЗа')
+        verbose_name_plural = _('заявки на получение ключ-карты при восстановлении и переводе из другого ВУЗа')
+
+    def __str__(self):
+        return f'{self.last_name} {self.first_name} {self.patronymic}. ИИН: {self.individual_identification_number}'
+
+    def get_faculty(self):
+        return dict(faculties).get(self.faculty)

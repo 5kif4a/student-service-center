@@ -155,49 +155,47 @@ div.WordSection1
    <p class=MsoNormal style='margin-top:0cm;margin-right:15.85pt;margin-bottom:
   0cm;margin-left:285.15pt;margin-bottom:.0001pt;line-height:normal'><b><span
            style='font-size:16.0pt;font-family:"Times New Roman","serif";color:black;
-  letter-spacing:.1pt;background:white'>И.о. Председателя</span></b></p>
+  letter-spacing:.1pt;background:white'>{{ stuff_position }}</span></b></p>
    <p class=MsoNormal style='margin-top:0cm;margin-right:15.85pt;margin-bottom:
   0cm;margin-left:285.15pt;margin-bottom:.0001pt;line-height:normal'><b><span
            style='font-size:16.0pt;font-family:"Times New Roman","serif";color:black;
-  letter-spacing:.1pt;background:white'>Правления-Ректору НАО "КарТУ"</span></b></p>
+  letter-spacing:.1pt;background:white'>НАО "Карагандинский технический университет имени Абылкаса Сагинова"</span></b></p>
    <p class=MsoNormal style='margin-top:0cm;margin-right:15.85pt;margin-bottom:
   0cm;margin-left:285.15pt;margin-bottom:.0001pt;line-height:normal'><b><u><span
            style='font-size:16.0pt;font-family:"Times New Roman","serif";color:black;
-  letter-spacing:.1pt;background:white'>{{ rector_name }}</span></u></b></p>
-  <p class=MsoNormal style='margin-top:0cm;margin-right:0cm;margin-bottom:0cm;
+  letter-spacing:.1pt;background:white'>{{ stuff_name }}</span></u></b></p>
+   <p class=MsoNormal style='margin-top:0cm;margin-right:0cm;margin-bottom:0cm;
   margin-left:285.15pt;margin-bottom:.0001pt;line-height:normal'><span
-  style='font-size:16.0pt;font-family:"Times New Roman","serif";color:black;
-  letter-spacing:.1pt;background:white'>от услугополучателя </span></p>
-  <p class=MsoNormal style='margin-top:0cm;margin-right:0cm;margin-bottom:0cm;
+           style='font-size:16.0pt;font-family:"Times New Roman","serif";color:black;
+  letter-spacing:.1pt;background:white'>от бывшего (ей) студента
+  (ки)&nbsp;&nbsp;&nbsp;&nbsp; </span></p>
+   <p class=MsoNormal style='margin-top:0cm;margin-right:0cm;margin-bottom:0cm;
   margin-left:285.15pt;margin-bottom:.0001pt;line-height:normal'><span
-  style='font-size:16.0pt;font-family:"Times New Roman","serif";color:black;
-  letter-spacing:.1pt;background:white'>бывшего (ей)
-  студента(ки)&nbsp;&nbsp;&nbsp;&nbsp; </span></p>
-  <p class=MsoNormal style='margin-top:0cm;margin-right:0cm;margin-bottom:0cm;
+           style='font-size:16.0pt;font-family:"Times New Roman","serif";color:black;
+  letter-spacing:.1pt;background:white'>{{ app.last_name }} {{ app.first_name }} {{ app.patronymic }} </u></b></span></p>
+   <p class=MsoNormal style='margin-top:0cm;margin-right:0cm;margin-bottom:0cm;
   margin-left:285.15pt;margin-bottom:.0001pt;line-height:normal'><span
-  style='font-size:16.0pt;font-family:"Times New Roman","serif";color:black;
-  letter-spacing:.1pt;background:white'>ВУЗ (где учился) <b><u>{{ app.university }}</u></b></span></p>
-  <p class=MsoNormal style='margin-top:0cm;margin-right:0cm;margin-bottom:0cm;
-  margin-left:285.15pt;margin-bottom:.0001pt;line-height:normal'><span
-  style='font-size:16.0pt;font-family:"Times New Roman","serif";color:black;
-  letter-spacing:.1pt;background:white'>Специальность <b><u>{{ app.specialty_on_previous_university }}</u></b></span></p>
-  <p class=MsoNormal style='margin-top:0cm;margin-right:0cm;margin-bottom:0cm;
-  margin-left:285.15pt;margin-bottom:.0001pt;line-height:normal'><span
-  style='font-size:16.0pt;font-family:"Times New Roman","serif";color:black;
-  letter-spacing:.1pt;background:white'>Ф.И.О. <b><u>{{ app.last_name }} {{ app.first_name }} {{ app.patronymic }}</u></b></span></p>
-  <p class=MsoNormal style='margin-top:0cm;margin-right:0cm;margin-bottom:0cm;
-  margin-left:285.15pt;margin-bottom:.0001pt;line-height:normal'><u><span
-  style='font-size:16.0pt;font-family:"Times New Roman","serif";color:black;
-  letter-spacing:.1pt;background:white'>{{ app.phone_number}}</span></u></p>
-  <p class=MsoNormal style='margin-top:0cm;margin-right:0cm;margin-bottom:0cm;
-  margin-left:285.15pt;margin-bottom:.0001pt;line-height:normal'><u><span
-  style='font-size:16.0pt;font-family:"Times New Roman","serif";color:black;
-  letter-spacing:.1pt;background:white'>{{ app.email }}</span></u></p>
-  <p class=MsoNormal style='margin-top:0cm;margin-right:15.85pt;margin-bottom:
+           style='font-size:16.0pt;font-family:"Times New Roman","serif";color:black;
+  letter-spacing:.1pt;background:white'>ВУЗ (где учился)<b> <u>{{ app.university }}</u></b></span></p>
+   <p class=MsoNormal style='margin-top:0cm;margin-right:15.85pt;margin-bottom:
   0cm;margin-left:285.15pt;margin-bottom:.0001pt;line-height:normal'><span
-  style='font-size:16.0pt;font-family:"Times New Roman","serif";color:black;
+           style='font-size:16.0pt;font-family:"Times New Roman","serif";color:black;
+  letter-spacing:.1pt;background:white'>Образовательная программа/специальность<br><b><u>{{ app.specialty_on_previous_university }}</u></b></span></p>
+   <p class=MsoNormal style='margin-top:0cm;margin-right:0cm;margin-bottom:0cm;
+  margin-left:285.15pt;margin-bottom:.0001pt;line-height:normal'><u><span
+           lang=EN-US style='font-size:16.0pt;font-family:"Times New Roman","serif";
+  color:black;letter-spacing:.1pt;background:white'>{{ app.phone_number }}</span></u></p>
+   <p class=MsoNormal style='margin-top:0cm;margin-right:0cm;margin-bottom:0cm;
+  margin-left:285.15pt;margin-bottom:.0001pt;line-height:normal'><u><span
+           lang=EN-US style='font-size:16.0pt;font-family:"Times New Roman","serif";
+  color:black;letter-spacing:.1pt;background:white'>{{ app.email }}</span></u></p>
+   <p class=MsoNormal style='margin-top:0cm;margin-right:15.85pt;margin-bottom:
+  0cm;margin-left:285.15pt;margin-bottom:.0001pt;line-height:normal'><span
+           style='font-size:16.0pt;font-family:"Times New Roman","serif";color:black;
   letter-spacing:.1pt;background:white'>/контактные данные
   услугополучателя/&nbsp;</span></p>
+   <p class=MsoNormal style='margin-top:0cm;margin-right:15.85pt;margin-bottom:
+  0cm;margin-left:285.15pt;margin-bottom:.0001pt;line-height:normal'>&nbsp;</p>
   <p class=MsoNormal style='margin-top:0cm;margin-right:15.85pt;margin-bottom:
   0cm;margin-left:285.15pt;margin-bottom:.0001pt;line-height:normal'>&nbsp;</p>
   <p class=MsoNormal align=center style='margin-top:0cm;margin-right:15.85pt;
@@ -227,9 +225,9 @@ div.WordSection1
   <p class=MsoNormal style='margin-bottom:0cm;margin-bottom:.0001pt;text-indent:
   22.95pt;line-height:normal'><span style='font-size:16.0pt;font-family:"Times New Roman","serif";
   color:black;letter-spacing:.1pt;background:white'>Прошу Вас дать разрешение
-  на перевод в КарТУ, факультет <u>{{ app.faculty }}</span></u><span style='font-size:
+  на перевод в КарТУ, факультет <u>{{ app.get_faculty }}</span></u><span style='font-size:
   16.0pt;font-family:"Times New Roman","serif";color:black;letter-spacing:.1pt;
-  background:white'>, по специальности <u>{{ app.transfer_specialty }}</span></u><span style='font-size:
+  background:white'>, по образовательной программе/специальности <u>{{ app.transfer_specialty }}</span></u><span style='font-size:
   16.0pt;font-family:"Times New Roman","serif";color:black;letter-spacing:.1pt;
   background:white'>, курс <u>{{ app.course }}</span></u><span style='font-size:
   16.0pt;font-family:"Times New Roman","serif";color:black;letter-spacing:.1pt;

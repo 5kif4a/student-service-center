@@ -1,0 +1,50 @@
+{% extends "ssc/en/base.html" %}
+{% load static %}
+{% block content %}
+
+<style>
+  .image {
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+    width: 50%;
+    margin-bottom: 5px;
+    margin-top: 5px;
+  }
+</style>
+
+<div class="container">
+  <h1 class="text-center p-3">About the Center</h1>
+  <p>In August 2017, a Student Service Center (SSC) was organized at NLC KTU
+    to provide students with public and educational services, to ensure their
+    accessibility according to the principle of “one window”.</p>
+  <img src="{% static 'img/about1.jpg' %}" class="image">
+  <p><b>The main goal of the SSC</b> is to maximize the comprehensive interaction with
+    the student community, to eliminate bureaucratic barriers and corruption risks in
+    the system of interaction &quot;University - student&quot;, the duplicating actions in
+    providing services.</p>
+  <p><b>The tasks of the SSC are</b> the quality, accessibility, transparency, continuous
+    improvement of services provided, timely processing of applications received,
+    provision of information and advisory assistance to the students, the teaching staff
+    and employees.</p>
+  <p>An electronic queue management system is in operation. There are places for
+    waiting in the lobby, videos on training to work on the web portal of the
+    &quot;Electronic Government of the Republic of Kazakhstan&quot; <a href="https://egov.kz">https://egov.kz</a> are
+    broadcast, which provides comfortable waiting conditions for students.</p>
+  <img src="{% static 'img/about2.jpg' %}" class="image">
+  <p>In order to implement the state program &quot;Digital Kazakhstan&quot;, to optimize the
+    business processes of providing state and educational services in electronic format,
+    17 types of services are provided, of which 6 are state and 11 are educational ones.
+    This form of service provision allows reducing the time for consideration of
+    applications, minimizing the student participation in preparing the documents, and
+    eliminating corruption risks.</p>
+  <h1 class="text-center p-3">Submitting an online application</h1>
+  <p><b>Online applications for providing services are submitted through the
+    University website https://www.kstu.kz/ in the section &quot;Quick Links - Student
+    - SSC - List of services&quot;,</b> as well as to the state corporation (PSC) or an
+    application is sent through the web portal &quot;Electronic Government of the Republic
+    of Kazakhstan&quot; https://egov.kz.</p>
+
+  <img src="{% static 'img/online.png' %}" class="image">
+</div>
+{% endblock %}

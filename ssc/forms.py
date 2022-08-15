@@ -1,4 +1,4 @@
-from django.forms import ModelForm, NumberInput, FileInput, TextInput
+from django.forms import ModelForm, NumberInput
 from ssc.models import *
 from captcha.fields import ReCaptchaField, ReCaptchaV3
 
@@ -26,13 +26,13 @@ class ReferenceForm(ModelForm):
 
     def __init__(self, *args, **kwargs):
         super(ReferenceForm, self).__init__(*args, **kwargs)
-        self.fields['specialty'].label = 'Специальность'
+        self.fields['specialty'].label = 'Образовательная программа/специальность'
         self.fields['status'].required = False
 
 
 class AcademicLeaveForm(ModelForm):
     """
-    Форма для заявление услуги - "Предоставление академических отпусков обучающимся в организациях образования"
+    Форма для заявление услуги - "Предоставление и продление академических отпусков обучающимся в организациях образования"
     """
     captcha = ReCaptchaField(
         widget=ReCaptchaV3(
@@ -49,8 +49,8 @@ class AcademicLeaveForm(ModelForm):
     def __init__(self, *args, **kwargs):
         super(AcademicLeaveForm, self).__init__(*args, **kwargs)
         self.fields['reason'].label = 'Причина (в связи)'
-        self.fields['specialty'].label = 'Специальность'
-        self.fields['attachment'].label = 'Прикрепление файла копии заключения/решения/свидетельства/повестки'
+        self.fields['specialty'].label = 'Образовательная программа/специальность'
+        self.fields['attachment'].label = 'Прикрепление файла копии заключения/решения/свидетельства/повестки/справки'
         self.fields['status'].required = False
 
 
@@ -93,9 +93,14 @@ class HostelForm(ModelForm):
 
     def __init__(self, *args, **kwargs):
         super(HostelForm, self).__init__(*args, **kwargs)
-        self.fields['specialty'].label = 'Специальность'
+        self.fields['specialty'].label = 'Образовательная программа/специальность'
         self.fields['group'].required = False
         self.fields['status'].required = False
+        self.fields['place_of_arrival'].label = 'Место прибытия (адрес прописки/проживания) (Область, район, ' \
+                                                'нас. пункт, улица, дом, квартира) '
+        self.fields[
+            'attachmentDeath'].label = 'Копия свидетельства о смерти обоих или единственного родителя ' \
+                                       '(для детей сирот), либо справка из детского дома'
 
     def localize(self):
         self.fields['last_name'].label = 'Тегі'
@@ -112,11 +117,13 @@ class HostelForm(ModelForm):
         self.fields['place_of_arrival'].label = 'Келген жері (мекен-жайы)'
         self.fields['iin_attachment_front'].label = 'Жеке басын куәландыратын құжаттың көшірмесін бекіту-алдыңғы жағы'
         self.fields['iin_attachment_back'].label = 'Жеке басын куәландыратын құжаттың көшірмесін бекіту-артқы жағы'
-        self.fields['attachmentProperty'].label = 'Жылжымайтын мүліктің жоқ (бар) екендігі туралы анықтама'
-        self.fields['attachmentDeath'].label = 'Екі немесе жалғыз ата-ананың қайтыс болуы туралы куәлік немесе балалар үйінен анықтама'
+        self.fields['attachmentProperty'].label = 'Вакцинация паспорты'
+        self.fields[
+            'attachmentDeath'].label = 'Екі немесе жалғыз ата-ананың қайтыс болуы туралы куәлік немесе балалар үйінен анықтама'
         self.fields['attachmentLarge'].label = 'Отбасында 4 және одан да көп баланың болуы туралы анықтама'
         self.fields['attachmentDisabled'].label = 'Мүгедектікті растау туралы анықтама'
         self.fields['attachmentKandas'].label = '"Кандас" мәртебесі туралы құжат'
+
 
 # class DuplicateForm(ModelForm):
 #     """
@@ -216,7 +223,10 @@ class RecoveryForm(ModelForm):
 
     def __init__(self, *args, **kwargs):
         super(RecoveryForm, self).__init__(*args, **kwargs)
-        self.fields['specialty'].label = 'Специальность'
+        self.fields['specialty'].label = 'Образовательная программа/специальность в КарТУ'
+        self.fields[
+            'specialty_on_previous_university'].label = 'Образовательная программа/специальность в предыдущем ВУЗе'
+        self.fields['faculty'].label = 'Факультет в КарТУ'
         self.fields['university'].label = 'Предыдущий ВУЗ'
         self.fields['status'].required = False
 
@@ -239,6 +249,161 @@ class HostelReferralForm(ModelForm):
 
     def __init__(self, *args, **kwargs):
         super(HostelReferralForm, self).__init__(*args, **kwargs)
-        self.fields['specialty'].label = 'Специальность'
+        self.fields['specialty'].label = 'Образовательная программа/специальность'
         self.fields['group'].required = False
+        self.fields['status'].required = False
+
+
+class AcademicLeaveReturnForm(ModelForm):
+    """
+    Форма для заявление услуги - "Возвращение из академических отпусков обучающихся в организациях образования"
+    """
+    captcha = ReCaptchaField(
+        widget=ReCaptchaV3(
+            attrs={
+                'required_score': 0.85
+            }
+        )
+    )
+
+    class Meta:
+        model = AcademicLeaveReturn
+        fields = "__all__"
+
+    def __init__(self, *args, **kwargs):
+        super(AcademicLeaveReturnForm, self).__init__(*args, **kwargs)
+        self.fields['specialty'].label = 'Образовательная программа/специальность'
+        self.fields['reason'].label = 'Причина (в связи)'
+        self.fields['attachment'].label = 'Прикрепление файла копии справки/военного билета/свидетельства о рождении'
+        self.fields['status'].required = False
+
+
+class PrivateInformationChangeForm(ModelForm):
+    """
+    Форма для заявление услуги - "Изменение персональных данных об обучающихся в организациях образования"
+    """
+    captcha = ReCaptchaField(
+        widget=ReCaptchaV3(
+            attrs={
+                'required_score': 0.85
+            }
+        )
+    )
+
+    class Meta:
+        model = PrivateInformationChange
+        fields = "__all__"
+
+    def __init__(self, *args, **kwargs):
+        super(PrivateInformationChangeForm, self).__init__(*args, **kwargs)
+        self.fields['specialty'].label = 'Образовательная программа/специальность'
+        self.fields['reason'].label = 'Причина (в связи)'
+        self.fields['status'].required = False
+
+
+class ExpulsionForm(ModelForm):
+    """
+    Форма для заявление услуги - "Отчисление обучающихся в организациях образования"
+    """
+    captcha = ReCaptchaField(
+        widget=ReCaptchaV3(
+            attrs={
+                'required_score': 0.85
+            }
+        )
+    )
+
+    class Meta:
+        model = Expulsion
+        fields = "__all__"
+
+    def __init__(self, *args, **kwargs):
+        super(ExpulsionForm, self).__init__(*args, **kwargs)
+        self.fields['specialty'].label = 'Образовательная программа/специальность'
+        self.fields['status'].required = False
+
+
+class TransferInsideForm(ModelForm):
+    """
+    Форма для заявление услуги - "Перевод внутри ВУЗа"
+    """
+    captcha = ReCaptchaField(
+        widget=ReCaptchaV3(
+            attrs={
+                'required_score': 0.85
+            }
+        )
+    )
+
+    class Meta:
+        model = TransferInside
+        fields = "__all__"
+
+    def __init__(self, *args, **kwargs):
+        super(TransferInsideForm, self).__init__(*args, **kwargs)
+        self.fields['specialty'].label = 'Образовательная программа/специальность обучения'
+        self.fields['specialty_to'].label = 'Образовательная программа/специальность перевода'
+        self.fields['status'].required = False
+
+
+class KeyCardForm(ModelForm):
+    """
+    Форма для заявление услуги - "Выдача ключ-карты"
+    """
+    captcha = ReCaptchaField(
+        widget=ReCaptchaV3(
+            attrs={
+                'required_score': 0.85
+            }
+        )
+    )
+
+    class Meta:
+        model = KeyCard
+        fields = "__all__"
+
+    def __init__(self, *args, **kwargs):
+        super(KeyCardForm, self).__init__(*args, **kwargs)
+        self.fields['status'].required = False
+
+
+class ReferenceStudentForm(ModelForm):
+    """
+    Форма для заявление услуги - "Выдача транскрипта обучающимся"
+    """
+    captcha = ReCaptchaField(
+        widget=ReCaptchaV3(
+            attrs={
+                'required_score': 0.85
+            }
+        )
+    )
+
+    class Meta:
+        model = ReferenceStudent
+        fields = "__all__"
+
+    def __init__(self, *args, **kwargs):
+        super(ReferenceStudentForm, self).__init__(*args, **kwargs)
+        self.fields['status'].required = False
+
+
+class KeyCardFirstForm(ModelForm):
+    """
+    Форма для заявление услуги - "Выдача ключ-карты"
+    """
+    captcha = ReCaptchaField(
+        widget=ReCaptchaV3(
+            attrs={
+                'required_score': 0.85
+            }
+        )
+    )
+
+    class Meta:
+        model = KeyCardFirst
+        fields = "__all__"
+
+    def __init__(self, *args, **kwargs):
+        super(KeyCardFirstForm, self).__init__(*args, **kwargs)
         self.fields['status'].required = False
