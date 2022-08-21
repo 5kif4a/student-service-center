@@ -65,104 +65,104 @@
                                 <li>Документ о статусе "кандас".</li>
                             </ol>
                         </li>
-                        <p class="h3 text-center text-danger">ВНИМАНИЕ!!! Подача заявки на предоставление места в общежитии на 2022-2023
-                            учебный год будет доступна <b>с 22 августа 2022г</b> (на рассмотрение Комиссии по распределению мест в общежитиях),
-                            за исключением обучающихся старших курсов <b>(после 5 сентября 2022г.)</b>.</p>
-<!--                        {% block form %}-->
-<!--                            <form class="p-2 border border-primary" method="post" enctype="multipart/form-data">-->
-<!--                                <h4 class="text-center">Форма заявления</h4>-->
-<!--                                {% csrf_token %}-->
-<!--                                <div class="form-group">-->
-<!--                                    <div class="form-row">-->
-<!--                                        <div class="form-group col-sm">-->
-<!--                                            {{ form.last_name|as_crispy_field }}-->
-<!--                                        </div>-->
-<!--                                        <div class="form-group col-sm">-->
-<!--                                            {{ form.first_name|as_crispy_field }}-->
-<!--                                        </div>-->
-<!--                                        <div class="form-group col-sm">-->
-<!--                                            {{ form.patronymic|as_crispy_field }}-->
-<!--                                        </div>-->
-<!--                                        <div class="form-group col-sm">-->
-<!--                                            {{ form.individual_identification_number|as_crispy_field }}-->
-<!--                                        </div>-->
-<!--                                    </div>-->
-<!--                                    <div class="form-row align-items-end">-->
-<!--                                        <div class="form-group col-sm">-->
-<!--                                            {{ form.email|as_crispy_field }}-->
-<!--                                        </div>-->
-<!--                                        <div class="form-group col-sm">-->
-<!--                                            {{ form.phone_number|as_crispy_field }}-->
-<!--                                        </div>-->
-<!--                                    </div>-->
-<!--                                    <div class="form-row">-->
-<!--                                        <div class="form-group col-sm">-->
-<!--                                            {{ form.course|as_crispy_field }}-->
-<!--                                        </div>-->
-<!--                                        <div class="form-group col-sm">-->
-<!--                                            {{ form.group|as_crispy_field }}-->
-<!--                                        </div>-->
-<!--                                        <div class="form-group col-sm">-->
-<!--                                            {{ form.faculty|as_crispy_field }}-->
-<!--                                        </div>-->
-<!--                                        <div class="form-group col-sm">-->
-<!--                                            {{ form.specialty|as_crispy_field }}-->
-<!--                                        </div>-->
-<!--                                    </div>-->
-<!--                                    <div class="form-row">-->
-<!--                                        <div class="form-group col-sm">-->
-<!--                                            {{ form.is_serpin|as_crispy_field }}-->
-<!--                                        </div>-->
-<!--                                        <div class="form-group col-sm">-->
-<!--                                            {{ form.place_of_arrival|as_crispy_field }}-->
-<!--                                        </div>-->
-<!--                                    </div>-->
-<!--                                    <div class="form-row">-->
-<!--                                        <div class="form-group col-sm">-->
-<!--                                            {{ form.iin_attachment_front|as_crispy_field }}-->
-<!--                                        </div>-->
-<!--                                        <div class="form-group col-sm">-->
-<!--                                            {{ form.iin_attachment_back|as_crispy_field }}-->
-<!--                                        </div>-->
-<!--                                    </div>-->
-<!--                                    <div class="form-row">-->
-<!--                                        <div class="form-group col-sm">-->
-<!--                                            {{ form.attachmentProperty|as_crispy_field }}-->
-<!--                                        </div>-->
-<!--                                    </div>-->
-<!--                                    <div class="form-row">-->
-<!--                                        <div class="form-group col-sm">-->
-<!--                                            {{ form.attachmentDeath|as_crispy_field }}-->
-<!--                                        </div>-->
-<!--                                    </div>-->
-<!--                                    <div class="form-row">-->
-<!--                                        <div class="form-group col-sm">-->
-<!--                                            {{ form.attachmentLarge|as_crispy_field }}-->
-<!--                                        </div>-->
-<!--                                    </div>-->
-<!--                                    <div class="form-row">-->
-<!--                                        <div class="form-group col-sm">-->
-<!--                                            {{ form.attachmentDisabled|as_crispy_field }}-->
-<!--                                        </div>-->
-<!--                                    </div>-->
-<!--                                    <div class="form-row">-->
-<!--                                        <div class="form-group col-sm">-->
-<!--                                            {{ form.attachmentKandas|as_crispy_field }}-->
-<!--                                        </div>-->
-<!--                                    </div>-->
-<!--                                    <div class="alert alert-danger"><p>Фотографии или отсканированные изображения-->
-<!--                                        документов должны быть четкими, видны все данные документа!</p>-->
-<!--                                        <p class="mb-0">Максимальный размер файла прикрепления не должен превышать 5 мегабайт (5-->
-<!--                                            МВ)</p>-->
-<!--                                        <p class="mb-0">Файлы должны иметь разрешения: ".jpg", ".png" либо ".pdf"</p>-->
-<!--                                    </div>-->
-<!--                                    {{ form.captcha }}-->
-<!--                                    <p class="text-muted">* - обязательные поля для заполнения</p>-->
-<!--                                    <button type="submit" class="btn btn-success mt-1">Отправить заявку</button>-->
-<!--                                </div>-->
-<!--                            </form>-->
-<!--                            </div>-->
-<!--                        {% endblock form %}-->
+<!--                        <p class="h3 text-center text-danger">ВНИМАНИЕ!!! Подача заявки на предоставление места в общежитии на 2022-2023-->
+<!--                            учебный год будет доступна <b>с 22 августа 2022г</b> (на рассмотрение Комиссии по распределению мест в общежитиях),-->
+<!--                            за исключением обучающихся старших курсов <b>(после 5 сентября 2022г.)</b>.</p>-->
+                        {% block form %}
+                            <form class="p-2 border border-primary" method="post" enctype="multipart/form-data">
+                                <h4 class="text-center">Форма заявления</h4>
+                                {% csrf_token %}
+                                <div class="form-group">
+                                    <div class="form-row">
+                                        <div class="form-group col-sm">
+                                            {{ form.last_name|as_crispy_field }}
+                                        </div>
+                                        <div class="form-group col-sm">
+                                            {{ form.first_name|as_crispy_field }}
+                                        </div>
+                                        <div class="form-group col-sm">
+                                            {{ form.patronymic|as_crispy_field }}
+                                        </div>
+                                        <div class="form-group col-sm">
+                                            {{ form.individual_identification_number|as_crispy_field }}
+                                        </div>
+                                    </div>
+                                    <div class="form-row align-items-end">
+                                        <div class="form-group col-sm">
+                                            {{ form.email|as_crispy_field }}
+                                        </div>
+                                        <div class="form-group col-sm">
+                                            {{ form.phone_number|as_crispy_field }}
+                                        </div>
+                                    </div>
+                                    <div class="form-row">
+                                        <div class="form-group col-sm">
+                                            {{ form.course|as_crispy_field }}
+                                        </div>
+                                        <div class="form-group col-sm">
+                                            {{ form.group|as_crispy_field }}
+                                        </div>
+                                        <div class="form-group col-sm">
+                                            {{ form.faculty|as_crispy_field }}
+                                        </div>
+                                        <div class="form-group col-sm">
+                                            {{ form.specialty|as_crispy_field }}
+                                        </div>
+                                    </div>
+                                    <div class="form-row">
+                                        <div class="form-group col-sm">
+                                            {{ form.is_serpin|as_crispy_field }}
+                                        </div>
+                                        <div class="form-group col-sm">
+                                            {{ form.place_of_arrival|as_crispy_field }}
+                                        </div>
+                                    </div>
+                                    <div class="form-row">
+                                        <div class="form-group col-sm">
+                                            {{ form.iin_attachment_front|as_crispy_field }}
+                                        </div>
+                                        <div class="form-group col-sm">
+                                            {{ form.iin_attachment_back|as_crispy_field }}
+                                        </div>
+                                    </div>
+                                    <div class="form-row">
+                                        <div class="form-group col-sm">
+                                            {{ form.attachmentProperty|as_crispy_field }}
+                                        </div>
+                                    </div>
+                                    <div class="form-row">
+                                        <div class="form-group col-sm">
+                                            {{ form.attachmentDeath|as_crispy_field }}
+                                        </div>
+                                    </div>
+                                    <div class="form-row">
+                                        <div class="form-group col-sm">
+                                            {{ form.attachmentLarge|as_crispy_field }}
+                                        </div>
+                                    </div>
+                                    <div class="form-row">
+                                        <div class="form-group col-sm">
+                                            {{ form.attachmentDisabled|as_crispy_field }}
+                                        </div>
+                                    </div>
+                                    <div class="form-row">
+                                        <div class="form-group col-sm">
+                                            {{ form.attachmentKandas|as_crispy_field }}
+                                        </div>
+                                    </div>
+                                    <div class="alert alert-danger"><p>Фотографии или отсканированные изображения
+                                        документов должны быть четкими, видны все данные документа!</p>
+                                        <p class="mb-0">Максимальный размер файла прикрепления не должен превышать 5 мегабайт (5
+                                            МВ)</p>
+                                        <p class="mb-0">Файлы должны иметь разрешения: ".jpg", ".png" либо ".pdf"</p>
+                                    </div>
+                                    {{ form.captcha }}
+                                    <p class="text-muted">* - обязательные поля для заполнения</p>
+                                    <button type="submit" class="btn btn-success mt-1">Отправить заявку</button>
+                                </div>
+                            </form>
+                            </div>
+                        {% endblock form %}
                 </div>
             </div>
             </div>
