@@ -63,6 +63,7 @@
                                 <li>Справка о наличии в семье 4-х и более детей (для детей из многодетных семей).</li>
                                 <li>Справка о подтверждении инвалидности.</li>
                                 <li>Документ о статусе "кандас".</li>
+                                <li>Справка о получении адресной социальной помощи (для многодетных, малообеспеченных, не полных семей).</li>
                             </ol>
                         </li>
 <!--                        <p class="h3 text-center text-danger">ВНИМАНИЕ!!! Подача заявки на предоставление места в общежитии на 2022-2023-->
@@ -148,6 +149,11 @@
                                     <div class="form-row">
                                         <div class="form-group col-sm">
                                             {{ form.attachmentKandas|as_crispy_field }}
+                                        </div>
+                                    </div>
+                                    <div class="form-row">
+                                        <div class="form-group col-sm">
+                                            {{ form.attachmentSocial|as_crispy_field }}
                                         </div>
                                     </div>
                                     <div class="alert alert-danger"><p>Фотографии или отсканированные изображения

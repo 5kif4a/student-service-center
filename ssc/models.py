@@ -309,6 +309,10 @@ class Hostel(Person, Application):
                                         verbose_name=_('Документ о статусе "кандас"'),
                                         validators=[file_size_validator, file_ext_validator])
 
+    attachmentSocial = models.FileField(upload_to='hostel_attachments/', blank=True, null=True,
+                                        verbose_name=_('Справка о получении адресной социальной помощи'),
+                                        validators=[file_size_validator, file_ext_validator])
+
     message = models.CharField(max_length=300, blank=True, verbose_name=_('Отправленный ответ'))
 
     address = None
