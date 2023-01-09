@@ -204,8 +204,8 @@ class TransferKSTUForm(ModelForm):
         cleaned_data = super(TransferKSTUForm, self).clean()
         specialty_another_university = cleaned_data.get("specialty_on_previous_university")
         custom_specialty_another_university = cleaned_data.get("custom_specialty_on_previous_university")
-        if (not specialty_another_university or not custom_specialty_another_university) and \
-                (specialty_another_university and custom_specialty_another_university):
+        if not (specialty_another_university != None or custom_specialty_another_university != None) and \
+                (specialty_another_university != None and custom_specialty_another_university != None):
             raise forms.ValidationError("Укажите специальность в предыдущем университете только одним из 2 вариантов")
 
 
