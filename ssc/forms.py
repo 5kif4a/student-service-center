@@ -201,7 +201,7 @@ class TransferKSTUForm(ModelForm):
         self.fields['status'].required = False
 
     def clean(self):
-        cleaned_data = super(TransferForm, self).clean()
+        cleaned_data = super(TransferKSTUForm, self).clean()
         specialty_another_university = cleaned_data.get("specialty_on_previous_university")
         custom_specialty_another_university = cleaned_data.get("custom_specialty_on_previous_university")
         if (not specialty_another_university or not custom_specialty_another_university) and \
