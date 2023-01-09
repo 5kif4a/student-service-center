@@ -849,8 +849,7 @@ class TransferInside(Person, Application):
     specialty_to = models.ForeignKey(Specialty, on_delete=models.CASCADE, related_name="Specialty_to",
                                      verbose_name=_('Шифр и название образовательной программы/специальности перевода'))
 
-    faculty_to = models.CharField(max_length=200, choices=faculties, verbose_name=_('Факультет перевода'),
-                                  default='Не указано')
+    faculty_to = models.CharField(max_length=200, choices=faculties, verbose_name=_('Факультет перевода'))
 
     language_from = models.CharField(max_length=200, choices=languages_from, verbose_name=_('Язык обучения'))
 
