@@ -173,6 +173,14 @@ class TransferForm(ModelForm):
         self.fields['university'].label = 'ВУЗ перевода'
         self.fields['status'].required = False
 
+    def clean(self):
+        cleaned_data = super(TransferForm, self).clean()
+        specialty_another_university = cleaned_data.get("specialty")
+        custom_specialty_another_university = cleaned_data.get("custom_specialty")
+        if not (specialty_another_university != None or custom_specialty_another_university != None) and \
+                (specialty_another_university != None and custom_specialty_another_university != None):
+            raise forms.ValidationError("Укажите специальность в другом университете только одним из 2 вариантов")
+
 
 class TransferKSTUForm(ModelForm):
     """
