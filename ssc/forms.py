@@ -200,6 +200,14 @@ class TransferKSTUForm(ModelForm):
         self.fields['grant'].label = 'Свидетельство о образовательном гранте(если грант)'
         self.fields['status'].required = False
 
+    def clean(self):
+        cleaned_data = super(TransferForm, self).clean()
+        specialty_another_university = cleaned_data.get("specialty_on_previous_university")
+        custom_specialty_another_university = cleaned_data.get("custom_specialty_on_previous_university")
+        if (not specialty_another_university or not custom_specialty_another_university) and \
+                (specialty_another_university and custom_specialty_another_university):
+            raise forms.ValidationError("Укажите специальность в предыдущем университете только одним из 2 вариантов")
+
 
 class RecoveryForm(ModelForm):
     """

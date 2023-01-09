@@ -423,7 +423,12 @@ class TransferKSTU(Person, Application):
 
     specialty_on_previous_university = models.ForeignKey(Specialty, on_delete=models.CASCADE,
                                                          verbose_name=_('Специальность обучения в предыдущем ВУЗе'),
-                                                         related_name='specialty_on_previous_university')
+                                                         related_name='specialty_on_previous_university',
+                                                         blank=True, null=True)
+
+    custom_specialty_on_previous_university = \
+        models.CharField(max_length=200, verbose_name=_('Шифр и название специальности (если не представлена в списке)'),
+                         blank=True, null=True)
 
     transfer_specialty = models.ForeignKey(Specialty, on_delete=models.CASCADE,
                                            verbose_name=_('Специальность перевода'),
