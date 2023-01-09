@@ -249,7 +249,7 @@ div.WordSection1
   color:black;letter-spacing:.1pt;background:white'>&nbsp;</span></p>
   <p class=MsoNormal style='margin-bottom:0cm;margin-bottom:.0001pt;text-indent:
   22.95pt;line-height:normal'><span style='font-size:16.0pt;font-family:"Times New Roman","serif";
-  color:black;letter-spacing:.1pt;background:white'>Прошу Вас дать разрешение на перевод в <u>{{ app.university }}</u>, образовательная программа/специальность <u>{% if app.specialty != None %}{{ app.specialty }}{% else %}{{ app.custom_specialty }}</u>, <u>{{ app.foundation_in_transfer }}</u></span> {% if app.with_grant_preservation %} <u><span style='font-size:16.0pt;font-family:
+  color:black;letter-spacing:.1pt;background:white'>Прошу Вас дать разрешение на перевод в <u>{{ app.university }}</u>, образовательная программа/специальность <u>{% if app.specialty %}{{ app.specialty }}{% else %}{{ app.custom_specialty }}{% endif %}</u>, <u>{{ app.foundation_in_transfer }}</u></span> {% if app.with_grant_preservation %} <u><span style='font-size:16.0pt;font-family:
   "Times New Roman","serif";color:black;letter-spacing:.1pt;background:white'>,
   с сохранением гранта.</span></u><span style='font-size:16.0pt;font-family:
   "Times New Roman","serif";color:black;letter-spacing:.1pt;background:white'> </span>{% endif %} </p>
