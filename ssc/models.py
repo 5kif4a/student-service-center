@@ -471,6 +471,8 @@ class TransferKSTU(Person, Application):
     grant = models.FileField(upload_to='transfer_kstu_attachments/',
                              blank=True, null=True, verbose_name=_('Свидетельство о образовательном гранте'))
 
+    language_to = models.CharField(max_length=200, choices=languages_to, verbose_name=_('Язык обучения'))
+
     group = None
     address = None
     specialty = None
@@ -543,7 +545,11 @@ class Recovery(Person, Application):
     specialty_on_previous_university = models.ForeignKey(Specialty, on_delete=models.CASCADE,
                                                          verbose_name=_('Специальность обучения в предыдущем ВУЗе'),
                                                          related_name='specialty_on_previous_university_recovery',
-                                                         null=True)
+                                                         null=True, blank=True)
+
+    custom_specialty_on_previous_university = \
+        models.CharField(max_length=200, verbose_name=_('Специальность обучения в предыдущем ВУЗе (если не представлена в списке)'),
+                         blank=True, null=True)
 
     faculty = models.CharField(max_length=200, choices=faculties, verbose_name=_('Факультет'))
 
@@ -566,6 +572,8 @@ class Recovery(Person, Application):
     certificate = models.FileField(upload_to='recovery_attachments/',
                                    verbose_name=_('Копия сертификата ЕНТ/КТА'),
                                    validators=[file_size_validator, file_ext_validator])
+
+    language_to = models.CharField(max_length=200, choices=languages_to, verbose_name=_('Язык обучения'))
 
     group = None
     address = None
@@ -878,6 +886,8 @@ class TransferInside(Person, Application):
     def get_faculty(self):
         return dict(faculties).get(self.faculty)
 
+    def get_faculty_to(self):
+        return dict(faculties).get(self.faculty_to)
 
 class KeyCard(Person, Application):
     """

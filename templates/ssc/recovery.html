@@ -55,9 +55,14 @@
                                 <div class="form-group col-sm">
                                     {{ form.university|as_crispy_field }}
                                 </div>
+                            </div>
+                            <div class="form-row align-items-end">
                                 <div class="form-group col-sm">
                                     {{ form.specialty_on_previous_university|as_crispy_field }}
                                 </div>
+                                <div class="form-group col-sm">
+                                {{ form.custom_specialty_on_previous_university|as_crispy_field }}
+                            </div>
                             </div>
                             <div class="form-row align-items-end">
                                 <div class="form-group col-sm">
@@ -68,6 +73,9 @@
                                 </div>
                                 <div class="form-group col-sm">
                                     {{ form.course|as_crispy_field }}
+                                </div>
+                                <div class="form-group col-sm">
+                                    {{ form.language_to|as_crispy_field }}
                                 </div>
                             </div>
                             <div class="form-row">

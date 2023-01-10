@@ -246,6 +246,14 @@ class RecoveryForm(ModelForm):
         self.fields['university'].label = 'Предыдущий ВУЗ'
         self.fields['status'].required = False
 
+    def clean(self):
+        cleaned_data = super(RecoveryForm, self).clean()
+        specialty_another_university = cleaned_data.get("specialty_on_previous_university")
+        custom_specialty_another_university = cleaned_data.get("custom_specialty_on_previous_university")
+        if not (specialty_another_university != None or custom_specialty_another_university != None) and \
+                (specialty_another_university != None and custom_specialty_another_university != None):
+            raise forms.ValidationError("Укажите специальность в другом университете только одним из 2 вариантов")
+
 
 class HostelReferralForm(ModelForm):
     """
