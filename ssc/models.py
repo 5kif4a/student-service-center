@@ -376,17 +376,17 @@ class AcademicLeave(Person, Application):
 
     is_prolongation = models.BooleanField(verbose_name="Продление академ. отпуска", default=False)
 
-    iin_attachment_front = models.ImageField(upload_to='academic_leave_attachments/',
-                                             verbose_name=_(
-                                                 'Прикрепление копии документа, удостоверяющего личность - передняя '
-                                                 'сторона'),
-                                             validators=[file_size_validator])
-
-    iin_attachment_back = models.ImageField(upload_to='academic_leave_attachments/',
-                                            verbose_name=_(
-                                                'Прикрепление копии документа, удостоверяющего личность - обратная '
-                                                'сторона'),
-                                            validators=[file_size_validator])
+    # iin_attachment_front = models.ImageField(upload_to='academic_leave_attachments/',
+    #                                          verbose_name=_(
+    #                                              'Прикрепление копии документа, удостоверяющего личность - передняя '
+    #                                              'сторона'),
+    #                                          validators=[file_size_validator])
+    #
+    # iin_attachment_back = models.ImageField(upload_to='academic_leave_attachments/',
+    #                                         verbose_name=_(
+    #                                             'Прикрепление копии документа, удостоверяющего личность - обратная '
+    #                                             'сторона'),
+    #                                         validators=[file_size_validator])
 
     attachment = models.FileField(upload_to='academic_leave_attachments/', verbose_name=_('Прикрепление'),
                                   validators=[file_size_validator, file_ext_validator])
@@ -741,17 +741,17 @@ class AcademicLeaveReturn(Person, Application):
     reason = models.CharField(max_length=100, choices=academic_leave_reasons, default='состоянием здоровья',
                               verbose_name=_('Причина'))
 
-    iin_attachment_front = models.ImageField(upload_to='academic_leave_return_attachments/',
-                                             verbose_name=_(
-                                                 'Прикрепление копии документа, удостоверяющего личность - передняя '
-                                                 'сторона'),
-                                             validators=[file_size_validator])
-
-    iin_attachment_back = models.ImageField(upload_to='academic_leave_return_attachments/',
-                                            verbose_name=_(
-                                                'Прикрепление копии документа, удостоверяющего личность - обратная '
-                                                'сторона'),
-                                            validators=[file_size_validator])
+    # iin_attachment_front = models.ImageField(upload_to='academic_leave_return_attachments/',
+    #                                          verbose_name=_(
+    #                                              'Прикрепление копии документа, удостоверяющего личность - передняя '
+    #                                              'сторона'),
+    #                                          validators=[file_size_validator])
+    #
+    # iin_attachment_back = models.ImageField(upload_to='academic_leave_return_attachments/',
+    #                                         verbose_name=_(
+    #                                             'Прикрепление копии документа, удостоверяющего личность - обратная '
+    #                                             'сторона'),
+    #                                         validators=[file_size_validator])
 
     attachment = models.FileField(upload_to='academic_leave_return_attachments/', verbose_name=_('Прикрепление'),
                                   validators=[file_size_validator, file_ext_validator])
