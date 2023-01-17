@@ -158,7 +158,7 @@ class CustomAdmin(admin.ModelAdmin):
             filenames_dict = {
                 "reference": "[]",
 
-                "academic-leave": "[obj.iin_attachment_front.path, obj.iin_attachment_back.path, obj.attachment.path]",
+                "academic-leave": "[obj.attachment.path]",
 
                 "abroad": "[obj.passport.path, obj.recommendation_letter.path, obj.transcript.path, "
                           "obj.certificate.path]",
@@ -175,8 +175,7 @@ class CustomAdmin(admin.ModelAdmin):
 
                 "hostel_referral": "[obj.iin_attachment_front.path, obj.iin_attachment_back.path]",
 
-                "academic-leave-return": "[obj.iin_attachment_front.path, obj.iin_attachment_back.path, "
-                                         "obj.attachment.path]",
+                "academic-leave-return": "[obj.attachment.path]",
 
                 "private-information-change": "[obj.iin_attachment_front.path, obj.iin_attachment_back.path, "
                                               "obj.attachment.path]",
@@ -217,7 +216,7 @@ class CustomAdmin(admin.ModelAdmin):
 
             if obj.__class__ is AcademicLeave or obj.__class__ is Recovery or obj.__class__ is PrivateInformationChange:
                 if not obj.attachment:
-                    filenames_dict["academic-leave"] = "[obj.iin_attachment_front.path, obj.iin_attachment_back.path]"
+                    filenames_dict["academic-leave"] = "[]"
                     filenames_dict[
                         "private-information-change"] = "[obj.iin_attachment_front.path, obj.iin_attachment_back.path]"
                     filenames_dict["recovery"] = "[obj.iin_attachment_front.path, obj.iin_attachment_back.path, " \

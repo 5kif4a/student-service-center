@@ -399,6 +399,8 @@ class AcademicLeave(Person, Application):
 
     course = None
     address = None
+    iin_attachment_front = None
+    iin_attachment_back = None
 
     class Meta:
         verbose_name = _('заявление на предоставление и продление академ.отпуска обучающимся в организациях '
@@ -762,6 +764,8 @@ class AcademicLeaveReturn(Person, Application):
 
     course = None
     address = None
+    iin_attachment_front = None
+    iin_attachment_back = None
 
     class Meta:
         verbose_name = _('заявление на возвращение из академ.отпуска обучающихся в организациях '
