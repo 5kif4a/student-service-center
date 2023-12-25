@@ -9,32 +9,77 @@
     <link rel="stylesheet" href="{% static "css/bootstrap.min.css"%}">
     <link rel="stylesheet" href="{% static "css/chart.min.css" %}">
     <script src="{% static "js/chart.js" %}"></script>
+    <script src="{% static "js/jspdf.min.js" %}"></script>
+    <script src="{% static "js/html2canvas.min.js" %}"></script>
 </head>
 <body>
 <div class="container">
     <h1 class="text-center">Статистика по услугам</h1>
     <div class="row mb-3">
         <div class="col-sm col-md">
-            <a class="btn btn-danger btn-block mb-2" href="#"><i class="fas fa-file-pdf"></i> PDF</a>
+            <a class="btn btn-danger btn-block mb-2" href="#" onclick="generate_pdf(); return false;"><i class="fas fa-file-pdf"></i> PDF</a>
         </div>
         <div class="col-sm col-md">
-            <a class="btn btn-success btn-block" href="#"><i class="fas fa-file-excel"></i> Excel</a>
-        </div>
-    </div>
-    <div class="row mb-1">
-        <div class="col-sm col-md">
-            <canvas id="chart0"></canvas>
-        </div>
-        <div class="col-sm col-md">
-            <canvas id="chart1"></canvas>
+            <form action="" method="post">
+                {% csrf_token %}
+                <button name="_download_excel" type="submit" class="btn btn-success btn-block" ><i class="fas fa-file-excel"></i> Excel</a>
+            </form>
         </div>
     </div>
-    <div class="row mt-1">
-        <div class="col-sm col-md">
-            <canvas id="chart2"></canvas>
+    <form action="" method="post">
+        {% csrf_token %}
+        <div class="row mb-1">
+            <div class="col-sm col-md">
+                <h3 class="text-center">За период</h3>
+            </div>
         </div>
-        <div class="col-sm col-md">
-            <canvas id="chart3"></canvas>
+        <div class="row mb-3">
+            <div class="col-sm col-md">
+                <input type="date" class="form-control" name="first_date_value" value="{{ first_date|date:'Y-m-d' }}" onChange="document.getElementById('fist_date_button').click();">
+                <input type="submit" name="_first_date" style="visibility: hidden;" id="fist_date_button">
+            </div>
+            <div class="col-sm col-md">
+                <input type="date" class="form-control" name="last_date_value" value="{{ last_date|date:'Y-m-d' }}" onChange="document.getElementById('last_date_button').click();">
+                <input type="submit" name="_last_date" style="visibility: hidden;" id="last_date_button">
+            </div>
+        </div>
+    </form>
+    <div class="container" id="content">
+        <br>
+        <h2 class="text-center">Всего студентов {{ students_count }}</h2>
+        <div class="row mb-1 h-50">
+            <div class="col-sm col-md">
+                <input type="hidden" id="faculties" name="faculties" value="{{ faculties }}">
+                <input type="hidden" id="students_by_faculties" name="students_by_faculties" value="{{ students_by_faculties }}">
+                <input type="hidden" id="students_count" name="students_count" value="{{ students_count }}">
+                <canvas id="chart0"></canvas>
+            </div>
+            <div class="col-sm col-md">
+                <input type="hidden" id="students_by_form" name="students_by_form" value="{{ students_by_form }}">
+                <canvas id="chart1"></canvas>
+            </div>
+        </div>
+        <div class="row mb-1 h-50">
+            <div class="col-sm col-md" >
+                <input type="hidden" id="courses" name="courses" value="{{ courses }}">
+                <input type="hidden" id="students_by_courses" name="students_by_courses" value="{{ students_by_courses }}">
+                <canvas id="chart2" height="70px"></canvas>
+            </div>
+        </div>
+        <br>
+        <input type="hidden" id="orders_count" name="orders_count" value="{{ orders_count }}">
+        <h2 class="text-center">Всего заявок {{ orders_count }}</h2>
+        <div class = "row mb-1">
+            <input type="hidden" id="orders_faculties" name="orders_faculties" value="{{ orders_faculties }}">
+            <input type="hidden" id="orders_by_faculties" name="orders_by_faculties" value="{{ orders_by_faculties }}">
+            <div class="col-sm">
+                <canvas id="chart3"></canvas>
+            </div>
+            <input type="hidden" id="orders_courses" name="orders_courses" value="{{ orders_courses }}">
+            <input type="hidden" id="orders_by_courses" name="orders_by_courses" value="{{ orders_by_courses }}">
+            <div class="col-sm col-md">
+                <canvas id="chart4"></canvas>
+            </div>
         </div>
     </div>
 </div>

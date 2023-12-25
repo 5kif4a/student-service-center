@@ -1,7 +1,7 @@
 from django.contrib import messages
-from django.shortcuts import render
+from django.shortcuts import render, render_to_response
 from django.contrib.sites.shortcuts import get_current_site
-from django.utils import timezone
+from django.utils import timezone, dateformat
 from django.views import View
 from django.http import JsonResponse, HttpResponseRedirect
 from django.core import serializers
@@ -14,6 +14,7 @@ from django.contrib.auth.decorators import login_required
 from django.core.files.storage import FileSystemStorage
 import json
 from django.shortcuts import get_object_or_404
+
 
 # Create your views here.
 
@@ -502,7 +503,153 @@ def stats(request):
     Выгрузка по статистике
     """
     template = 'custom_admin/stats.html'
-    return render(request, template)
+    students_by_faculties = dict()
+    students_by_courses = dict()
+    students_by_form = {"очная": 0, "заочная": 0}
+
+    students = Student.objects.all()
+    for student in students:
+        if student.faculty in students_by_faculties.keys():
+            students_by_faculties[student.faculty] += 1
+        else:
+            students_by_faculties[student.faculty] = 1
+
+        if student.course in students_by_courses.keys():
+            students_by_courses[student.course] += 1
+        else:
+            students_by_courses[student.course] = 1
+
+        students_by_form[student.education_form] += 1
+
+    orders_by_faculties = dict()
+    orders_by_courses = dict()
+    orders_count = 0
+
+    first_date = datetime(2018, 1, 1)
+    last_date = datetime.now()
+
+    if "_first_date" in request.POST or "_last_date" in request.POST:
+        first_date = datetime.strptime(request.POST['first_date_value'], "%Y-%m-%d")
+
+        last_date = datetime.datetime.strptime(request.POST['last_date_value'], "%Y-%m-%d")
+
+    for model in Abroad.objects.filter(date_of_application__range=(first_date, last_date)), Hostel.objects.filter(
+            date_of_application__range=(first_date, last_date)), \
+                 Recovery.objects.filter(date_of_application__range=(first_date, last_date)), Reference.objects.filter(
+        date_of_application__range=(first_date, last_date)), \
+                 AcademicLeave.objects.filter(
+                     date_of_application__range=(first_date, last_date)), TransferKSTU.objects.filter(
+        date_of_application__range=(first_date, last_date)), \
+                 Transfer.objects.filter(date_of_application__range=(first_date, last_date)):
+
+        for order in model:
+            if not hasattr(order, 'course') or order.course is None:
+                order.course = "Не зависит от курса"
+
+            if not hasattr(order, 'faculty') or order.faculty is None:
+                order.faculty = "Не зависит от факультета"
+
+            if order.faculty in orders_by_faculties.keys():
+                orders_by_faculties[order.faculty] += 1
+            else:
+                orders_by_faculties[order.faculty] = 1
+
+            if order.course in orders_by_courses.keys():
+                orders_by_courses[order.course] += 1
+            else:
+                orders_by_courses[order.course] = 1
+
+            orders_count += 1
+
+    print(orders_by_courses)
+
+    if "_download_excel" in request.POST:
+        output = io.BytesIO()
+
+        workbook = xlsxwriter.Workbook(output)
+        worksheet = workbook.add_worksheet()
+        worksheet.set_column(0, 0, 25)
+
+        row_num = 0
+        col_num = 0
+
+        worksheet.write(row_num, col_num, "Отчет за период")
+        row_num += 1
+        worksheet.write(row_num, col_num, dateformat.format(first_date, "d.m.Y"))
+        worksheet.write(row_num, col_num + 1, dateformat.format(last_date, "d.m.Y"))
+        row_num += 1
+
+        worksheet.write(row_num, col_num, "Всего студентов")
+        worksheet.write(row_num, col_num + 1, students.count())
+
+        row_num += 1
+        worksheet.write(row_num, col_num, "По факультетам")
+        for faculty, count in students_by_faculties.items():
+            row_num += 1
+            worksheet.write(row_num, col_num, faculty)
+            worksheet.write(row_num, col_num + 1, count)
+
+        row_num += 1
+        worksheet.write(row_num, col_num, "По форме обучения")
+        for form, count in students_by_form.items():
+            row_num += 1
+            worksheet.write(row_num, col_num, form)
+            worksheet.write(row_num, col_num + 1, count)
+
+        row_num += 1
+        worksheet.write(row_num, col_num, "По курсу")
+        for course, count in students_by_courses.items():
+            row_num += 1
+            worksheet.write(row_num, col_num, course)
+            worksheet.write(row_num, col_num + 1, count)
+
+        row_num += 2
+        worksheet.write(row_num, col_num, "Всего заявок")
+        worksheet.write(row_num, col_num + 1, orders_count)
+
+        row_num += 1
+        worksheet.write(row_num, col_num, "По факультетам")
+        for faculty, count in orders_by_faculties.items():
+            row_num += 1
+            worksheet.write(row_num, col_num, faculty)
+            worksheet.write(row_num, col_num + 1, count)
+
+        row_num += 1
+        worksheet.write(row_num, col_num, "По курсам")
+        for course, count in orders_by_courses.items():
+            row_num += 1
+            worksheet.write(row_num, col_num, course)
+            worksheet.write(row_num, col_num + 1, count)
+
+        workbook.close()
+        output.seek(0)
+
+        filename = 'stats.xlsx'
+        response = HttpResponse(
+            output,
+            content_type='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+        )
+        response['Content-Disposition'] = 'attachment; filename=%s' % filename
+
+        return response
+
+    context = {
+        "faculties": list(students_by_faculties.keys()),
+        "students_by_faculties": list(students_by_faculties.values()),
+        "students_count": students.count(),
+        "students_by_form": list(students_by_form.values()),
+        "courses": list(students_by_courses.keys()),
+        "students_by_courses": list(students_by_courses.values()),
+        "orders_faculties": list(orders_by_faculties.keys()),
+        "orders_by_faculties": list(orders_by_faculties.values()),
+        "orders_courses": list(orders_by_courses.keys()),
+        "orders_by_courses": list(orders_by_courses.values()),
+        "orders_count": orders_count,
+        "first_date": first_date,
+        "last_date": last_date
+    }
+
+    return render(request, template, context)
 
 
 def page_not_found(request, exception):
